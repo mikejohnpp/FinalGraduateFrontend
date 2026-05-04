@@ -1,5 +1,5 @@
-import FriendSuggestCard from "@/components/friends/FriendSuggestCard"
-import { allFriends } from "@/data/mock/friends"
+import FriendSuggestCard from "@/components/friends/FriendSuggestCard";
+import { allFriends } from "@/data/mock/friends";
 
 export default function FriendsAll() {
   return (
@@ -11,5 +11,5 @@ export default function FriendsAll() {
         ))}
       </div>
     </div>
-  )
+  );
 }

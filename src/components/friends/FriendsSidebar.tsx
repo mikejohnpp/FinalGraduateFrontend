@@ -19,20 +19,20 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { id: "home", label: "Trang chu", to: "/friends", icon: LayoutGridIcon },
+  { id: "home", label: "Trang chủ", to: "/friends", icon: LayoutGridIcon },
   {
     id: "requests",
-    label: "Loi moi ket ban",
+    label: "Lời mời kết bạn",
     to: "/friends/request",
     icon: UserPlusIcon,
   },
   {
     id: "suggest",
-    label: "Goi y",
+    label: "Gợi ý",
     to: "/friends/suggest",
     icon: UserCheckIcon,
   },
-  { id: "all", label: "Tat ca ban be", to: "/friends/all", icon: UsersIcon },
+  { id: "all", label: "Tất cả bạn bè", to: "/friends/all", icon: UsersIcon },
 ];
 
 export default function FriendsSidebar() {
@@ -53,7 +53,7 @@ export default function FriendsSidebar() {
         className="bg-sidebar text-sidebar-foreground"
       >
         <SidebarHeader className="gap-0 px-4 pb-2 pt-4">
-          <h2 className="text-lg font-semibold">Ban be</h2>
+          <h2 className="text-lg font-semibold">Bạn bè</h2>
         </SidebarHeader>
         <SidebarContent className="px-3 pb-4">
           <SidebarGroup>

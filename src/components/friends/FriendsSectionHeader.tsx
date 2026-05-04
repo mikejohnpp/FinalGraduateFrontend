@@ -1,15 +1,15 @@
 type FriendsSectionHeaderProps = {
-  title: string
-  actionLabel?: string
-  onAction?: () => void
-}
+  title: string;
+  actionLabel?: string;
+  onAction?: () => void;
+};
 
 export default function FriendsSectionHeader({
   title,
-  actionLabel = "Xem tat ca",
+  actionLabel = "Xem tất cả",
   onAction,
 }: FriendsSectionHeaderProps) {
-  const showAction = Boolean(onAction && actionLabel)
+  const showAction = Boolean(onAction && actionLabel);
 
   return (
     <div className="flex items-center justify-between">
@@ -18,5 +18,5 @@ export default function FriendsSectionHeader({
         <span className="text-sm font-medium text-primary">{actionLabel}</span>
       ) : null}
     </div>
-  )
+  );
 }

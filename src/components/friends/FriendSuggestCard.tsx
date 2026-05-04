@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { FriendProfile } from "@/types/Friend"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { FriendProfile } from "@/types/Friend";
 
 type FriendSuggestCardProps = {
-  profile: FriendProfile
-}
+  profile: FriendProfile;
+};
 
 export default function FriendSuggestCard({ profile }: FriendSuggestCardProps) {
   return (
@@ -24,12 +24,12 @@ export default function FriendSuggestCard({ profile }: FriendSuggestCardProps) {
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <Button className="w-full" size="sm">
-          Them ban be
+          Thêm bạn bè
         </Button>
         <Button className="w-full" size="sm" variant="secondary">
-          Go
+          Gỡ
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }

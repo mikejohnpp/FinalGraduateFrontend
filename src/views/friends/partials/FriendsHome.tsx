@@ -10,10 +10,10 @@ export default function FriendsHome() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-semibold">Ban be</h1>
+      <h1 className="text-2xl font-semibold">Bạn bè</h1>
       <section className="flex flex-col gap-4">
         <FriendsSectionHeader
-          title="Loi moi ket ban"
+          title="Lời mời kết bạn"
           onAction={() => navigate("/friends/request")}
         />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -25,7 +25,7 @@ export default function FriendsHome() {
 
       <section className="flex flex-col gap-4">
         <FriendsSectionHeader
-          title="Nhung nguoi ban co the biet"
+          title="Những người bạn có thể biết"
           onAction={() => navigate("/friends/suggest")}
         />
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
