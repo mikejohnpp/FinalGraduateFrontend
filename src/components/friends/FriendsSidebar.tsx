@@ -41,7 +41,7 @@ export default function FriendsSidebar() {
   return (
     <SidebarProvider
       defaultOpen
-      className="h-full"
+      className="h-svh"
       style={
         {
           "--sidebar-width": "50rem",

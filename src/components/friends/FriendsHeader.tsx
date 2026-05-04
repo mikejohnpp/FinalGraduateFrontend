@@ -5,31 +5,35 @@ import {
   MessageCircleIcon,
   SearchIcon,
   UsersIcon,
-} from "lucide-react"
-import { useLocation, useNavigate } from "react-router-dom"
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { Button } from "@/components/ui/button"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { cn } from "@/lib/utils";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
   { id: "friends", icon: UsersIcon, label: "Ban be", to: "/friends" },
   { id: "messages", icon: MessageCircleIcon, label: "Tin nhan", to: "/" },
-]
+];
 
 const actionItems = [
   { id: "menu", icon: MenuIcon, label: "Menu" },
   { id: "messages", icon: MessageCircleIcon, label: "Tin nhan" },
   { id: "notifications", icon: BellIcon, label: "Thong bao" },
-]
+];
 
 export default function FriendsHeader() {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-card/95 backdrop-blur">
+    <header className="sticky top-0 z-20 h-[58px] border-b border-border bg-card/95 backdrop-blur">
       <div className="flex w-full items-center gap-4 px-4 py-2">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold">
@@ -49,14 +53,14 @@ export default function FriendsHeader() {
 
         <div className="flex flex-1 items-center justify-center gap-3">
           {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = location.pathname === item.to
+            const Icon = item.icon;
+            const isActive = location.pathname === item.to;
             return (
               <div
                 key={item.id}
                 className={cn(
                   "flex h-12 items-center justify-center px-4",
-                  isActive && "border-b-2 border-primary"
+                  isActive && "border-b-2 border-primary",
                 )}
               >
                 <Button
@@ -68,13 +72,13 @@ export default function FriendsHeader() {
                   <Icon data-icon="inline-start" />
                 </Button>
               </div>
-            )
+            );
           })}
         </div>
 
         <div className="flex items-center gap-2">
           {actionItems.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
             return (
               <Button
                 key={item.id}
@@ -84,10 +88,10 @@ export default function FriendsHeader() {
               >
                 <Icon data-icon="inline-start" />
               </Button>
-            )
+            );
           })}
         </div>
       </div>
     </header>
-  )
+  );
 }
