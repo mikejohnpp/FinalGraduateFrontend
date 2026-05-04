@@ -15,13 +15,13 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userStore.loginSuccess === true) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
-  }, [userStore.loginSuccess]);
+  // useEffect(() => {
+  //   if (userStore.loginSuccess === true) {
+  //     navigate("/");
+  //   } else {
+  //     navigate("/login");
+  //   }
+  // }, [userStore.loginSuccess]);
   return (
     <div className="flex min-h-svh flex-col">
       {/* Header user info */}
@@ -61,4 +61,3 @@ export default function Home() {
     </div>
   );
 }
-

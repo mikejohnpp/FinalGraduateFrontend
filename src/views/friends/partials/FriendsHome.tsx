@@ -1,0 +1,39 @@
+import { useNavigate } from "react-router-dom";
+
+import FriendRequestCard from "@/components/friends/FriendRequestCard";
+import FriendSuggestCard from "@/components/friends/FriendSuggestCard";
+import FriendsSectionHeader from "@/components/friends/FriendsSectionHeader";
+import { friendRequests, friendSuggestions } from "@/data/mock/friends";
+
+export default function FriendsHome() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex flex-col gap-8">
+      <h1 className="text-2xl font-semibold">Ban be</h1>
+      <section className="flex flex-col gap-4">
+        <FriendsSectionHeader
+          title="Loi moi ket ban"
+          onAction={() => navigate("/friends/request")}
+        />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {friendRequests.map((profile) => (
+            <FriendRequestCard key={profile.id} profile={profile} />
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-4">
+        <FriendsSectionHeader
+          title="Nhung nguoi ban co the biet"
+          onAction={() => navigate("/friends/suggest")}
+        />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {friendSuggestions.map((profile) => (
+            <FriendSuggestCard key={profile.id} profile={profile} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
