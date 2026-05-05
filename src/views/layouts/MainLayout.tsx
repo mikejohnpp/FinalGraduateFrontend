@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <main className="min-h-svh bg-background text-foreground dark">
+    <main className="min-h-svh bg-background text-foreground">
       <Header />
       <Suspense fallback={<OverlaySpinner show text="Đang tải..." />}>
         <Outlet />

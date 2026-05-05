@@ -1,7 +1,6 @@
 import {
   BellIcon,
   HomeIcon,
-  MenuIcon,
   MessageCircleIcon,
   SearchIcon,
   UsersIcon,
@@ -27,18 +26,13 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
-import ButtonPopover from "./ButtonPopOver";
+import ButtonPopover from "./ButtonPopover";
+import MessagesInnerPopover from "./MessagesInnerPopover";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
   { id: "friends", icon: UsersIcon, label: "Ban be", to: "/friends" },
   { id: "messages", icon: MessageCircleIcon, label: "Tin nhan", to: "/" },
-];
-
-const actionItems = [
-  { id: "menu", icon: MenuIcon, label: "Menu" },
-  { id: "messages", icon: MessageCircleIcon, label: "Tin nhan" },
-  { id: "notifications", icon: BellIcon, label: "Thong bao" },
 ];
 
 export default function Header() {
@@ -90,74 +84,20 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <ButtonPopover icon={MenuIcon} label={"Menu"} title="Điều khiển">
-            <Item variant="outline">
-              <ItemMedia>
-                <Avatar className="size-10">
-                  <AvatarImage src="https://github.com/evilrabbit.png" />
-                  <AvatarFallback>ER</AvatarFallback>
-                </Avatar>
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>Evil Rabbit</ItemTitle>
-                <ItemDescription>Last seen 5 months ago</ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <Button
-                  size="icon-sm"
-                  variant="outline"
-                  className="rounded-full"
-                  aria-label="Invite"
-                >
-                  <Plus />
-                </Button>
-              </ItemActions>
-            </Item>
-            <Item variant="outline">
-              <ItemMedia>
-                <div className="flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background *:data-[slot=avatar]:grayscale">
-                  <Avatar className="hidden sm:flex">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <Avatar className="hidden sm:flex">
-                    <AvatarImage
-                      src="https://github.com/maxleiter.png"
-                      alt="@maxleiter"
-                    />
-                    <AvatarFallback>LR</AvatarFallback>
-                  </Avatar>
-                  <Avatar>
-                    <AvatarImage
-                      src="https://github.com/evilrabbit.png"
-                      alt="@evilrabbit"
-                    />
-                    <AvatarFallback>ER</AvatarFallback>
-                  </Avatar>
-                </div>
-              </ItemMedia>
-              <ItemContent>
-                <ItemTitle>No Team Members</ItemTitle>
-                <ItemDescription>
-                  Invite your team to collaborate on this project.
-                </ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <Button size="sm" variant="outline">
-                  Invite
-                </Button>
-              </ItemActions>
-            </Item>
-          </ButtonPopover>
-
           <ButtonPopover
             icon={MessageCircleIcon}
             label={"Tin nhắn"}
             title="Tin Nhắn"
+            badgeEnable={true}
+            badgeContent={"3"}
           >
+            <MessagesInnerPopover
+              unreadCount={3}
+              onViewAll={() => {}}
+              onConversationClick={(conv) => console.log(conv)}
+            />
+          </ButtonPopover>
+          <ButtonPopover icon={BellIcon} label={"Thông báo"} title="Thông báo">
             <Item variant="outline">
               <ItemMedia>
                 <Avatar className="size-10">
