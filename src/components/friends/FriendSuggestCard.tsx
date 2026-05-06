@@ -18,7 +18,7 @@ export default function FriendSuggestCard({ profile }: FriendSuggestCardProps) {
         <CardTitle className="text-sm">{profile.name}</CardTitle>
         {profile.mutualCount ? (
           <p className="text-xs text-muted-foreground">
-            {profile.mutualCount} ban chung
+            {profile.mutualCount} bạn chung
           </p>
         ) : null}
       </CardHeader>

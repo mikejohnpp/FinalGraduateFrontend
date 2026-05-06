@@ -31,8 +31,13 @@ import MessagesInnerPopover from "./MessagesInnerPopover";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
-  { id: "friends", icon: UsersIcon, label: "Ban be", to: "/friends" },
-  { id: "messages", icon: MessageCircleIcon, label: "Tin nhan", to: "/" },
+  { id: "friends", icon: UsersIcon, label: "Ban be", to: "friends" },
+  {
+    id: "messages",
+    icon: MessageCircleIcon,
+    label: "Tin nhan",
+    to: "messages",
+  },
 ];
 
 export default function Header() {
@@ -40,7 +45,7 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-20  border-b border-border bg-card/95 backdrop-blur">
+    <header className="sticky top-0 z-20 shrink-0 h-[62px] border-b border-border bg-card/95 backdrop-blur">
       <div className="flex w-full items-center gap-4 px-4 py-2">
         <div className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold">
@@ -61,18 +66,25 @@ export default function Header() {
         <div className="flex flex-1 items-center justify-center gap-3">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.to;
+            var isActive = false;
+            if (item.to === "/") {
+              isActive = location.pathname === "/";
+            } else {
+              const path = location.pathname.slice(1); // "friends/..."
+              isActive = path.startsWith(item.to);
+            }
             return (
               <div
                 key={item.id}
                 className={cn(
-                  "flex h-12 items-center justify-center px-4",
+                  "flex h-12 items-center justify-center px-0",
                   isActive && "border-b-2 border-primary",
                 )}
               >
                 <Button
                   variant="ghost"
                   size="lg"
+                  className="w-30"
                   aria-label={item.label}
                   onClick={() => navigate(item.to)}
                 >

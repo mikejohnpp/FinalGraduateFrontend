@@ -41,12 +41,12 @@ export default function FriendsSidebar() {
   return (
     <SidebarProvider
       defaultOpen
-      className="h-svh"
       style={
         {
           "--sidebar-width": "50rem",
         } as React.CSSProperties
       }
+      className="h-full"
     >
       <Sidebar
         collapsible="none"
