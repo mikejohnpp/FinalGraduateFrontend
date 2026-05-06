@@ -28,6 +28,7 @@ import {
 import { cn } from "@/lib/utils";
 import ButtonPopover from "./ButtonPopover";
 import MessagesInnerPopover from "./MessagesInnerPopover";
+import AutoComplete from "./AutoComplete";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
@@ -53,12 +54,7 @@ export default function Header() {
           </div>
           <div className="hidden w-[260px] sm:block">
             <div className="rounded-full bg-secondary">
-              <InputGroup>
-                <InputGroupAddon className="pl-3">
-                  <SearchIcon data-icon="inline-start" />
-                </InputGroupAddon>
-                <InputGroupInput placeholder="Tim kiem tren Facebook" />
-              </InputGroup>
+              <AutoComplete />
             </div>
           </div>
         </div>
