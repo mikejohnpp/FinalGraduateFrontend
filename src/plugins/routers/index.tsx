@@ -27,12 +27,12 @@ const FriendsAll = React.lazy(
   () => import("@/views/friends/partials/FriendsAll"),
 );
 
-const routes: RouteObject[] = [
-  { path: PATH_CONSTRAINT.HOME, element: <Home /> },
+const loginRoutes: RouteObject[] = [
   { path: PATH_CONSTRAINT.LOGIN, element: <Login /> },
 ];
 
-const friendRoutes: RouteObject[] = [
+const mainRoutes: RouteObject[] = [
+  { index: true, element: <Home /> },
   {
     path: PATH_CONSTRAINT.FRIENDS,
     element: <Friends />,
@@ -49,12 +49,12 @@ const router = createBrowserRouter([
   {
     element: <Default />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: routes,
+    children: loginRoutes,
   },
   {
     element: <MainLayout />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: friendRoutes,
+    children: mainRoutes,
   },
 ]);
 
