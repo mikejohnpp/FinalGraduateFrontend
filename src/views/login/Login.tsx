@@ -15,13 +15,13 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userStore.loginSuccess === true) {
-      navigate("/");
-    } else {
-      navigate("/login");
-    }
-  }, [userStore.loginSuccess]);
+  // useEffect(() => {
+  //   if (userStore.loginSuccess === true) {
+  //     navigate("/");
+  //   } else {
+  //     navigate("/login");
+  //   }
+  // }, [userStore.loginSuccess]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-300 dark:from-neutral-900 dark:to-neutral-800">
@@ -60,4 +60,3 @@ export default function Login() {
     </div>
   );
 }
-
