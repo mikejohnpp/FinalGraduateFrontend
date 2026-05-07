@@ -37,10 +37,10 @@ const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
   { id: "friends", icon: UsersIcon, label: "Ban be", to: "friends" },
   {
-    id: "messages",
+    id: "messenger",
     icon: MessageCircleIcon,
     label: "Tin nhan",
-    to: "messages",
+    to: "messenger",
   },
 ];
 
