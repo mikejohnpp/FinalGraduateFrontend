@@ -3,9 +3,7 @@ import router from "./plugins/routers";
 
 function App() {
   return (
-    <div className="dark">
-      <RouterProvider router={router} />
-    </div>
+    <RouterProvider router={router} />
   );
 }
 

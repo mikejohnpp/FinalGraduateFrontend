@@ -6,13 +6,14 @@ import { createBrowserRouter, type RouteObject } from "react-router-dom";
 export const PATH_CONSTRAINT = {
   HOME: "/",
   LOGIN: "login",
+  REGISTER: "register",
   FRIENDS: "friends",
   MESSENGER: "messenger",
-  // REGISTER: "/register",
 };
 
 const Home = React.lazy(() => import("@/views/home/Home"));
-const Login = React.lazy(() => import("@/views/login/Login"));
+const Login = React.lazy(() => import("@/views/auth/Login"));
+const Register = React.lazy(() => import("@/views/auth/Register"));
 const Friends = React.lazy(() => import("@/views/friends/Friends"));
 const FriendsHome = React.lazy(
   () => import("@/views/friends/partials/FriendsHome"),
@@ -30,8 +31,9 @@ const Messenger = React.lazy(
   () => import("@/views/messenger/Messenger"),
 );
 
-const loginRoutes: RouteObject[] = [
+const authRoutes: RouteObject[] = [
   { path: PATH_CONSTRAINT.LOGIN, element: <Login /> },
+  { path: PATH_CONSTRAINT.REGISTER, element: <Register /> },
 ];
 
 const mainRoutes: RouteObject[] = [
@@ -56,7 +58,7 @@ const router = createBrowserRouter([
   {
     element: <Default />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: [...loginRoutes],
+    children: [...authRoutes],
   },
   {
     element: <MainLayout />,
