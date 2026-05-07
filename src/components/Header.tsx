@@ -4,11 +4,10 @@ import {
   MessageCircleIcon,
   SearchIcon,
   UsersIcon,
+  LogOutIcon,
+  Plus,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import { Plus } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Item,
@@ -18,7 +17,11 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
@@ -47,8 +50,8 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-20 shrink-0 h-[62px] border-b border-border bg-card/95 backdrop-blur">
-      <div className="flex w-full items-center gap-4 px-4 py-2">
-        <div className="flex items-center gap-3">
+      <div className="grid grid-cols-[1fr_auto_1fr] w-full items-center h-full px-4">
+        <div className="flex items-center gap-3 justify-self-start">
           <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold">
             f
           </div>
@@ -59,7 +62,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="flex flex-1 items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-2 justify-self-center h-full">
           {navItems.map((item) => {
             const Icon = item.icon;
             var isActive = false;
@@ -91,7 +94,7 @@ export default function Header() {
           })}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-self-end">
           <ButtonPopover
             icon={MessageCircleIcon}
             label={"Tin nhắn"}
@@ -101,7 +104,7 @@ export default function Header() {
           >
             <MessagesInnerPopover
               unreadCount={3}
-              onViewAll={() => {}}
+              onViewAll={() => { }}
               onConversationClick={(conv) => console.log(conv)}
             />
           </ButtonPopover>
@@ -167,6 +170,58 @@ export default function Header() {
               </ItemActions>
             </Item>
           </ButtonPopover>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative size-10 rounded-full hover:bg-secondary p-0 ml-1"
+                aria-label="Tài khoản"
+              >
+                <Avatar className="size-10">
+                  <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
+                  <AvatarFallback>HP</AvatarFallback>
+                </Avatar>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" sideOffset={8} className="w-[360px] p-4 shadow-lg rounded-xl">
+              <div className="flex flex-col gap-2">
+                {/* Card đầu tiên (Thông tin user) */}
+                <div className="p-3 bg-secondary/50 rounded-lg shadow-sm border">
+                  <Item size="default" className="p-0 bg-transparent border-none shadow-none mb-3 pointer-events-none gap-3">
+                    <ItemMedia>
+                      <Avatar className="size-10">
+                        <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
+                        <AvatarFallback>HP</AvatarFallback>
+                      </Avatar>
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle className="text-lg font-bold">Hoàng Phúc Tạ</ItemTitle>
+                    </ItemContent>
+                  </Item>
+                  <Button variant="secondary" className="w-full h-9 font-semibold text-[15px]" onClick={() => navigate('/profile/user_1')}>
+                    Xem tất cả trang cá nhân
+                  </Button>
+                </div>
+
+                {/* Nút đăng xuất */}
+                <Item
+                  className="px-2 py-2 rounded-lg cursor-pointer hover:bg-secondary border-none shadow-none mt-2"
+                  onClick={() => console.log('Đăng xuất')}
+                >
+                  <ItemMedia>
+                    <div className="size-9 flex items-center justify-center rounded-full bg-secondary">
+                      <LogOutIcon className="size-5" />
+                    </div>
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle className="font-semibold text-[15px]">Đăng xuất</ItemTitle>
+                  </ItemContent>
+                </Item>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </header>
