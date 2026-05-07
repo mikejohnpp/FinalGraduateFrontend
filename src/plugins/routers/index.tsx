@@ -9,6 +9,7 @@ export const PATH_CONSTRAINT = {
   REGISTER: "register",
   FRIENDS: "friends",
   MESSENGER: "messenger",
+  PROFILE: "/profile/:userId",
 };
 
 const Home = React.lazy(() => import("@/views/home/Home"));
@@ -30,6 +31,7 @@ const FriendsAll = React.lazy(
 const Messenger = React.lazy(
   () => import("@/views/messenger/Messenger"),
 );
+const Profile = React.lazy(() => import("@/views/profile/Profile"));
 
 const authRoutes: RouteObject[] = [
   { path: PATH_CONSTRAINT.LOGIN, element: <Login /> },
@@ -48,6 +50,7 @@ const mainRoutes: RouteObject[] = [
       { path: "all", element: <FriendsAll /> },
     ],
   },
+  { path: PATH_CONSTRAINT.PROFILE, element: <Profile /> },
 ];
 
 const messengerRoutes: RouteObject[] = [
