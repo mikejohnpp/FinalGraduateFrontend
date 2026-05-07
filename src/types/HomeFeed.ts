@@ -6,19 +6,36 @@ export interface Story {
   isViewed?: boolean
 }
 
-export interface Post {
+export interface Comment {
   id: string
   author: {
     name: string
     avatarUrl: string
   }
   content: string
+  time: string
+  likeCount?: number
+  replyCount?: number
+  replies?: Comment[]
+}
+
+export interface Post {
+  id: string
+  author: {
+    name: string
+    avatarUrl: string
+    subName?: string
+    badge?: string
+  }
+  content: string
   image?: string
   likes: number
   comments: number
+  commentList: Comment[]
   time: string
+  reactionCount?: number
+  commentCount?: number
 }
-
 export interface Contact {
   id: string
   name: string

@@ -6,7 +6,7 @@ import ContactItem from "./ContactItem"
 
 export default function RightSidebar() {
   return (
-    <aside className="hidden lg:flex w-[280px] shrink-0 flex-col gap-2 overflow-y-auto py-4 pr-4 pl-2">
+    <aside className="hidden lg:flex w-[300px] shrink-0 flex-col gap-2 overflow-y-auto py-4 pr-4 pl-2">
       <div className="flex items-center gap-3 rounded-lg px-2 py-2">
         <span className="flex size-8 items-center justify-center rounded-full bg-muted">
           <GiftIcon className="size-4 text-muted-foreground" />

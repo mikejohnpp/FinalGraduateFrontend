@@ -5,7 +5,7 @@ import StoriesBar from "./StoriesBar"
 
 export default function NewsFeed() {
   return (
-    <div className="mx-auto flex w-full max-w-[680px] flex-col gap-4 py-4 px-4">
+    <div className="mx-auto flex w-full max-w-[760px] flex-col gap-4 py-4 px-4">
       <CreatePostCard />
       <StoriesBar />
       {posts.map((post) => (

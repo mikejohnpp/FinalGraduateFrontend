@@ -7,7 +7,7 @@ export const PATH_CONSTRAINT = {
   HOME: "/",
   LOGIN: "login",
   FRIENDS: "friends",
-  // CHAT: "/chat",
+  MESSENGER: "messenger",
   // REGISTER: "/register",
 };
 
@@ -25,6 +25,9 @@ const FriendsSuggest = React.lazy(
 );
 const FriendsAll = React.lazy(
   () => import("@/views/friends/partials/FriendsAll"),
+);
+const Messenger = React.lazy(
+  () => import("@/views/messenger/Messenger"),
 );
 
 const loginRoutes: RouteObject[] = [
@@ -45,16 +48,20 @@ const mainRoutes: RouteObject[] = [
   },
 ];
 
+const messengerRoutes: RouteObject[] = [
+  { path: PATH_CONSTRAINT.MESSENGER, element: <Messenger /> },
+];
+
 const router = createBrowserRouter([
   {
     element: <Default />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: loginRoutes,
+    children: [...loginRoutes],
   },
   {
     element: <MainLayout />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: mainRoutes,
+    children: [...mainRoutes, ...messengerRoutes],
   },
 ]);
 

@@ -18,7 +18,7 @@ export default function LeftSidebar() {
   const navigate = useNavigate()
 
   return (
-    <aside className="hidden xl:flex w-[280px] shrink-0 flex-col gap-2 overflow-y-auto py-4 pl-4 pr-2">
+    <aside className="hidden xl:flex w-[300px] shrink-0 flex-col gap-2 overflow-y-auto py-4 pl-4 pr-2">
       <button
         type="button"
         className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted"

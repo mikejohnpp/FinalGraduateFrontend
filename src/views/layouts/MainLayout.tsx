@@ -5,11 +5,13 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <main className="min-h-svh bg-background text-foreground dark">
+    <main className="flex min-h-svh flex-col bg-background text-foreground">
       <Header />
-      <Suspense fallback={<OverlaySpinner show text="Đang tải..." />}>
-        <Outlet />
-      </Suspense>
+      <div className="min-h-0 flex-1">
+        <Suspense fallback={<OverlaySpinner show text="Đang tải..." />}>
+          <Outlet />
+        </Suspense>
+      </div>
     </main>
   );
 }
