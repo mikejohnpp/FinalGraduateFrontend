@@ -1,60 +1,87 @@
-# Plan: Facebook-like Friends UI (Option A)
+# Plan: Trang chủ Facebook-style
 
 ## Goal
-Implement a Facebook-like Friends UI using shadcn styling, with routes:
-- /friends
-- /friends/request
-- /friends/suggest
-- /friends/all
 
-## Scope
-- UI only (no API integration)
-- Mock data for requests, suggestions, and all friends
-- New Facebook-like header component
+Xây dựng trang chủ Facebook-style với:
+- Bố cục 3 cột: Left Sidebar + News Feed + Right Sidebar
+- Tái sử dụng `MainLayout.tsx` (đã có Header)
+- Mock data hoàn toàn, chưa có API
 
-## Layout Analysis (from provided screenshot)
-- Header: fixed top bar with logo + search, center nav icons, right actions
-- Left sidebar: Friends navigation with active state
-- Main content: two sections on /friends
-  - Friend requests: 2-column card grid, large image, confirm/delete actions
-  - People you may know: multi-column card grid, smaller image, mutuals, add/remove
+## Router change
+
+- Di chuyển `Home ("/")` từ `Default` layout sang `MainLayout` trong `src/plugins/routers/index.tsx`
+
+## Structure
+
+```
+src/views/home/
+├── Home.tsx                          # Layout 3 cột (chỉnh sửa lại)
+src/components/home/
+├── LeftSidebar.tsx                   # Sidebar trái (profile + shortcuts)
+├── NewsFeed.tsx                      # Cột giữa wrapper
+├── CreatePostCard.tsx                # Ô tạo bài viết
+├── StoriesBar.tsx                    # Thanh stories ngang
+├── StoryItem.tsx                     # 1 story circle
+├── PostCard.tsx                      # 1 bài post
+├── RightSidebar.tsx                  # Sidebar phải (contacts + birthdays)
+├── ContactItem.tsx                   # 1 dòng contact
+src/data/mock/
+├── home.ts                           # Mock data: posts, stories, contacts, shortcuts
+src/types/
+├── HomeFeed.ts                       # Types: Post, Story, Contact, Shortcut
+```
+
+## Layout
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                       Header (MainLayout)                 │
+├──────────────┬──────────────────────────┬─────────────────┤
+│  LeftSidebar │      NewsFeed            │  RightSidebar   │
+│  (280px)     │      (flex-1)            │  (280px)        │
+│              │                          │                 │
+│  Profile     │  ┌─ CreatePostCard ──┐   │  Birthdays      │
+│  card        │  └──────────────────┘   │                 │
+│              │                          │  ──────────     │
+│  Shortcuts:  │  ┌─ StoriesBar ──────┐   │                 │
+│  - Friends   │  │ ○ ○ ○ ○ ○ ○      │   │  Contacts       │
+│  - Groups    │  └──────────────────┘   │  ● Friend 1     │
+│  - Saved     │                          │  ● Friend 2     │
+│  - ...       │  ┌─ PostCard ────────┐   │  ● Friend 3     │
+│              │  │ user + nội dung   │   │  ...            │
+│  Footer      │  │ ảnh, like/comment │   │                 │
+│  links       │  └──────────────────┘   │                 │
+│              │                          │                 │
+│              │  ┌─ PostCard ────────┐   │                 │
+│              │  └──────────────────┘   │                 │
+│              │  ...                    │                 │
+└──────────────┴──────────────────────────┴─────────────────┘
+```
+
+## Shadcn components used
+
+| Area | Components |
+|---|---|
+| LeftSidebar | `Sidebar`, `SidebarProvider`, `SidebarMenu`, `Avatar`, `Item` |
+| CreatePostCard | `Card`, `Avatar`, `Input`, `Button`, `Separator` |
+| StoriesBar | `Avatar` (ring styling), `ScrollArea` |
+| PostCard | `Card`, `Avatar`, `Button`, `HoverCard` |
+| RightSidebar | `Card`, `Avatar`, `Badge`, `Separator` |
+| Scroll | `ScrollArea` cho 3 cột |
 
 ## Work Breakdown
-1) Define overall layout (PRIORITY)
-   - FriendsLayout: header + left sidebar + main content
-   - Fixed sidebar width, main content scroll
 
-2) Build shared components
-   - FriendsHeader (top bar)
-   - FriendsSidebar (nav list with active state)
-   - SectionHeader (title + "Xem tat ca")
-   - FriendRequestCard (large image + confirm/delete)
-   - FriendSuggestCard (small image + mutuals + add/remove)
-
-2.1) Install missing shadcn/ui components (as needed)
-   - Add any required base UI components via `npx shadcn@latest add ...`
-   - Keep to base UI and npm; avoid custom styling overrides
-
-3) Build /friends home layout (PRIORITY)
-   - Two sections in main content matching screenshot layout
-   - Use mock data for requests and suggestions
-
-4) Build remaining routes
-   - /friends/request: list of requests
-   - /friends/suggest: list of suggestions
-   - /friends/all: full friends list
-
-5) Wire routing and navigation
-   - Route mapping for sidebar items and section links
-   - "Xem tat ca" links to full pages
-
-## Deliverables
-- Header component in `components/`
-- Screen-specific partials in `views/*/partials/`
-- Route setup for all friends pages
-- Mock data module(s)
-
-## Non-Goals
-- Authentication
-- Backend API integration
-- Real-time data updates
+| # | Task | File(s) | Status |
+|---|---|---|---|
+| 1 | Tạo type definitions | `src/types/HomeFeed.ts` | pending |
+| 2 | Tạo mock data | `src/data/mock/home.ts` | pending |
+| 3 | Sửa router: Home vào MainLayout | `src/plugins/routers/index.tsx` | pending |
+| 4 | Build LeftSidebar | `src/components/home/LeftSidebar.tsx` | pending |
+| 5 | Build RightSidebar | `src/components/home/RightSidebar.tsx` | pending |
+| 6 | Build ContactItem | `src/components/home/ContactItem.tsx` | pending |
+| 7 | Build CreatePostCard | `src/components/home/CreatePostCard.tsx` | pending |
+| 8 | Build StoriesBar + StoryItem | `src/components/home/StoriesBar.tsx`, `src/components/home/StoryItem.tsx` | pending |
+| 9 | Build PostCard | `src/components/home/PostCard.tsx` | pending |
+| 10 | Build NewsFeed | `src/components/home/NewsFeed.tsx` | pending |
+| 11 | Hoàn thiện Home.tsx | `src/views/home/Home.tsx` | pending |
+| 12 | Lint + build kiểm tra | — | pending |
