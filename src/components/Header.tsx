@@ -172,19 +172,21 @@ export default function Header() {
           </ButtonPopover>
 
           <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative size-10 rounded-full hover:bg-secondary p-0 ml-1"
-                aria-label="Tài khoản"
-              >
-                <Avatar className="size-10">
-                  <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
-                  <AvatarFallback>HP</AvatarFallback>
-                </Avatar>
-              </Button>
-            </PopoverTrigger>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative size-10 rounded-full hover:bg-secondary p-0 ml-1"
+                  aria-label="Tài khoản"
+                >
+                  <Avatar className="size-10">
+                    <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
+                    <AvatarFallback>HP</AvatarFallback>
+                  </Avatar>
+                </Button>
+              }
+            />
             <PopoverContent align="end" sideOffset={8} className="w-[360px] p-4 shadow-lg rounded-xl">
               <div className="flex flex-col gap-2">
                 {/* Card đầu tiên (Thông tin user) */}
