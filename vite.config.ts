@@ -14,7 +14,8 @@ export default defineConfig({
         headers: {
           Origin: 'http://localhost:8080'
         }
-      }
+      },
+      '/users': { target: 'http://localhost:8080', changeOrigin: true, headers: { Origin: 'http://localhost:8080' } },
     }
   },
   plugins: [react(), tailwindcss()],

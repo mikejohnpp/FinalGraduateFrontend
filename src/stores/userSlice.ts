@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch, RootState } from "./store";
 import loginService from "@/services/loginService";
 import { AUTH_TOKEN_NAME } from "@/common/constants";
+import http from "@/lib/http";
 
 interface UserState {
     userId?: number;
@@ -11,6 +12,7 @@ interface UserState {
     loginSuccess: boolean;
 }
 
+// Test thôi nha nào sửa lại đấy
 // Legacy thunk
 export function asyncLogin(
     username: string,
@@ -34,6 +36,21 @@ export function asyncLogin(
             } else {
                 dispatch(setLoginSuccess(false));
             }
+        } catch (error: any) {
+            console.error("Login failed:", error);
+            dispatch(setLoginSuccess(false));
+        }
+    };
+}
+
+export function getProduct() {
+    return async function(
+        dispatch: AppDispatch,
+        _getState: () => RootState,
+    ) {
+        try {
+            const response = await http.get<any>("/users/posts/2");
+            console.log(response);
         } catch (error: any) {
             console.error("Login failed:", error);
             dispatch(setLoginSuccess(false));

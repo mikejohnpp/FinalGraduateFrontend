@@ -3,14 +3,17 @@ import NewsFeed from "@/components/home/NewsFeed";
 import RightSidebar from "@/components/home/RightSidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { AppDispatch } from "@/stores/store";
-import { asyncLogin } from "@/stores/userSlice";
+import { asyncLogin, getProduct } from "@/stores/userSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 export default function Home() {
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
-    dispatch(asyncLogin("tahoangphuc1901@gmail.com", "phucta1901"));
+    // dispatch(asyncLogin("tahoangphuc1901@gmail.com", "phucta1901"));
+    // dispatch(asyncLogin("tahoangphuc1901@gmail.com", "phucta1901"));
+    dispatch(getProduct());
+    dispatch(getProduct());
   });
   return (
     <div className="flex justify-center h-[calc(100vh-62px)] overflow-hidden">

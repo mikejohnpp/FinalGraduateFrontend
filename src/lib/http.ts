@@ -5,7 +5,7 @@ import {
   RemoveToken,
 } from "@/utils/redirectHelper";
 import type { LoggedIn } from "@/types/interfaces/auth/LoggedIn";
-import type { ApiResult, ApiResultGeneric } from "@/types/interfaces/result/apiResult";
+import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 import axios, {
   type AxiosInstance,
   type AxiosResponse,
@@ -69,46 +69,49 @@ export class Http {
     const originalRequest = config;
 
     if (status === 401 && window.location.href.indexOf("/login") === -1) {
-      if (this.isRefresingToken === false) {
-        try {
-          this.isRefresingToken = true;
-
-          const response = await axios.post<ApiResultGeneric<LoggedIn>>(
-            this.baseUrl + API.REFRESH,
-            {},
-            { withCredentials: true }
-          );
-
-          const data = response.data;
-          if (data.code == 200 && data.data != null) {
-            const token = data.data?.access_token;
-            localStorage.setItem(AUTH_TOKEN_NAME, token);
-            this.instance.defaults.headers.common.Authorization = `Bearer ${token}`;
-            // Notify tất cả subscribers TRƯỚC khi finally xóa chúng
-            this.subscribers.forEach((callback) => callback(token));
-          }
-        } catch (err) {
-          // Refresh thất bại → notify subscribers với null và logout
-          this.subscribers.forEach((callback) => callback(null));
-          RemoveToken();
-          RedirectLogin();
-        } finally {
-          this.subscribers = [];
-          this.isRefresingToken = false;
-        }
+      // If refresing, keep in queue and not gonna call refresh token
+      if (this.isRefresingToken === true) {
+        return new Promise((resolve, reject) => {
+          this.subscribers.push((token) => {
+            if (token) {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              resolve(this.instance(originalRequest));
+            } else {
+              reject(error);
+            }
+          });
+        });
       }
 
-      // Trả về một hàm callback để gọi lại API đã bị lỗi 401 trước đó
-      return new Promise((resolve, reject) => {
-        this.subscribers.push((token) => {
-          if (token) {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(axios(originalRequest));
-          } else {
-            reject(error);
-          }
-        });
-      });
+      try {
+        this.isRefresingToken = true;
+
+        const response = await axios.post<ApiResultGeneric<LoggedIn>>(
+          this.baseUrl + API.REFRESH,
+          {},
+          { withCredentials: true }
+        );
+
+        const data = response.data;
+        if (data.data != null) {
+          const token = data.data?.token;
+          localStorage.setItem(AUTH_TOKEN_NAME, token);
+          this.instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+          this.subscribers.forEach((callback) => callback(token));
+          this.subscribers = [];
+
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          return this.instance(originalRequest);
+        }
+      } catch (err) {
+        this.subscribers.forEach((callback) => callback(null));
+        this.subscribers = [];
+        RemoveToken();
+        RedirectLogin();
+      } finally {
+        this.isRefresingToken = false;
+      }
     }
 
     // Not permission
