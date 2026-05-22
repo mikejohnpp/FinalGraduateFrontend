@@ -1,12 +1,9 @@
-import { API, AUTH_TOKEN_NAME, AUTH_TOKEN_REMEMBER } from "@/common/constants";
+import { API, AUTH_TOKEN_NAME } from "@/common/constants";
 import {
   RedirectLogin,
   RedirectLoginAndResetParam,
   RemoveToken,
 } from "@/utils/redirectHelper";
-// import i18n from "@/plugins/i18n";
-// import { useErrorStore } from "@/stores/error";
-// import { useSettingStore } from "@/stores/setting";
 import type { LoggedIn } from "@/types/interfaces/auth/LoggedIn";
 import type { ApiResult, ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 import axios, {
@@ -22,17 +19,22 @@ export class Http {
   private subscribers: CallbackQueue = [];
   private isRefresingToken: boolean = false;
   private baseUrl: string = "";
+
   constructor(baseURL: string) {
     this.baseUrl = baseURL;
     this.instance = axios.create({
       baseURL,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem(
-          AUTH_TOKEN_NAME
-        )}`,
       },
     });
+
+    // Set initial token if it exists
+    const token = localStorage.getItem(AUTH_TOKEN_NAME);
+    if (token) {
+      this.instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+
     this.instance.interceptors.request.use(
       this.handleBeforeRequest.bind(this)
     );
@@ -44,13 +46,12 @@ export class Http {
   }
 
   private handleBeforeRequest(request: InternalAxiosRequestConfig) {
-    // const errorStore = useErrorStore();
-    // errorStore.clear();
-    //
-    request.headers.Authorization = `Bearer ${localStorage.getItem(
-      AUTH_TOKEN_NAME
-    )}`;
-
+    const token = localStorage.getItem(AUTH_TOKEN_NAME);
+    if (token) {
+      request.headers.Authorization = `Bearer ${token}`;
+    } else {
+      delete request.headers.Authorization;
+    }
     return request;
   }
 
@@ -59,122 +60,84 @@ export class Http {
   }
 
   private async handleRequestError(error: any) {
-    //Network ERROR
-    if (error.code === "ERR_NETWORK") {
-      // toast.error("Lỗi mạng. Vui lòng thử lại!", {
-      //   autoClose: false,
-      //   closeButton: true,
-      //   closeOnClick: true,
-      // });
-      return;
+    // Network ERROR — no response at all
+    if (error.code === "ERR_NETWORK" || !error.response) {
+      return Promise.reject(error);
     }
-    const {
-      config,
-      response: { status },
-    } = error;
+
+    const { config, response: { status } } = error;
     const originalRequest = config;
 
-    if (status === 401 && window.location.href.indexOf("/login") == -1) {
-      // const is_remember = localStorage.getItem(AUTH_TOKEN_REMEMBER);
-      // if (is_remember != null && is_remember == "true") {
+    if (status === 401 && window.location.href.indexOf("/login") === -1) {
       if (this.isRefresingToken === false) {
         try {
           this.isRefresingToken = true;
-          axios
-            .post<ApiResultGeneric<LoggedIn>>(
-              this.baseUrl + API.REFRESH,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              },
-              { withCredentials: true },
-            )
-            .then((response) => {
-              const data = response.data;
-              if (data.code == 200 && data.data != null) {
-                const token = data.data?.access_token;
-                localStorage.setItem(AUTH_TOKEN_NAME, token);
-                this.instance.defaults.headers.common.Authorization = `Bearer ${token}`;
-                this.subscribers.forEach((callback) =>
-                  callback(token)
-                );
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-              RemoveToken();
-              RedirectLogin();
-            });
+
+          const response = await axios.post<ApiResultGeneric<LoggedIn>>(
+            this.baseUrl + API.REFRESH,
+            {},
+            { withCredentials: true }
+          );
+
+          const data = response.data;
+          if (data.code == 200 && data.data != null) {
+            const token = data.data?.access_token;
+            localStorage.setItem(AUTH_TOKEN_NAME, token);
+            this.instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+            // Notify tất cả subscribers TRƯỚC khi finally xóa chúng
+            this.subscribers.forEach((callback) => callback(token));
+          }
         } catch (err) {
-          // this.subscribers.forEach((callback) => callback(null));
-          this.subscribers = [];
-          window.location.href = "/login";
+          // Refresh thất bại → notify subscribers với null và logout
+          this.subscribers.forEach((callback) => callback(null));
+          RemoveToken();
+          RedirectLogin();
         } finally {
           this.subscribers = [];
           this.isRefresingToken = false;
         }
       }
+
       // Trả về một hàm callback để gọi lại API đã bị lỗi 401 trước đó
       return new Promise((resolve, reject) => {
         this.subscribers.push((token) => {
           if (token) {
             originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(axios(originalRequest)); // Gọi lại API đã bị lỗi 401
+            resolve(axios(originalRequest));
           } else {
             reject(error);
           }
         });
       });
-      // } else {
-      //   // toast.error(i18n.global.t("token_expired"), {
-      //   //   autoClose: false,
-      //   //   closeButton: true,
-      //   //   closeOnClick: true,
-      //   // });
-      //   RemoveToken();
-      //   RedirectLogin();
-      // }
     }
 
-    //not permission
+    // Not permission
     if (status === 403) {
-      localStorage.setItem("isToastNotPermission", "true");
       const currentPath = window.location.pathname;
       localStorage.setItem("PATH", currentPath);
-      // toast.error(i18n.global.t("permission_denied"), {
-      //   autoClose: false,
-      //   closeButton: true,
-      //   closeOnClick: true,
-      // });
-
-      // useSettingStore().permission = false;
       RemoveToken();
       RedirectLoginAndResetParam();
       return;
     }
-    const data = error.response?.data as ApiResult;
-    // const errorStore = useErrorStore();
-    // errorStore.setError(true, [data.message ?? "An error occured"]);
+
+    // const _data = error.response?.data as ApiResult;
     return Promise.reject(error);
   }
 
   public async get<T>(url: string, params?: any): Promise<T> {
-    this.instance.defaults.headers["Content-Type"] = "application/json";
     const response = await this.instance.get<T>(url, { params });
     return response.data;
   }
 
   public async post<T>(url: string, data: any): Promise<T> {
-    this.instance.defaults.headers["Content-Type"] = "application/json";
     const response = await this.instance.post<T>(url, data);
     return response.data;
   }
 
   public async postWithFile<T>(url: string, data: any): Promise<T> {
-    this.instance.defaults.headers["Content-Type"] = "multipart/form-data";
-    const response = await this.instance.post<T>(url, data);
-    this.instance.defaults.headers["Content-Type"] = "application/jsons";
+    const response = await this.instance.post<T>(url, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return response.data;
   }
 
@@ -203,4 +166,5 @@ export class Http {
     return response.data;
   }
 }
+
 export default new Http(import.meta.env.VITE_SERVER_API);

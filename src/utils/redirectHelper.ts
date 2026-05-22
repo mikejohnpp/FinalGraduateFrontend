@@ -1,10 +1,9 @@
-import { AUTH_TOKEN_NAME, AUTH_TOKEN_REMEMBER } from "@/common/constants";
+import { AUTH_TOKEN_NAME } from "@/common/constants";
 
 export function RemoveToken() {
   const token = localStorage.getItem(AUTH_TOKEN_NAME);
   if (token != null && token.length > 0)
     localStorage.removeItem(AUTH_TOKEN_NAME);
-  localStorage.removeItem(AUTH_TOKEN_REMEMBER);
 }
 
 export function RedirectLogin() {

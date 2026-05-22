@@ -1,6 +1,5 @@
 export const API = {
-  REFRESH: ""
+  REFRESH: "api/auth/refresh-token"
 };
 
-export const AUTH_TOKEN_NAME = "";
-export const AUTH_TOKEN_REMEMBER = "";
+export const AUTH_TOKEN_NAME = "access_token";

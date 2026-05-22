@@ -1,16 +1,16 @@
+import http from "@/lib/http";
 import BaseService from "@/types/base/BaseService";
-import type { LoginStatus } from "@/types/LoginCredentials";
-
-const LOCAL_USER_KEY = "local_user";
+import type { TokenResult } from "@/types/interfaces/auth/TokenResult";
+import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 
 export class LoginService extends BaseService {
-    async login(username: string, password: string): Promise<LoginStatus> {
-        const status: LoginStatus = {
-            status: "success",
-            token: "4324jkhj5kh234kj324234jk3j423l",
-            username: username
-        };
-        return status;
+    async login(email: string, password: string): Promise<ApiResultGeneric<TokenResult>> {
+        const data: any = {
+            email: email,
+            password: password
+        }
+        const response = await http.post<ApiResultGeneric<TokenResult>>("/api/auth/login", data);
+        return response;
     }
 
     async logout() {

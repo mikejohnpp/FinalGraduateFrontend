@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 export default function Home() {
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
-    dispatch(asyncLogin("phuc", "123"));
+    dispatch(asyncLogin("tahoangphuc1901@gmail.com", "phucta1901"));
   });
   return (
     <div className="flex justify-center h-[calc(100vh-62px)] overflow-hidden">
