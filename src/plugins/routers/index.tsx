@@ -10,6 +10,11 @@ export const PATH_CONSTRAINT = {
   FRIENDS: "friends",
   MESSENGER: "messenger",
   PROFILE: "/profile/:userId",
+  GROUPS: "/groups",
+  GROUPS_DISCOVER: "/groups/discover",
+  GROUPS_MINE: "/groups/mine",
+  GROUPS_CREATE: "/groups/create",
+  GROUP_DETAIL: "/groups/:groupId",
 };
 
 const Home = React.lazy(() => import("@/views/home/Home"));
@@ -32,6 +37,13 @@ const Messenger = React.lazy(
   () => import("@/views/messenger/Messenger"),
 );
 const Profile = React.lazy(() => import("@/views/profile/Profile"));
+
+const GroupsLayout = React.lazy(() => import("@/views/layouts/GroupsLayout"));
+const GroupsFeed = React.lazy(() => import("@/views/groups/GroupsFeed"));
+const GroupsDiscover = React.lazy(() => import("@/views/groups/GroupsDiscover"));
+const GroupsMine = React.lazy(() => import("@/views/groups/GroupsMine"));
+const GroupCreate = React.lazy(() => import("@/views/groups/GroupCreate"));
+const GroupDetail = React.lazy(() => import("@/views/groups/GroupDetail"));
 
 const authRoutes: RouteObject[] = [
   { path: PATH_CONSTRAINT.LOGIN, element: <Login /> },
@@ -57,6 +69,19 @@ const messengerRoutes: RouteObject[] = [
   { path: PATH_CONSTRAINT.MESSENGER, element: <Messenger /> },
 ];
 
+const groupsRoutes: RouteObject[] = [
+  { path: PATH_CONSTRAINT.GROUPS_CREATE, element: <GroupCreate /> },
+  {
+    element: <GroupsLayout />,
+    children: [
+      { path: PATH_CONSTRAINT.GROUPS, element: <GroupsFeed /> },
+      { path: PATH_CONSTRAINT.GROUPS_DISCOVER, element: <GroupsDiscover /> },
+      { path: PATH_CONSTRAINT.GROUPS_MINE, element: <GroupsMine /> },
+      { path: PATH_CONSTRAINT.GROUP_DETAIL, element: <GroupDetail /> },
+    ],
+  },
+];
+
 const router = createBrowserRouter([
   {
     element: <Default />,
@@ -66,7 +91,7 @@ const router = createBrowserRouter([
   {
     element: <MainLayout />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: [...mainRoutes, ...messengerRoutes],
+    children: [...mainRoutes, ...messengerRoutes, ...groupsRoutes],
   },
 ]);
 

@@ -8,7 +8,7 @@
 
 ## Entry + App Wiring
 - Vite entrypoint is `src/main.tsx`; Redux store is wired there via `Provider`.
-- `src/App.tsx` wraps everything in `<div className="dark">` then renders `<RouterProvider>`.
+- `src/App.tsx` renders `<RouterProvider>`.
 - Absolute import alias `@` maps to `src/` (Vite + TS config).
 
 ## UI / Styling
@@ -41,6 +41,7 @@
 - Use `React.lazy()` for code-splitting all route-level imports.
 - Every layout route wraps children in `<Suspense fallback={<OverlaySpinner show text="Đang tải..." />}>`.
 - Components use default exports; router imports them via dynamic `import()`.
+- Current org: `authRoutes` (Login, Register) sits under `Default` layout; `mainRoutes` (Home, Friends, Profile) and `messengerRoutes` (Messenger) sit under `MainLayout` (which has Header).
 
 ### Naming + export conventions
 - All component files use PascalCase filenames.
@@ -56,6 +57,7 @@
 - `src/services/` - API service modules (currently just `loginService.ts`).
 - `src/data/mock/` - Static mock data for UI development (no API integration yet).
 - `src/types/` - TypeScript type definitions (standalone files like `Friend.ts`, or subdirs `base/`, `interfaces/`).
+- Mock data approach: exemplar is `friends.ts` and `home.ts` — define types first in `src/types/`, then export typed arrays/objects in `src/data/mock/`.
 
 ## Env / External Services
 - Vite env vars are declared in `.env` (Supabase, Link Preview API, Firebase); expect missing values locally.
