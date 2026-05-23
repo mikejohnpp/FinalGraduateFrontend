@@ -132,7 +132,7 @@ export class Http {
     return response.data;
   }
 
-  public async post<T>(url: string, data: any): Promise<T> {
+  public async post<T>(url: string, data?: any): Promise<T> {
     const response = await this.instance.post<T>(url, data);
     return response.data;
   }

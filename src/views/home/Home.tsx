@@ -2,8 +2,9 @@ import LeftSidebar from "@/components/home/LeftSidebar";
 import NewsFeed from "@/components/home/NewsFeed";
 import RightSidebar from "@/components/home/RightSidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getPostDetails, getPostList } from "@/stores/postSlice";
 import type { AppDispatch } from "@/stores/store";
-import { asyncLogin, getProduct } from "@/stores/userSlice";
+import { asyncLogin } from "@/stores/userSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -12,8 +13,9 @@ export default function Home() {
   useEffect(() => {
     // dispatch(asyncLogin("tahoangphuc1901@gmail.com", "phucta1901"));
     // dispatch(asyncLogin("tahoangphuc1901@gmail.com", "phucta1901"));
-    dispatch(getProduct());
-    dispatch(getProduct());
+    dispatch(getPostDetails(2));
+    dispatch(getPostDetails(2));
+    dispatch(getPostList());
   });
   return (
     <div className="flex justify-center h-[calc(100vh-62px)] overflow-hidden">

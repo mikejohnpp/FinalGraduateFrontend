@@ -25,7 +25,7 @@ export function asyncLogin(
         try {
             const response = await loginService.login(username, passwd);
 
-            if (response.data) {
+            if (response?.data) {
                 const { token, userId } = response.data;
 
                 localStorage.setItem(AUTH_TOKEN_NAME, token);
@@ -36,21 +36,6 @@ export function asyncLogin(
             } else {
                 dispatch(setLoginSuccess(false));
             }
-        } catch (error: any) {
-            console.error("Login failed:", error);
-            dispatch(setLoginSuccess(false));
-        }
-    };
-}
-
-export function getProduct() {
-    return async function(
-        dispatch: AppDispatch,
-        _getState: () => RootState,
-    ) {
-        try {
-            const response = await http.get<any>("/users/posts/2");
-            console.log(response);
         } catch (error: any) {
             console.error("Login failed:", error);
             dispatch(setLoginSuccess(false));
