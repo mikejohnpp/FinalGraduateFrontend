@@ -8,6 +8,7 @@ import type { LoggedIn } from "@/types/interfaces/auth/LoggedIn";
 import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 import axios, {
   type AxiosInstance,
+  type AxiosRequestConfig,
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
@@ -87,7 +88,7 @@ export class Http {
         this.isRefresingToken = true;
 
         const response = await axios.post<ApiResultGeneric<LoggedIn>>(
-          this.baseUrl + API.REFRESH,
+          `${this.baseUrl}/${API.REFRESH}`,
           {},
           { withCredentials: true }
         );
@@ -127,13 +128,27 @@ export class Http {
     return Promise.reject(error);
   }
 
-  public async get<T>(url: string, params?: any): Promise<T> {
-    const response = await this.instance.get<T>(url, { params });
+  public async post<T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
+    const response = await this.instance.post<T>(url, data, config);
     return response.data;
   }
 
-  public async post<T>(url: string, data?: any): Promise<T> {
-    const response = await this.instance.post<T>(url, data);
+  public async get<T>(url: string, params?: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.get<T>(url, { ...config, params });
+    return response.data;
+  }
+
+  public async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.put<T>(url, data, config);
+    return response.data;
+  }
+
+  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    const response = await this.instance.delete<T>(url, config);
     return response.data;
   }
 
@@ -144,15 +159,6 @@ export class Http {
     return response.data;
   }
 
-  public async put<T>(url: string, data: any): Promise<T> {
-    const response = await this.instance.put<T>(url, data);
-    return response.data;
-  }
-
-  public async delete<T>(url: string): Promise<T> {
-    const response = await this.instance.delete<T>(url);
-    return response.data;
-  }
 
   public async ExportFile<T>(url: string): Promise<T> {
     const response = await this.instance.get(url, { responseType: "blob" });

@@ -2,10 +2,8 @@ import LeftSidebar from "@/components/home/LeftSidebar";
 import NewsFeed from "@/components/home/NewsFeed";
 import RightSidebar from "@/components/home/RightSidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect } from "react";
 
 export default function Home() {
-  useEffect(() => {});
   return (
     <div className="flex justify-center h-[calc(100vh-62px)] overflow-hidden">
       <LeftSidebar />
