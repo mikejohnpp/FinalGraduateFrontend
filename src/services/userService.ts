@@ -11,7 +11,11 @@ export class UserService extends BaseService {
             password: password
         }
         try {
-            const response = await http.post<ApiResultGeneric<TokenResult>>(`/${API.LOGIN}`, data);
+            const response = await http.post<ApiResultGeneric<TokenResult>>(
+                `/${API.LOGIN}`,
+                data,
+                { withCredentials: true }
+            );
             return response;
         } catch (e) {
             console.error(e)
