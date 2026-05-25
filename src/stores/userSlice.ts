@@ -1,45 +1,51 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { loginSevice } from "@/services/loginService";
-import type { LoginStatus } from "@/types/LoginCredentials";
 
 interface UserState {
+    userId?: number;
     username?: string;
+    accessToken?: string;
     loginSuccess: boolean;
+    isLoading: boolean;
 }
 
+
 const initialState: UserState = {
+    userId: undefined,
     username: "",
-    loginSuccess: false
+    accessToken: undefined,
+    loginSuccess: false,
+    isLoading: false
 };
 
 const userSlice = createSlice({
-    name: "onlineStatus",
+    name: "user",
     initialState,
     reducers: {
-        login: (
-            state,
-            action: PayloadAction<{ username: string, passwd: string }>
-        ) => {
-            const status: LoginStatus = loginSevice.login(action.payload.username, action.payload.passwd);
-            if (status.status === "success") {
-                state.username = status.username;
-                state.loginSuccess = true;
-            } else {
-                state.username = "";
-                state.loginSuccess = false;
-            }
+        setUsername: (state, action: PayloadAction<string>) => {
+            state.username = action.payload;
         },
-        logout: (state) => {
-            const logout = loginSevice.logout();
-            if (logout === true) {
-                state.username = "";
-                state.loginSuccess = false;
-            }
-        }
+        setUserId: (state, action: PayloadAction<number>) => {
+            state.userId = action.payload;
+        },
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.accessToken = action.payload;
+        },
+        setLoginSuccess: (state, action: PayloadAction<boolean>) => {
+            state.loginSuccess = action.payload;
+        },
+        setIsLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+        },
+        resetUser: (state) => {
+            state.userId = undefined;
+            state.username = "";
+            state.accessToken = undefined;
+            state.loginSuccess = false;
+        },
     },
 });
 
-export const { login, logout } = userSlice.actions;
+export const userActions = userSlice.actions;
 
 export default userSlice.reducer;

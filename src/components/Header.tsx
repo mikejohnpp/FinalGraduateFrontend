@@ -32,6 +32,8 @@ import { cn } from "@/lib/utils";
 import ButtonPopover from "./ButtonPopover";
 import MessagesInnerPopover from "./MessagesInnerPopover";
 import AutoComplete from "./AutoComplete";
+import userService from "@/services/userService";
+import { useLogoutUser } from "@/hooks/useUser";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
@@ -47,6 +49,11 @@ const navItems = [
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout, isLoading } = useLogoutUser();
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <header className="sticky top-0 z-20 shrink-0 h-[62px] border-b border-border bg-card/95 backdrop-blur">
@@ -104,7 +111,7 @@ export default function Header() {
           >
             <MessagesInnerPopover
               unreadCount={3}
-              onViewAll={() => { }}
+              onViewAll={() => {}}
               onConversationClick={(conv) => console.log(conv)}
             />
           </ButtonPopover>
@@ -172,24 +179,33 @@ export default function Header() {
           </ButtonPopover>
 
           <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative size-10 rounded-full hover:bg-secondary p-0 ml-1"
-                aria-label="Tài khoản"
-              >
-                <Avatar className="size-10">
-                  <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
-                  <AvatarFallback>HP</AvatarFallback>
-                </Avatar>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" sideOffset={8} className="w-[360px] p-4 shadow-lg rounded-xl">
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative size-10 rounded-full hover:bg-secondary p-0 ml-1"
+                  aria-label="Tài khoản"
+                >
+                  <Avatar className="size-10">
+                    <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
+                    <AvatarFallback>HP</AvatarFallback>
+                  </Avatar>
+                </Button>
+              }
+            />
+            <PopoverContent
+              align="end"
+              sideOffset={8}
+              className="w-[360px] p-4 shadow-lg rounded-xl"
+            >
               <div className="flex flex-col gap-2">
                 {/* Card đầu tiên (Thông tin user) */}
                 <div className="p-3 bg-secondary/50 rounded-lg shadow-sm border">
-                  <Item size="default" className="p-0 bg-transparent border-none shadow-none mb-3 pointer-events-none gap-3">
+                  <Item
+                    size="default"
+                    className="p-0 bg-transparent border-none shadow-none mb-3 pointer-events-none gap-3"
+                  >
                     <ItemMedia>
                       <Avatar className="size-10">
                         <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
@@ -197,10 +213,16 @@ export default function Header() {
                       </Avatar>
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle className="text-lg font-bold">Hoàng Phúc Tạ</ItemTitle>
+                      <ItemTitle className="text-lg font-bold">
+                        Hoàng Phúc Tạ
+                      </ItemTitle>
                     </ItemContent>
                   </Item>
-                  <Button variant="secondary" className="w-full h-9 font-semibold text-[15px]" onClick={() => navigate('/profile/user_1')}>
+                  <Button
+                    variant="secondary"
+                    className="w-full h-9 font-semibold text-[15px]"
+                    onClick={() => navigate("/profile/user_1")}
+                  >
                     Xem tất cả trang cá nhân
                   </Button>
                 </div>
@@ -208,7 +230,7 @@ export default function Header() {
                 {/* Nút đăng xuất */}
                 <Item
                   className="px-2 py-2 rounded-lg cursor-pointer hover:bg-secondary border-none shadow-none mt-2"
-                  onClick={() => console.log('Đăng xuất')}
+                  onClick={() => handleLogout()}
                 >
                   <ItemMedia>
                     <div className="size-9 flex items-center justify-center rounded-full bg-secondary">
@@ -216,7 +238,9 @@ export default function Header() {
                     </div>
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle className="font-semibold text-[15px]">Đăng xuất</ItemTitle>
+                    <ItemTitle className="font-semibold text-[15px]">
+                      Đăng xuất
+                    </ItemTitle>
                   </ItemContent>
                 </Item>
               </div>
