@@ -1,63 +1,21 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { AppDispatch, RootState } from "./store";
-import loginService from "@/services/loginService";
-import { AUTH_TOKEN_NAME } from "@/common/constants";
-import http from "@/lib/http";
 
 interface UserState {
     userId?: number;
     username?: string;
     accessToken?: string;
     loginSuccess: boolean;
+    isLoading: boolean;
 }
 
-// Test thôi nha nào sửa lại đấy
-// Legacy thunk
-export function asyncLogin(
-    username: string,
-    passwd: string,
-) {
-    return async function(
-        dispatch: AppDispatch,
-        _getState: () => RootState,
-    ) {
-        try {
-            const response = await loginService.login(username, passwd);
-
-            if (response?.data) {
-                const { token, userId } = response.data;
-
-                localStorage.setItem(AUTH_TOKEN_NAME, token);
-
-                dispatch(setAccessToken(token));
-                dispatch(setUserId(userId));
-                dispatch(setLoginSuccess(true));
-            } else {
-                dispatch(setLoginSuccess(false));
-            }
-        } catch (error: any) {
-            console.error("Login failed:", error);
-            dispatch(setLoginSuccess(false));
-        }
-    };
-}
-
-// Modern thunk
-export const asyncLogout = createAsyncThunk(
-    "user/logout",
-    async (_, { dispatch }) => {
-        localStorage.removeItem(AUTH_TOKEN_NAME);
-        dispatch(resetUser());
-        return true;
-    }
-);
 
 const initialState: UserState = {
     userId: undefined,
     username: "",
     accessToken: undefined,
     loginSuccess: false,
+    isLoading: false
 };
 
 const userSlice = createSlice({
@@ -76,6 +34,9 @@ const userSlice = createSlice({
         setLoginSuccess: (state, action: PayloadAction<boolean>) => {
             state.loginSuccess = action.payload;
         },
+        setIsLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+        },
         resetUser: (state) => {
             state.userId = undefined;
             state.username = "";
@@ -85,6 +46,6 @@ const userSlice = createSlice({
     },
 });
 
-export const { setUsername, setUserId, setAccessToken, setLoginSuccess, resetUser } = userSlice.actions;
+export const userActions = userSlice.actions;
 
 export default userSlice.reducer;

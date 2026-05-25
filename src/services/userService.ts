@@ -4,7 +4,7 @@ import BaseService from "@/types/base/BaseService";
 import type { TokenResult } from "@/types/interfaces/auth/TokenResult";
 import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 
-export class LoginService extends BaseService {
+export class UserService extends BaseService {
     async login(email: string, password: string): Promise<ApiResultGeneric<TokenResult> | undefined> {
         const data: any = {
             email: email,
@@ -15,19 +15,18 @@ export class LoginService extends BaseService {
             return response;
         } catch (e) {
             console.error(e)
-            return undefined;
+            return Promise.reject(e);
         }
     }
 
-    async logout() {
+    async logout(): Promise<ApiResultGeneric<undefined> | undefined> {
         try {
-            const response = await http.post<ApiResultGeneric<undefined>>(`/${API.LOGIN}`);
-            if (response.success === true) return true
+            const response = await http.post<ApiResultGeneric<undefined>>(`/${API.LOGOUT}`);
+            return response;
         } catch (e) {
-            console.error(e)
-            return false
+            return Promise.reject(e);
         }
     }
 }
 
-export default new LoginService();
+export default new UserService();

@@ -2,7 +2,7 @@ import { AUTH_TOKEN_NAME } from "@/common/constants";
 
 export function RemoveToken() {
   const token = localStorage.getItem(AUTH_TOKEN_NAME);
-  if (token != null && token.length > 0)
+  if (token != null)
     localStorage.removeItem(AUTH_TOKEN_NAME);
 }
 

@@ -6,12 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import AuthFooter from "@/components/auth/AuthFooter";
 import { PATH_CONSTRAINT } from "@/plugins/routers";
+import { useLoginUser } from "@/hooks/useUser";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { login, isLoading } = useLoginUser();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -22,15 +23,11 @@ export default function Login() {
       return;
     }
 
-    setLoading(true);
     try {
-      // TODO: await loginService({ email, password })
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      navigate(PATH_CONSTRAINT.HOME);
+      await login(email, password);
     } catch {
       setError("Email hoặc mật khẩu không đúng");
     } finally {
-      setLoading(false);
     }
   };
 
@@ -99,16 +96,14 @@ export default function Login() {
                 />
               </div>
 
-              {error && (
-                <p className="text-sm text-destructive">{error}</p>
-              )}
+              {error && <p className="text-sm text-destructive">{error}</p>}
 
               <Button
                 className="w-full rounded-full"
                 onClick={handleLogin}
-                disabled={loading}
+                disabled={isLoading}
               >
-                {loading && <Spinner data-icon="inline-start" />}
+                {isLoading && <Spinner data-icon="inline-start" />}
                 Đăng nhập
               </Button>
 
@@ -118,9 +113,7 @@ export default function Login() {
                   <Button
                     variant="link"
                     className="h-auto p-0 text-sm text-primary"
-                    onClick={() =>
-                      navigate(`/${PATH_CONSTRAINT.REGISTER}`)
-                    }
+                    onClick={() => navigate(`/${PATH_CONSTRAINT.REGISTER}`)}
                   >
                     Đăng ký
                   </Button>
