@@ -71,6 +71,8 @@ export const API = {
   REFRESH: "api/auth/refresh-token",
   LOGIN: "api/auth/login",
   LOGOUT: "api/auth/logout",
+  REGISTER: "api/auth/register",
+  ACTIVE: "api/auth/active",
   POST: {
     GET_LIST: "users/posts",
     GET_DETAILS: "users/posts"
@@ -128,7 +130,7 @@ src/types/
 ### Existing views (current routes)
 | Feature | Files |
 |---|---|
-| Auth | `src/views/auth/Login.tsx`, `Register.tsx` |
+| Auth | `src/views/auth/Login.tsx`, `Register.tsx`, `ActivateAccount.tsx` |
 | Home | `src/views/home/Home.tsx` |
 | Friends | `src/views/friends/Friends.tsx` + `partials/` |
 | Profile | `src/views/profile/Profile.tsx` + `partials/` |
@@ -152,7 +154,7 @@ src/types/
 - Use `React.lazy()` for code-splitting all route-level imports.
 - Every layout route wraps children in `<Suspense fallback={<OverlaySpinner show text="Đang tải..." />}>`.
 - Components use default exports; router imports them via dynamic `import()`.
-- Current org: `authRoutes` (Login, Register) → `Default` layout; `mainRoutes` (Home, Friends, Profile, Messenger) → `MainLayout`; group sub-routes → `GroupsLayout`.
+- Current org: `authRoutes` (Login, Register, ActivateAccount) → `Default` layout; `mainRoutes` (Home, Friends, Profile, Messenger) → `MainLayout`; group sub-routes → `GroupsLayout`.
 
 ### Naming + export conventions
 - All component files use PascalCase filenames.
@@ -185,9 +187,11 @@ src/types/
 |---|---|---|
 | `useLoginUser()` | `useUser.tsx` | Login flow: calls `userService.login`, dispatches to `userSlice`, navigates to HOME |
 | `useLogoutUser()` | `useUser.tsx` | Logout flow: calls `userService.logout`, resets store, clears token, redirects |
+| `useUserRegister()` | `useUser.tsx` | Registration flow: calls `userService.register`, handles validation, returns success status |
+| `useUserActivate()` | `useUser.tsx` | Activation flow: calls `userService.activate(code)`, exposes status/error for UI |
 | `useMobile()` | `use-mobile.ts` | Returns `true` when viewport is mobile width |
 
-- Business logic for auth should live in `useLoginUser`/`useLogoutUser`, not in view components.
+- Business logic for auth should live in `useUser.tsx` hooks, not in view components.
 
 ## Utilities — `src/utils/`
 
@@ -198,7 +202,7 @@ src/types/
 
 ## Data
 - `src/services/` — API service modules extending `BaseService`.
-  - `userService.ts` — `login()`, `logout()`
+  - `userService.ts` — `login()`, `logout()`, `register()`, `activate()`
   - `postService.ts` — inherits `BaseService` CRUD methods
 - `src/data/mock/` — Static mock data for UI development.
   - `friends.ts`, `home.ts`, `groupsMock.ts`, `groupPostsMock.ts`, `messengerData.ts`, `photosMock.ts`, `postsMock.ts`, `profileMock.ts`
