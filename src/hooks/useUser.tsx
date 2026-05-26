@@ -13,6 +13,7 @@ import { RedirectLogin, RemoveToken } from "@/utils/redirectHelper";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface LoginUserInterface {
   login: (email: string, password: string) => Promise<void>;
@@ -39,18 +40,22 @@ export function useLoginUser() {
         const { token, userId } = response.data;
 
         localStorage.setItem(AUTH_TOKEN_NAME, token);
+        localStorage.setItem("user_id", String(userId));
 
         dispatch(userActions.setAccessToken(token));
         dispatch(userActions.setUserId(userId));
         dispatch(userActions.setLoginSuccess(true));
+        toast.success("Đăng nhập thành công!");
 
         navigate(PATH_CONSTRAINT.HOME);
       } else {
         dispatch(userActions.setLoginSuccess(false));
+        toast.error(response?.message || "Đăng nhập thất bại");
       }
     } catch (error: any) {
       console.error("Login failed:", error);
       dispatch(userActions.setLoginSuccess(false));
+      toast.error(error?.response?.data?.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!");
     } finally {
       dispatch(userActions.setIsLoading(false));
     }
@@ -74,13 +79,15 @@ export function useLogoutUser() {
         await userService.logout();
       if (res?.success) {
         dispatch(userActions.resetUser());
+        toast.info("Đã đăng xuất");
         RemoveToken();
+        localStorage.removeItem("user_id");
         RedirectLogin();
       } else {
-        console.error("Không thể đăng xuất do có lỗi xảy ra", res);
+        toast.error("Không thể đăng xuất do có lỗi xảy ra");
       }
     } catch (error) {
-      console.log("Không thể đăng xuất do có lỗi xảy ra", error);
+      toast.error("Không thể đăng xuất do có lỗi xảy ra");
     }
   }
 
@@ -125,9 +132,14 @@ export function useUserRegister() {
         data.password,
         data.confirmPassword,
       );
+      if (res?.success) {
+        toast.success("Đăng ký thành công! Vui lòng kiểm tra email để kích hoạt tài khoản.");
+      }
       return res?.success ?? false;
     } catch (e: any) {
-      setError(parseResDataOrMessage(e?.response?.data));
+      const msg = parseResDataOrMessage(e?.response?.data);
+      setError(msg);
+      if (typeof msg === "string") toast.error(msg);
       return false;
     } finally {
       setLoading(false);
