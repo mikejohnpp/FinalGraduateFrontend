@@ -1,49 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
 import AuthFooter from "@/components/auth/AuthFooter";
 import { PATH_CONSTRAINT } from "@/plugins/routers";
+import type { RegisterFormData } from "@/types/interfaces/auth/RegisterFormData";
+import { RegisterForm } from "./partials/RegisterForm";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [registerFormData, setRegisterFormData] = useState<RegisterFormData>({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const navigate = useNavigate();
-
-  const handleRegister = async () => {
-    setError(null);
-
-    if (!email.trim() || !password.trim() || !confirmPassword.trim()) {
-      setError("Vui lòng điền đầy đủ thông tin");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // TODO: await registerService({ email, password, confirmPassword })
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      navigate(`/${PATH_CONSTRAINT.LOGIN}`);
-    } catch {
-      setError("Đã có lỗi xảy ra. Vui lòng thử lại.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
@@ -76,58 +45,10 @@ export default function Register() {
             </div>
 
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="register-email">Email</Label>
-                <Input
-                  id="register-email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoFocus
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="register-password">Mật khẩu</Label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  placeholder="Ít nhất 6 ký tự"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="register-confirm-password">
-                  Xác nhận mật khẩu
-                </Label>
-                <Input
-                  id="register-confirm-password"
-                  type="password"
-                  placeholder="Nhập lại mật khẩu"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleRegister();
-                  }}
-                />
-              </div>
-
-              {error && (
-                <p className="text-sm text-destructive">{error}</p>
-              )}
-
-              <Button
-                className="w-full rounded-full"
-                onClick={handleRegister}
-                disabled={loading}
-              >
-                {loading && <Spinner data-icon="inline-start" />}
-                Tạo tài khoản
-              </Button>
-
+              <RegisterForm
+                models={registerFormData}
+                setModels={(models) => setRegisterFormData({ ...models })}
+              />
               <div className="pt-4">
                 <p className="text-sm text-muted-foreground">
                   Đã có tài khoản?{" "}
