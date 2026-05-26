@@ -1,51 +1,60 @@
-import { API } from "@/common/constants";
-import postService from "@/services/postService";
 import type { IPost } from "@/types/interfaces/post/IPost";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { IPostDetails } from "@/types/interfaces/post/IPostDetails";
+import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface PostState {
-    list: Array<IPost>
+    suggestedFeed: {
+        items: IPost[];
+        nextCursor: string | null;
+        hasMore: boolean;
+    };
+    currentPost: IPostDetails | null;
 }
 
 const initialState: PostState = {
-    list: []
+    suggestedFeed: {
+        items: [],
+        nextCursor: null,
+        hasMore: true,
+    },
+    currentPost: null,
 };
 
 const postSlice = createSlice({
     name: "post",
     initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(getPostList.fulfilled, (state, action) => {
-            state.list = action.payload;
-            console.log(action.payload)
-        })
-    }
+    reducers: {
+        setSuggestedFeed: (state, action: PayloadAction<CursorPageResponse<IPost>>) => {
+            state.suggestedFeed.items = action.payload.data;
+            state.suggestedFeed.nextCursor = action.payload.nextCursor;
+            state.suggestedFeed.hasMore = action.payload.hasMore;
+        },
+        appendSuggestedPosts: (state, action: PayloadAction<CursorPageResponse<IPost>>) => {
+            state.suggestedFeed.items.push(...action.payload.data);
+            state.suggestedFeed.nextCursor = action.payload.nextCursor;
+            state.suggestedFeed.hasMore = action.payload.hasMore;
+        },
+        setCurrentPost: (state, action: PayloadAction<IPostDetails | null>) => {
+            state.currentPost = action.payload;
+        },
+        updateLikeCount: (state, action: PayloadAction<{ postId: number; delta: number }>) => {
+            const post = state.suggestedFeed.items.find(p => p.id === action.payload.postId);
+            if (post) {
+                post.likeCount += action.payload.delta;
+            }
+        },
+        removePost: (state, action: PayloadAction<number>) => {
+            state.suggestedFeed.items = state.suggestedFeed.items.filter(
+                p => p.id !== action.payload
+            );
+        },
+        prependPost: (state, action: PayloadAction<IPost>) => {
+            state.suggestedFeed.items.unshift(action.payload);
+        },
+    },
 });
 
-
-// test test
-export const getPostList = createAsyncThunk(
-    "post/list",
-    async (_, { dispatch }) => {
-        const response = await postService.getList<IPost>(API.POST.GET_LIST)
-        return response;
-    }
-);
-
-
-export const getPostDetails = createAsyncThunk("posts/details",
-    async (id: number) => {
-        try {
-            const response = await postService.getSingle<IPostDetails>(API.POST.GET_DETAILS, id)
-            console.log(response);
-        } catch (error: any) {
-            console.error("Login failed:", error);
-        }
-    }
-)
-
-export const { } = postSlice.actions;
-
+export const postActions = postSlice.actions;
 export default postSlice.reducer;

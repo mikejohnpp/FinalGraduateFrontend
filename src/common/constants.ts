@@ -6,8 +6,9 @@ export const API = {
   ACTIVE: "api/auth/active",
 
   POST: {
-    GET_LIST: "users/posts",
-    GET_DETAILS: "users/posts"
+    BASE: "users/posts",
+    SUGGESTED: "users/posts/suggested",
+    SEARCH: "users/posts/search",
   }
 };
 

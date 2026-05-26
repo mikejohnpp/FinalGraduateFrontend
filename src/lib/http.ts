@@ -152,6 +152,11 @@ export class Http {
     return response.data;
   }
 
+  public async deleteWithBody<T>(url: string, data: any): Promise<T> {
+    const response = await this.instance.delete<T>(url, { data });
+    return response.data;
+  }
+
   public async postWithFile<T>(url: string, data: any): Promise<T> {
     const response = await this.instance.post<T>(url, data, {
       headers: { "Content-Type": "multipart/form-data" },

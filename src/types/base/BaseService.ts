@@ -16,22 +16,22 @@ class BaseService {
     return response.data ?? null;
   }
 
-  async create<T>(url: string, data: T): Promise<boolean> {
+  async create<T, TData = any>(url: string, data: TData): Promise<boolean> {
     const response = await http.post<ApiResultGeneric<T>>(url, data);
     return response.data != null;
   }
 
-  async createAndGetData<T>(url: string, data: T): Promise<T | null> {
+  async createAndGetData<T, TData = any>(url: string, data: TData): Promise<T | null> {
     const response = await http.post<ApiResultGeneric<T>>(url, data);
     return response.data ?? null;
   }
 
-  async update<T>(url: string, data: T): Promise<boolean> {
+  async update<T, TData = any>(url: string, data: TData): Promise<boolean> {
     const response = await http.put<ApiResultGeneric<T>>(url, data);
     return response.data != null;
   }
 
-  async updateAndGetData<T>(url: string, data: T): Promise<T | null> {
+  async updateAndGetData<T, TData = any>(url: string, data: TData): Promise<T | null> {
     const response = await http.put<ApiResultGeneric<T>>(url, data);
     return response.data ?? null;
   }
@@ -45,6 +45,12 @@ class BaseService {
     );
     return response.code === 200;
   }
+
+  async deleteWithBody<T>(url: string, data: T): Promise<boolean> {
+    const response = await http.deleteWithBody<ApiResult>(url, data);
+    return response.success ?? (response.code === 200 || response.code === 204);
+  }
+
 }
 
 export default BaseService;

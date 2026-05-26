@@ -24,12 +24,6 @@ interface LogoutUserInterface {
   isLoading: boolean;
 }
 
-interface RegisterUseInterface {
-  register: (data: RegisterFormData) => Promise<boolean>;
-  loading: boolean;
-  error: ParsedErrorRes;
-}
-
 export function useLoginUser() {
   const dispatch: AppDispatch = useDispatch();
   const userState = useSelector((r: RootState) => r.user);
@@ -97,9 +91,6 @@ export function useLogoutUser() {
 }
 
 export function useUserRegister() {
-  const dispatch: AppDispatch = useDispatch();
-  const userState = useSelector((r: RootState) => r.user);
-  const navigate = useNavigate();
   const [error, setError] = useState<ParsedErrorRes>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -151,7 +142,9 @@ export function useUserRegister() {
 }
 
 export function useUserActivate(code: string | undefined) {
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error">(
+    "loading",
+  );
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
@@ -186,4 +179,3 @@ export function useUserActivate(code: string | undefined) {
 
   return { status, errorMessage };
 }
-
