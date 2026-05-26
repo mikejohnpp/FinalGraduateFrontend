@@ -6,12 +6,9 @@ import {
 } from "@/utils/redirectHelper";
 import type { LoggedIn } from "@/types/interfaces/auth/LoggedIn";
 import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
-import axios, {
-  type AxiosInstance,
-  type AxiosRequestConfig,
-  type AxiosResponse,
-  type InternalAxiosRequestConfig,
-} from "axios";
+import axios from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import { toast } from "sonner";
 
 type CallbackQueue = Array<(token: string | null) => void>;
 
@@ -63,6 +60,7 @@ export class Http {
   private async handleRequestError(error: any) {
     // Network ERROR — no response at all
     if (error.code === "ERR_NETWORK" || !error.response) {
+      toast.error("Lỗi mạng. Vui lòng thử lại!");
       return Promise.reject(error);
     }
 
@@ -119,6 +117,7 @@ export class Http {
     if (status === 403) {
       const currentPath = window.location.pathname;
       localStorage.setItem("PATH", currentPath);
+      toast.error("Bạn không có quyền truy cập!");
       RemoveToken();
       RedirectLoginAndResetParam();
       return;
@@ -149,6 +148,11 @@ export class Http {
 
   public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.instance.delete<T>(url, config);
+    return response.data;
+  }
+
+  public async deleteWithBody<T>(url: string, data: any): Promise<T> {
+    const response = await this.instance.delete<T>(url, { data });
     return response.data;
   }
 

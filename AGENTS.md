@@ -41,6 +41,7 @@
 | `post` | `post<T>(url, data?, config?)` | JSON body |
 | `put` | `put<T>(url, data, config?)` | JSON body |
 | `delete` | `delete<T>(url, config?)` | |
+| `deleteWithBody` | `deleteWithBody<T>(url, data)` | DELETE with JSON body (e.g. unlike) |
 | `postWithFile` | `postWithFile<T>(url, data)` | Sets `multipart/form-data` |
 | `ExportFile` | `ExportFile<T>(url)` | GET, responseType blob |
 | `ExportFileWithData` | `ExportFileWithData<T>(url, data[])` | POST, responseType blob |
@@ -74,8 +75,9 @@ export const API = {
   REGISTER: "api/auth/register",
   ACTIVE: "api/auth/active",
   POST: {
-    GET_LIST: "users/posts",
-    GET_DETAILS: "users/posts"
+    BASE: "users/posts",          // CRUD, like/unlike
+    SUGGESTED: "users/posts/suggested", // Infinite scroll feed
+    SEARCH: "users/posts/search",       // Standard pagination
   }
 };
 ```
@@ -84,6 +86,8 @@ export const API = {
 - Each feature service extends `BaseService` and uses `http` for non-standard calls.
 - Singleton export: `export default new XxxService()`.
 - Example: `src/services/userService.ts` (UserService), `src/services/postService.ts` (PostService).
+- **Keep services thin.** If a service only needs standard CRUD, just extend `BaseService` with an empty class body (see `postService.ts`). Only add custom methods when the endpoint doesn't fit the `BaseService` pattern (e.g. `login()`, `activate()` in `userService.ts`).
+- API calls from hooks should use the inherited `BaseService` methods (`getList`, `getSingle`, `create`, …) directly — don't wrap them again in the service.
 
 ## Types
 
@@ -177,9 +181,16 @@ src/types/
 ### userSlice actions — `userActions`
 `setUsername`, `setUserId`, `setAccessToken`, `setLoginSuccess`, `setIsLoading`, `resetUser`
 
-### postSlice async thunks
-- `getPostList` — fetches `API.POST.GET_LIST` via `postService.getList<IPost>`.
-- `getPostDetails(id)` — fetches `API.POST.GET_DETAILS/{id}` via `postService.getSingle<IPostDetails>`.
+### postSlice — `src/stores/postSlice.ts`
+State: `{ suggestedFeed: { items, nextCursor, hasMore }, currentPost }`
+
+Actions (`postActions`):
+- `setSuggestedFeed(CursorPageResponse<IPost>)` — first load
+- `appendSuggestedPosts(CursorPageResponse<IPost>)` — load more (infinite scroll)
+- `setCurrentPost(IPostDetails | null)` — single post view
+- `updateLikeCount({ postId, delta })` — optimistic like/unlike
+- `removePost(postId)` — soft delete from feed
+- `prependPost(IPost)` — add newly created post to top of feed
 
 ## Hooks — `src/hooks/`
 
@@ -189,9 +200,28 @@ src/types/
 | `useLogoutUser()` | `useUser.tsx` | Logout flow: calls `userService.logout`, resets store, clears token, redirects |
 | `useUserRegister()` | `useUser.tsx` | Registration flow: calls `userService.register`, handles validation, returns success status |
 | `useUserActivate()` | `useUser.tsx` | Activation flow: calls `userService.activate(code)`, exposes status/error for UI |
+| `useSuggestedFeed(userId)` | `usePost.tsx` | Infinite scroll feed: loads suggested posts, exposes `loadMore`, `hasMore` |
+| `useCreatePost()` | `usePost.tsx` | Tạo bài viết, prepend vào feed, trả về `create`, `loading`, `error` |
+| `usePostDetail(id)` | `usePost.tsx` | Lấy chi tiết 1 bài viết vào `currentPost` store |
+| `useUpdatePost()` | `usePost.tsx` | Cập nhật bài viết, cập nhật `currentPost` store |
+| `useDeletePost()` | `usePost.tsx` | Xoá bài viết, xoá khỏi feed trong store |
+| `useLikePost()` | `usePost.tsx` | Like/unlike optimistic, cập nhật `likeCount` trong store |
 | `useMobile()` | `use-mobile.ts` | Returns `true` when viewport is mobile width |
 
-- Business logic for auth should live in `useUser.tsx` hooks, not in view components.
+### Service → Hook → UI architecture
+
+This project follows a strict three-layer convention:
+
+| Layer | Responsibility | Accesses store? | Example |
+|---|---|---|---|
+| **Service** (`src/services/`) | Thin API wrapper. Extends `BaseService` and exposes inherited CRUD + any non-standard endpoints. No business logic. | ❌ Never | `postService.ts` |
+| **Hook** (`src/hooks/`) | All business logic: calls service methods, dispatches to Redux store, manages local state, handles errors, and returns the states the UI needs. | ✅ Yes | `useUser.tsx` |
+| **View / Component** (`src/views/`, `src/components/`) | Pure presentation. Consumes only the values returned by hooks. Should **never** import `useSelector`/`useDispatch` or services directly. | ❌ Never (use hook) | `RegisterForm.tsx` |
+
+**Rules:**
+1. **Services are thin** — if standard CRUD is enough, an empty `extends BaseService` class is all you need (see `postService.ts`). Hooks call `BaseService` methods (`getList`, `getSingle`, `create`, …) via the service singleton.
+2. **Hooks own the logic** — receiving API responses, dispatching actions, computing derived state, error handling, and navigation all happen here. Return an object of states/callbacks for the UI.
+3. **Views stay dumb** — never use `useSelector`, `useDispatch`, or call services directly in views/components. Everything comes from the hook's return value.
 
 ## Utilities — `src/utils/`
 
@@ -204,6 +234,11 @@ src/types/
 - `src/services/` — API service modules extending `BaseService`.
   - `userService.ts` — `login()`, `logout()`, `register()`, `activate()`
   - `postService.ts` — inherits `BaseService` CRUD methods
+- `src/types/interfaces/post/` — Post type definitions.
+  - `IPost.ts` — `PostSummaryDTO` (list view, has `commentCount`, `likeCount`, `content`)
+  - `IPostDetails.ts` — `PostDetailDTO` (detail/create/update view)
+  - `IPostCreate.ts` — `IPostCreate` (request body tạo), `IPostUpdate` (request body cập nhật)
+  - `IPostPage.ts` — `CursorPageResponse<T>` (infinite scroll), `PageResponse<T>` (standard pagination)
 - `src/data/mock/` — Static mock data for UI development.
   - `friends.ts`, `home.ts`, `groupsMock.ts`, `groupPostsMock.ts`, `messengerData.ts`, `photosMock.ts`, `postsMock.ts`, `profileMock.ts`
 - Mock data approach: define types first in `src/types/`, then export typed arrays/objects in `src/data/mock/`.

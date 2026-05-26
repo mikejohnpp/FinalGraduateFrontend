@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "sonner";
 
 interface UserState {
     userId?: number;
@@ -10,11 +11,14 @@ interface UserState {
 }
 
 
+const storedUserId = localStorage.getItem("user_id");
+const initialUserId = storedUserId ? parseInt(storedUserId, 10) : undefined;
+
 const initialState: UserState = {
-    userId: undefined,
+    userId: initialUserId,
     username: "",
     accessToken: undefined,
-    loginSuccess: false,
+    loginSuccess: !!storedUserId,
     isLoading: false
 };
 
@@ -42,6 +46,7 @@ const userSlice = createSlice({
             state.username = "";
             state.accessToken = undefined;
             state.loginSuccess = false;
+            toast.info("Đã đăng xuất");
         },
     },
 });

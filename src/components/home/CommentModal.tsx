@@ -17,7 +17,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { currentUser } from "@/data/mock/home";
-import type { Post, Comment } from "@/types/HomeFeed";
+import type { Comment } from "@/types/HomeFeed";
+import type { IPost } from "@/types/interfaces/post/IPost";
 
 function PostActionBtn({
   icon,
@@ -123,7 +124,7 @@ export default function CommentModal({
   open,
   onClose,
 }: {
-  post: Post;
+  post: IPost;
   open: boolean;
   onClose: () => void;
 }) {
@@ -141,7 +142,7 @@ export default function CommentModal({
         {/* ── Header ───────────────────────────────── */}
         <div className="relative flex items-center justify-center border-b border-[#3a3b3c] py-3.5">
           <span className="text-[17px] font-bold text-[#e4e6eb]">
-            Bài viết của {post.author.name}
+            Bài viết của {post.author?.name}
           </span>
           <button
             onClick={onClose}
@@ -156,15 +157,15 @@ export default function CommentModal({
           {/* Post author */}
           <div className="flex items-start gap-2.5 px-4 pt-3.5">
             <Avatar className="size-10 shrink-0 rounded-lg">
-              <AvatarImage src={post.author.avatarUrl} />
+              <AvatarImage src={post.author?.avatar || ""} />
               <AvatarFallback className="rounded-lg text-sm font-bold">
-                {post.author.name.charAt(0)}
+                {post.author?.name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="text-[14px] font-semibold text-[#e4e6eb]">
-                  {post.author.name}
+                  {post.author?.name}
                 </span>
                 {post.author.badge && (
                   <Badge
@@ -176,13 +177,7 @@ export default function CommentModal({
                 )}
               </div>
               <div className="mt-0.5 flex items-center gap-1 text-[13px] text-[#b0b3b8]">
-                {post.author.subName && (
-                  <>
-                    <span>{post.author.subName}</span>
-                    <span>·</span>
-                  </>
-                )}
-                <span>{post.time}</span>
+                <span>{new Date(post.createdAt).toLocaleString()}</span>
               </div>
             </div>
             <button className="rounded-full p-1.5 text-[#b0b3b8] transition-colors hover:bg-[#3a3b3c] hover:text-[#e4e6eb]">
@@ -198,8 +193,8 @@ export default function CommentModal({
           )}
 
           {/* Post image */}
-          {post.image && (
-            <img src={post.image} alt="" className="w-full object-cover" />
+          {(post as any).image && (
+            <img src={(post as any).image} alt="" className="w-full object-cover" />
           )}
 
           {/* Reaction bar */}
@@ -213,10 +208,10 @@ export default function CommentModal({
                   👍
                 </span>
               </div>
-              <span>{post.reactionCount ?? 184}</span>
+              <span>{post.likeCount}</span>
             </div>
             <span className="cursor-pointer hover:underline">
-              {post.commentCount ?? 15} bình luận
+              {post.commentCount} bình luận
             </span>
           </div>
 
@@ -249,7 +244,7 @@ export default function CommentModal({
             </button>
 
             {/* Comment items */}
-            {post.commentList.map((comment) => (
+            {((post as any).commentList || []).map((comment: Comment) => (
               <FacebookCommentItem key={comment.id} comment={comment} />
             ))}
           </div>

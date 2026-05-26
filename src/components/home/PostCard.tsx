@@ -10,14 +10,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import type { Post } from "@/types/HomeFeed"
+import type { IPost } from "@/types/interfaces/post/IPost"
 import CommentModal from "./CommentModal"
 import EmojiPicker from "./EmojiPicker"
 import ShareModal from "./ShareModal"
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post }: { post: IPost }) {
   const [liked, setLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(post.likes)
+  const [likesCount, setLikesCount] = useState(post.likeCount)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [commentModalOpen, setCommentModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
@@ -37,24 +37,17 @@ export default function PostCard({ post }: { post: Post }) {
       <Card>
         <CardHeader className="flex flex-row items-center gap-3">
           <Avatar size="lg">
-            <AvatarImage src={post.author.avatarUrl} />
-            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={post.author?.avatar || ""} />
+            <AvatarFallback>{post.author?.name?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold">{post.author.name}</span>
-            <span className="text-xs text-muted-foreground">{post.time}</span>
+            <span className="text-sm font-semibold">{post.author?.name}</span>
+            <span className="text-xs text-muted-foreground">{new Date(post.createdAt).toLocaleString()}</span>
           </div>
         </CardHeader>
 
         <CardContent className="flex flex-col gap-3">
           <p className="text-sm leading-relaxed">{post.content}</p>
-          {post.image && (
-            <img
-              src={post.image}
-              alt="Post image"
-              className="w-full rounded-lg object-cover"
-            />
-          )}
         </CardContent>
 
         <CardFooter className="flex flex-col gap-2">
@@ -72,7 +65,7 @@ export default function PostCard({ post }: { post: Post }) {
               className="hover:underline"
               onClick={() => setCommentModalOpen(true)}
             >
-              {post.comments} bình luận
+              {post.commentCount} bình luận
             </button>
           </div>
 
