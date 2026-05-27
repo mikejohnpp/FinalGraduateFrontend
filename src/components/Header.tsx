@@ -34,6 +34,8 @@ import MessagesInnerPopover from "./MessagesInnerPopover";
 import AutoComplete from "./AutoComplete";
 import userService from "@/services/userService";
 import { useLogoutUser } from "@/hooks/useUser";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/stores/store";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
@@ -50,6 +52,11 @@ export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout, isLoading } = useLogoutUser();
+  const { userId, username, profile } = useSelector((r: RootState) => r.user);
+
+  const userAvatar = profile?.avatar || undefined;
+  const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
+  const initial = displayName.charAt(0).toUpperCase();
 
   const handleLogout = async () => {
     await logout();
@@ -188,8 +195,8 @@ export default function Header() {
                   aria-label="Tài khoản"
                 >
                   <Avatar className="size-10">
-                    <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
-                    <AvatarFallback>HP</AvatarFallback>
+                    <AvatarImage src={userAvatar} />
+                    <AvatarFallback>{initial}</AvatarFallback>
                   </Avatar>
                 </Button>
               }
@@ -208,20 +215,20 @@ export default function Header() {
                   >
                     <ItemMedia>
                       <Avatar className="size-10">
-                        <AvatarImage src="https://images.unsplash.com/photo-1506744626753-1fa44f4a311b?w=100&h=100&fit=crop" />
-                        <AvatarFallback>HP</AvatarFallback>
+                        <AvatarImage src={userAvatar} />
+                        <AvatarFallback>{initial}</AvatarFallback>
                       </Avatar>
                     </ItemMedia>
                     <ItemContent>
                       <ItemTitle className="text-lg font-bold">
-                        Hoàng Phúc Tạ
+                        {displayName}
                       </ItemTitle>
                     </ItemContent>
                   </Item>
                   <Button
                     variant="secondary"
                     className="w-full h-9 font-semibold text-[15px]"
-                    onClick={() => navigate("/profile/user_1")}
+                    onClick={() => navigate(`/profile/${userId}`)}
                   >
                     Xem tất cả trang cá nhân
                   </Button>

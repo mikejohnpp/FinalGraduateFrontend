@@ -10,7 +10,7 @@ import {
   type ParsedErrorRes,
 } from "@/utils/errorHelper";
 import { RedirectLogin, RemoveToken } from "@/utils/redirectHelper";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -190,4 +190,34 @@ export function useUserActivate(code: string | undefined) {
   }, [code]);
 
   return { status, errorMessage };
+}
+
+export function useUserProfile() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { userId, profile } = useSelector((r: RootState) => r.user);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProfile = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await userService.getProfile(userId);
+      if (response?.data) {
+        dispatch(userActions.setProfile(response.data));
+      }
+    } catch (e: any) {
+      setError(e?.response?.data?.message || "Không thể tải thông tin người dùng");
+    } finally {
+      setLoading(false);
+    }
+  }, [userId, dispatch]);
+
+  useEffect(() => {
+    if (!userId || profile) return;
+    fetchProfile();
+  }, [userId, profile, fetchProfile]);
+
+  return { profile, loading, error, refetch: fetchProfile };
 }

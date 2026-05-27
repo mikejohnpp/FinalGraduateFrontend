@@ -4,6 +4,7 @@ import BaseService from "@/types/base/BaseService";
 import type { RegisterFormData } from "@/types/interfaces/auth/RegisterFormData";
 import type { TokenResult } from "@/types/interfaces/auth/TokenResult";
 import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
+import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
 
 export class UserService extends BaseService {
     async login(email: string, password: string): Promise<ApiResultGeneric<TokenResult> | undefined> {
@@ -51,6 +52,15 @@ export class UserService extends BaseService {
     async activate(code: string): Promise<ApiResultGeneric<undefined> | undefined> {
         try {
             const res = await http.get<ApiResultGeneric<undefined>>(`${API.ACTIVE}`, { code: code });
+            return res;
+        } catch (e) {
+            return Promise.reject(e);
+        }
+    }
+
+    async getProfile(userId: number): Promise<ApiResultGeneric<UserProfileDTO> | undefined> {
+        try {
+            const res = await http.get<ApiResultGeneric<UserProfileDTO>>(`/users/${userId}/profile`);
             return res;
         } catch (e) {
             return Promise.reject(e);
