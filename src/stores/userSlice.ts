@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "sonner";
+import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
 
 interface UserState {
     userId?: number;
@@ -8,6 +9,7 @@ interface UserState {
     accessToken?: string;
     loginSuccess: boolean;
     isLoading: boolean;
+    profile: UserProfileDTO | null;
 }
 
 
@@ -19,7 +21,8 @@ const initialState: UserState = {
     username: "",
     accessToken: undefined,
     loginSuccess: !!storedUserId,
-    isLoading: false
+    isLoading: false,
+    profile: null,
 };
 
 const userSlice = createSlice({
@@ -41,11 +44,18 @@ const userSlice = createSlice({
         setIsLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
+        setProfile: (state, action: PayloadAction<UserProfileDTO | null>) => {
+            state.profile = action.payload;
+            if (action.payload) {
+                state.username = action.payload.userName;
+            }
+        },
         resetUser: (state) => {
             state.userId = undefined;
             state.username = "";
             state.accessToken = undefined;
             state.loginSuccess = false;
+            state.profile = null;
             toast.info("Đã đăng xuất");
         },
     },
