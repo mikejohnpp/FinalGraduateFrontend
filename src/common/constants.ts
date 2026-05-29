@@ -16,7 +16,13 @@ export const API = {
     JOINED: "users/groups/joined",
     SUGGESTED: "users/groups/suggested",
     FEED: "users/groups/posts/feed",
-  }
+  },
+
+  COMMENT: {
+    PATH: "comments",
+    REPLIES_PATH: "replies",
+    LIKE_PATH: "like",
+  },
 };
 
 export const AUTH_TOKEN_NAME = "access_token";

@@ -1,8 +1,8 @@
-import type { Post } from '@/types/Post'
-import PostCard from '@/components/profile/PostCard'
+import type { IPost } from '@/types/interfaces/post/IPost'
+import PostCard from '@/components/PostCard'
 
 interface ProfilePostFeedProps {
-  posts: Post[]
+  posts: IPost[]
 }
 
 export default function ProfilePostFeed({ posts }: ProfilePostFeedProps) {

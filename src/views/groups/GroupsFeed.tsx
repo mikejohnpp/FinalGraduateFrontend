@@ -1,5 +1,5 @@
 import { useGroupFeed } from "@/hooks/useGroup";
-import GroupPostCard from "@/components/groups/GroupPostCard";
+import PostCard from "@/components/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
@@ -11,13 +11,9 @@ export default function GroupsFeed() {
       <h3 className="text-[17px] font-bold text-foreground">Hoạt động mới đây</h3>
       
       {feed.items.map((post) => (
-        <GroupPostCard 
+        <PostCard 
           key={post.id} 
-          post={{
-            ...post, 
-            groupName: post.group?.name, 
-            groupId: post.group?.id ? post.group.id.toString() : undefined
-          } as any} 
+          post={post} 
         />
       ))}
       

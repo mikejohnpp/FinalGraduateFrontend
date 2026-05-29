@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { mockProfile } from '@/data/mock/profileMock'
 import { mockPosts } from '@/data/mock/postsMock'
+import type { IPost } from '@/types/interfaces/post/IPost'
 
 import ProfileCover from './partials/ProfileCover'
 import ProfileTabs from './partials/ProfileTabs'
@@ -20,7 +21,19 @@ export default function Profile() {
   if (userId) {
     console.log('Fetching profile for:', userId)
   }
-  const posts = mockPosts
+  const posts = mockPosts.map((p, index) => ({
+    id: index + 1,
+    author: {
+      id: p.authorId,
+      name: p.authorName,
+      avatar: p.authorAvatar,
+    },
+    isGroupPosted: false,
+    content: p.content,
+    createdAt: new Date().toISOString(), // Mock proper date
+    likeCount: p.likeCount,
+    commentCount: p.commentCount,
+  })) as unknown as IPost[]
 
   const handleProfileUpdate = (updatedData: Partial<typeof mockProfile>) => {
     setProfile(prev => ({ ...prev, ...updatedData }))

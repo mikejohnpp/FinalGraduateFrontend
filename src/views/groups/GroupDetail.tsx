@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGroupDetail, useGroupMembers, useSingleGroupPosts, useGroupActions } from "@/hooks/useGroup";
 import GroupDetailHeader from "@/components/groups/GroupDetailHeader";
-import GroupPostCard from "@/components/groups/GroupPostCard";
+import PostCard from "@/components/PostCard";
 import CreatePostCard from "@/components/home/CreatePostCard";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -130,7 +130,12 @@ export default function GroupDetail() {
 
           {posts.map(post => (
             <div key={post.id} className="shadow-sm rounded-xl overflow-hidden">
-              <GroupPostCard post={{...post, groupName: group.name, groupId: group.id.toString()} as any} />
+              <PostCard 
+                post={{
+                  ...post, 
+                  group: post.group || { id: group.id, name: group.name, avatar: group.avatar }
+                }} 
+              />
             </div>
           ))}
 
