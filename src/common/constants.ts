@@ -9,6 +9,13 @@ export const API = {
     BASE: "users/posts",
     SUGGESTED: "users/posts/suggested",
     SEARCH: "users/posts/search",
+  },
+
+  GROUP: {
+    BASE: "users/groups",
+    JOINED: "users/groups/joined",
+    SUGGESTED: "users/groups/suggested",
+    FEED: "users/groups/posts/feed",
   }
 };
 

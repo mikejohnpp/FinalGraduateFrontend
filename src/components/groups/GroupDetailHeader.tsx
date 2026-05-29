@@ -1,4 +1,4 @@
-import type { Group } from "@/types/Group";
+import type { IGroup } from "@/types/interfaces/group/IGroup";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -7,10 +7,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Globe, Lock, Search, MoreHorizontal, UserCheck, Share2 } from "lucide-react";
 
 interface GroupDetailHeaderProps {
-  group: Group;
+  group: IGroup;
+  onJoin: () => void;
+  onLeave: () => void;
 }
 
-export default function GroupDetailHeader({ group }: GroupDetailHeaderProps) {
+export default function GroupDetailHeader({ group, onJoin, onLeave }: GroupDetailHeaderProps) {
   return (
     <div className="bg-background shadow-sm">
       {/* Cover */}
@@ -44,11 +46,11 @@ export default function GroupDetailHeader({ group }: GroupDetailHeaderProps) {
 
           <div className="mb-2 flex shrink-0 gap-2">
             {group.isJoined ? (
-              <Button variant="secondary" className="gap-2" size="sm">
+              <Button variant="secondary" className="gap-2" size="sm" onClick={onLeave}>
                 <UserCheck data-icon="inline-start" /> Đã tham gia
               </Button>
             ) : (
-              <Button variant="default" className="gap-2" size="sm">
+              <Button variant="default" className="gap-2" size="sm" onClick={onJoin}>
                 Tham gia nhóm
               </Button>
             )}
@@ -66,7 +68,7 @@ export default function GroupDetailHeader({ group }: GroupDetailHeaderProps) {
               <DropdownMenuContent align="end">
                 <DropdownMenuItem>Tắt thông báo</DropdownMenuItem>
                 <DropdownMenuItem>Báo cáo nhóm</DropdownMenuItem>
-                {group.isJoined && <DropdownMenuItem className="text-destructive">Rời khỏi nhóm</DropdownMenuItem>}
+                {group.isJoined && <DropdownMenuItem className="text-destructive" onClick={onLeave}>Rời khỏi nhóm</DropdownMenuItem>}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

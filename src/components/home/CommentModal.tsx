@@ -167,12 +167,12 @@ export default function CommentModal({
                 <span className="text-[14px] font-semibold text-[#e4e6eb]">
                   {post.author?.name}
                 </span>
-                {post.author.badge && (
+                {post.authorRole && (
                   <Badge
                     variant="outline"
                     className="border-[#2d88ff44] bg-[#2d88ff15] px-1.5 py-0 text-[11px] font-semibold text-[#2d88ff]"
                   >
-                    ⭐ {post.author.badge}
+                    ⭐ {post.authorRole}
                   </Badge>
                 )}
               </div>

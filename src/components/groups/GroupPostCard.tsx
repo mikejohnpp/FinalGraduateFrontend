@@ -13,24 +13,29 @@ interface GroupPostCardProps {
 }
 
 export default function GroupPostCard({ post }: GroupPostCardProps) {
+  const groupName = (post as any).groupName || (post as any).group?.name || "Nhóm";
+  const groupId = (post as any).groupId || (post as any).group?.id || "";
+  const authorName = (post as any).authorName || (post as any).author?.name || "Người dùng";
+  const authorId = (post as any).authorId || (post as any).author?.id || "";
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between px-4 pb-2 pt-4">
         <div className="flex gap-2">
           <Avatar className="relative size-10 overflow-visible border">
-            <AvatarImage src={`https://picsum.photos/seed/${post.groupId}/100/100`} />
-            <AvatarFallback>{post.groupName.charAt(0)}</AvatarFallback>
+            <AvatarImage src={`https://picsum.photos/seed/${groupId}/100/100`} />
+            <AvatarFallback>{groupName.charAt(0)}</AvatarFallback>
             <Avatar className="absolute -bottom-1 -right-1 size-5 border-2 border-background">
-              <AvatarImage src={`https://i.pravatar.cc/100?u=${post.authorId}`} />
-              <AvatarFallback>{post.authorName.charAt(0)}</AvatarFallback>
+              <AvatarImage src={`https://i.pravatar.cc/100?u=${authorId}`} />
+              <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
             </Avatar>
           </Avatar>
           <div>
             <div className="flex flex-wrap items-center gap-1">
-              <p className="font-semibold">{post.groupName}</p>
+              <p className="font-semibold">{groupName}</p>
             </div>
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{post.authorName}</span>
+              <span className="font-medium text-foreground">{authorName}</span>
               {post.authorRole && (
                 <>
                   <span>·</span>

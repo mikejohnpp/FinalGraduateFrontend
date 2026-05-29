@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from './counterSlice.ts'
 import userReducer from './userSlice.ts'
 import postReducer from './postSlice.ts'
+import groupReducer from './groupSlice.ts'
 import { THUNK_EXTRA } from './thunkExtra.ts';
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
         counter: counterReducer,
         user: userReducer,
         post: postReducer,
+        group: groupReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

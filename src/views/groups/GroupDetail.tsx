@@ -1,18 +1,32 @@
 import { useParams } from "react-router-dom";
-import { joinedGroups, suggestedGroups } from "@/data/mock/groupsMock";
-import { groupPosts } from "@/data/mock/groupPostsMock";
+import { useGroupDetail, useGroupMembers, useSingleGroupPosts, useGroupActions } from "@/hooks/useGroup";
 import GroupDetailHeader from "@/components/groups/GroupDetailHeader";
 import GroupPostCard from "@/components/groups/GroupPostCard";
+import CreatePostCard from "@/components/home/CreatePostCard";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Globe, Lock, History, Eye, Users } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function GroupDetail() {
-  const { groupId } = useParams();
+  const { groupId: groupIdStr } = useParams();
+  const groupId = Number(groupIdStr);
 
-  // Find the group in mock data
-  const group = joinedGroups.find(g => g.id === groupId) || suggestedGroups.find(g => g.id === groupId);
+  const { group, loading: groupLoading, refetch: refetchGroup } = useGroupDetail(groupId);
+  const { members } = useGroupMembers(groupId);
+  const { posts, loading: postsLoading, hasMore, loadMore, prependPost } = useSingleGroupPosts(groupId);
+  const { joinGroup, leaveGroup } = useGroupActions();
+
+  if (groupLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8 space-y-4">
+        <Skeleton className="h-[300px] w-full rounded-b-lg" />
+        <Skeleton className="h-[200px] w-full max-w-[1096px] rounded-xl" />
+      </div>
+    );
+  }
 
   if (!group) {
     return (
@@ -23,14 +37,19 @@ export default function GroupDetail() {
     );
   }
 
-  // Filter posts for this group (mock)
-  const posts = groupPosts.filter(p => p.groupId === groupId);
-  // If no posts specifically for this group, show some generic posts
-  const displayPosts = posts.length > 0 ? posts : groupPosts.slice(0, 3);
+  const handleJoin = async () => {
+    const ok = await joinGroup(group);
+    if (ok) refetchGroup();
+  };
+
+  const handleLeave = async () => {
+    const ok = await leaveGroup(group.id);
+    if (ok) refetchGroup();
+  };
 
   return (
     <div className="min-h-full bg-[#f0f2f5] dark:bg-black/20 pb-8">
-      <GroupDetailHeader group={group} />
+      <GroupDetailHeader group={group} onJoin={handleJoin} onLeave={handleLeave} />
 
       <div className="max-w-[1096px] mx-auto px-4 md:px-8 mt-4 grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-4 items-start">
         {/* Left Column - About */}
@@ -62,7 +81,7 @@ export default function GroupDetail() {
                 <History className="w-6 h-6 mt-0.5 opacity-70" />
                 <div>
                   <p className="font-semibold text-[15px]">Lịch sử</p>
-                  <p className="text-[13px] text-muted-foreground mt-0.5">Nhóm được tạo vào ngày 15 tháng 1, 2020.</p>
+                  <p className="text-[13px] text-muted-foreground mt-0.5">Nhóm được tạo gần đây.</p>
                 </div>
               </div>
             </div>
@@ -78,45 +97,60 @@ export default function GroupDetail() {
               <span>{group.memberCount.toLocaleString('vi-VN')} người</span>
             </div>
             <div className="flex -space-x-1.5 p-1 mb-2">
-              {[...Array(12)].map((_, i) => (
-                <Avatar key={i} className="w-8 h-8 border-2 border-background">
-                  <AvatarImage src={`https://i.pravatar.cc/100?img=${i + 30}`} />
-                  <AvatarFallback />
+              {members.slice(0, 12).map((m, i) => (
+                <Avatar key={m.userId} className="w-8 h-8 border-2 border-background">
+                  <AvatarImage src={m.avatar || `https://i.pravatar.cc/100?img=${i + 30}`} />
+                  <AvatarFallback>{m.name.charAt(0)}</AvatarFallback>
                 </Avatar>
               ))}
             </div>
             <Separator className="my-3" />
-            <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src={`https://i.pravatar.cc/100?img=12`} />
-              </Avatar>
-              <div>
-                <p className="font-semibold text-[15px]">Nguyễn Văn Admin</p>
-                <p className="text-[13px] text-muted-foreground">Quản trị viên</p>
+            
+            {members.filter(m => m.role === 'ADMIN').slice(0, 1).map(admin => (
+              <div key={admin.userId} className="flex items-center gap-3">
+                <Avatar className="w-10 h-10">
+                  <AvatarImage src={admin.avatar || `https://i.pravatar.cc/100?img=12`} />
+                </Avatar>
+                <div>
+                  <p className="font-semibold text-[15px]">{admin.name}</p>
+                  <p className="text-[13px] text-muted-foreground">Quản trị viên</p>
+                </div>
               </div>
-            </div>
+            ))}
           </Card>
         </div>
 
         {/* Right Column - Feed */}
         <div className="space-y-4">
           {group.isJoined && (
-            <Card className="p-3 flex gap-2 border-0 shadow-sm mb-4">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src="https://i.pravatar.cc/100?u=me" />
-                <AvatarFallback>Me</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 bg-muted/70 hover:bg-muted/90 rounded-full px-4 flex items-center text-muted-foreground text-[15px] cursor-pointer transition-colors">
-                Bạn đang nghĩ gì?
-              </div>
-            </Card>
+            <div className="mb-4">
+              <CreatePostCard groupId={group.id} onPostCreated={prependPost} />
+            </div>
           )}
 
-          {displayPosts.map(post => (
+          {posts.map(post => (
             <div key={post.id} className="shadow-sm rounded-xl overflow-hidden">
-              <GroupPostCard post={{...post, groupName: group.name, groupId: group.id}} />
+              <GroupPostCard post={{...post, groupName: group.name, groupId: group.id.toString()} as any} />
             </div>
           ))}
+
+          {postsLoading && (
+            <div className="space-y-4 pt-4">
+              <Skeleton className="h-[200px] w-full rounded-xl bg-muted/50" />
+            </div>
+          )}
+
+          {!postsLoading && hasMore && (
+            <Button variant="outline" className="w-full mt-4" onClick={loadMore}>
+              Tải thêm bài viết
+            </Button>
+          )}
+
+          {!postsLoading && posts.length === 0 && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Chưa có bài viết nào trong nhóm này.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
