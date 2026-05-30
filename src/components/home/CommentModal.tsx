@@ -20,6 +20,7 @@ import type { IPost } from "@/types/interfaces/post/IPost";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
 import { useComments, useCreateComment, useLikeComment } from "@/hooks/useComment";
+import { useLikePost } from "@/hooks/usePost";
 import CommentItem from "./CommentItem";
 
 function PostActionBtn({
@@ -61,9 +62,10 @@ export default function CommentModal({
   const { comments, loading, hasMore, loadMore } = useComments(post.id);
   const { create, loading: sending } = useCreateComment(post.id);
   const { like, unlike } = useLikeComment(post.id);
+  const { like: likePost, unlike: unlikePost, loadingId: postLoadingId } = useLikePost();
 
   const [commentText, setCommentText] = useState("");
-  const [postLiked, setPostLiked] = useState(false);
+  const liked = post.hasLiked ?? false;
   // Khi nhấn "Trả lời" trên comment, focus input và lưu parentId
   const [replyingTo, setReplyingTo] = useState<{ id: number; name: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -89,6 +91,15 @@ export default function CommentModal({
     setCommentText("");
     await create(text, replyingTo?.id ?? null);
     setReplyingTo(null);
+  };
+
+  const handleLikePostClick = async () => {
+    if (!userId || postLoadingId === post.id) return;
+    if (liked) {
+      await unlikePost(post.id, userId);
+    } else {
+      await likePost(post.id, userId);
+    }
   };
 
   const handleReply = (commentId: number, authorName: string) => {
@@ -178,8 +189,8 @@ export default function CommentModal({
             <PostActionBtn
               icon={<ThumbsUp className="size-[18px]" />}
               label="Thích"
-              active={postLiked}
-              onClick={() => setPostLiked((p) => !p)}
+              active={liked}
+              onClick={handleLikePostClick}
             />
             <PostActionBtn
               icon={<MessageCircle className="size-[18px]" />}

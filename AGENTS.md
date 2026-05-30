@@ -78,6 +78,11 @@ export const API = {
     BASE: "users/posts",          // CRUD, like/unlike
     SUGGESTED: "users/posts/suggested", // Infinite scroll feed
     SEARCH: "users/posts/search",       // Standard pagination
+  },
+  COMMENT: {
+    PATH: "comments",
+    REPLIES_PATH: "replies",
+    LIKE_PATH: "like",
   }
 };
 ```
@@ -86,7 +91,7 @@ export const API = {
 - Each feature service extends `BaseService` and uses `http` for non-standard calls.
 - Singleton export: `export default new XxxService()`.
 - Example: `src/services/userService.ts` (UserService), `src/services/postService.ts` (PostService).
-- **Keep services thin.** If a service only needs standard CRUD, just extend `BaseService` with an empty class body (see `postService.ts`). Only add custom methods when the endpoint doesn't fit the `BaseService` pattern (e.g. `login()`, `activate()` in `userService.ts`).
+- **Keep services thin.** If a service only needs standard CRUD or inherited methods, just extend `BaseService` with an empty class body (see `postService.ts` or `commentService.ts`). Only add custom methods when the endpoint doesn't fit the `BaseService` pattern (e.g. `login()`, `activate()` in `userService.ts`).
 - API calls from hooks should use the inherited `BaseService` methods (`getList`, `getSingle`, `create`, …) directly — don't wrap them again in the service.
 
 ## Types
@@ -100,6 +105,7 @@ src/types/
 ├── interfaces/
 │   ├── auth/                # Auth-related interfaces (LoggedIn, TokenResult, ...)
 │   ├── post/                # Post interfaces (IPost, IPostDetails, ...)
+│   ├── comment/             # Comment interfaces (IComment, ICommentCreate, ...)
 │   ├── result/              # ApiResult, ApiResultGeneric<T>
 │   └── IFriend.ts
 ├── Auth.ts
@@ -175,7 +181,8 @@ src/types/
 | Slice | File | State fields |
 |---|---|---|
 | `user` | `userSlice.ts` | `userId`, `username`, `accessToken`, `loginSuccess`, `isLoading` |
-| `post` | `postSlice.ts` | `list: IPost[]` |
+| `post` | `postSlice.ts` | `suggestedFeed: { items, nextCursor, hasMore }`, `currentPost` |
+| `comment` | `commentSlice.ts` | `commentsByPost: Record<number, CommentFeedState>`, `repliesByComment: Record<number, ReplyFeedState>` |
 | `counter` | `counterSlice.ts` | dev/test only |
 
 ### userSlice actions — `userActions`
@@ -206,6 +213,12 @@ Actions (`postActions`):
 | `useUpdatePost()` | `usePost.tsx` | Cập nhật bài viết, cập nhật `currentPost` store |
 | `useDeletePost()` | `usePost.tsx` | Xoá bài viết, xoá khỏi feed trong store |
 | `useLikePost()` | `usePost.tsx` | Like/unlike optimistic, cập nhật `likeCount` trong store |
+| `useComments(postId)` | `useComment.tsx` | Lấy danh sách comment gốc (infinite scroll) |
+| `useReplies(postId, commentId)`| `useComment.tsx` | Lấy replies của comment (lazy load) |
+| `useCreateComment(postId)` | `useComment.tsx` | Tạo comment/reply mới |
+| `useEditComment(postId)` | `useComment.tsx` | Sửa nội dung comment |
+| `useDeleteComment(postId)` | `useComment.tsx` | Xóa comment (gửi userId qua URL query) |
+| `useLikeComment(postId)` | `useComment.tsx` | Like/unlike comment optimistic |
 | `useMobile()` | `use-mobile.ts` | Returns `true` when viewport is mobile width |
 
 ### Service → Hook → UI architecture
@@ -234,11 +247,15 @@ This project follows a strict three-layer convention:
 - `src/services/` — API service modules extending `BaseService`.
   - `userService.ts` — `login()`, `logout()`, `register()`, `activate()`
   - `postService.ts` — inherits `BaseService` CRUD methods
+  - `commentService.ts` — inherits `BaseService` CRUD methods
 - `src/types/interfaces/post/` — Post type definitions.
   - `IPost.ts` — `PostSummaryDTO` (list view, has `commentCount`, `likeCount`, `content`)
   - `IPostDetails.ts` — `PostDetailDTO` (detail/create/update view)
   - `IPostCreate.ts` — `IPostCreate` (request body tạo), `IPostUpdate` (request body cập nhật)
   - `IPostPage.ts` — `CursorPageResponse<T>` (infinite scroll), `PageResponse<T>` (standard pagination)
+- `src/types/interfaces/comment/` — Comment type definitions.
+  - `IComment.ts` — `CommentDTO`
+  - `ICommentCreate.ts` — `ICommentCreate`, `ICommentUpdate`
 - `src/data/mock/` — Static mock data for UI development.
   - `friends.ts`, `home.ts`, `groupsMock.ts`, `groupPostsMock.ts`, `messengerData.ts`, `photosMock.ts`, `postsMock.ts`, `profileMock.ts`
 - Mock data approach: define types first in `src/types/`, then export typed arrays/objects in `src/data/mock/`.

@@ -14,24 +14,26 @@ import { Separator } from "@/components/ui/separator"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import type { IPost } from "@/types/interfaces/post/IPost"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/stores/store"
+import { useLikePost } from "@/hooks/usePost"
 import CommentModal from "./home/CommentModal"
-import EmojiPicker from "./home/EmojiPicker"
 import ShareModal from "./home/ShareModal"
 
 export default function PostCard({ post }: { post: IPost }) {
-  const [liked, setLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(post.likeCount)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const liked = post.hasLiked ?? false
+  const likesCount = post.likeCount
   const [commentModalOpen, setCommentModalOpen] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
+  const { userId } = useSelector((state: RootState) => state.user)
+  const { like, unlike, loadingId } = useLikePost()
 
-  const handleLikeClick = () => {
+  const handleLikeClick = async () => {
+    if (!userId || loadingId === post.id) return;
     if (liked) {
-      setLiked(false)
-      setLikesCount((c) => Math.max(0, c - 1))
+      await unlike(post.id, userId);
     } else {
-      setLiked(true)
-      setLikesCount((c) => c + 1)
+      await like(post.id, userId);
     }
   }
 
@@ -131,34 +133,19 @@ export default function PostCard({ post }: { post: IPost }) {
 
           {/* Action Buttons */}
           <div className="flex justify-between px-2 py-1 mt-1">
-            <div
-              className="relative flex-1"
-              onMouseEnter={() => setShowEmojiPicker(true)}
-              onMouseLeave={() => setShowEmojiPicker(false)}
+            <Button 
+              variant="ghost" 
+              className={cn("flex-1 rounded-sm text-muted-foreground", liked && "text-blue-500")}
+              onClick={handleLikeClick}
+              disabled={loadingId === post.id}
             >
-              <Button 
-                variant="ghost" 
-                className={cn("w-full rounded-sm text-muted-foreground", liked && "text-blue-500")}
-                onClick={handleLikeClick}
-              >
-                {liked ? (
-                  <ThumbsUpIcon data-icon="inline-start" className="fill-current" />
-                ) : (
-                  <HeartIcon data-icon="inline-start" />
-                )}
-                Thích
-              </Button>
-              <EmojiPicker
-                open={showEmojiPicker}
-                onSelect={() => {
-                  if (!liked) {
-                    setLiked(true)
-                    setLikesCount((c) => c + 1)
-                  }
-                  setShowEmojiPicker(false)
-                }}
-              />
-            </div>
+              {liked ? (
+                <ThumbsUpIcon data-icon="inline-start" className="fill-current" />
+              ) : (
+                <HeartIcon data-icon="inline-start" />
+              )}
+              Thích
+            </Button>
             <Button 
               variant="ghost" 
               className="flex-1 rounded-sm text-muted-foreground"
