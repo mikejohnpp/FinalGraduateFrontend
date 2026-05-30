@@ -1,4 +1,10 @@
-import type { FriendProfile } from "@/types/Friend"
+// Mock data — chỉ dùng tham khảo, các views không import trực tiếp
+type FriendProfile = {
+  id: string;
+  name: string;
+  avatarUrl: string;
+  mutualCount?: number;
+}
 
 export const friendRequests: FriendProfile[] = [
   {

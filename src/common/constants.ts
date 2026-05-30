@@ -23,6 +23,13 @@ export const API = {
     REPLIES_PATH: "replies",
     LIKE_PATH: "like",
   },
+
+  FRIEND: {
+    BASE: "users/friends",                          // GET danh sách bạn bè, DELETE unfriend
+    REQUESTS: "users/friends/requests",              // GET lời mời, POST gửi lời mời
+    REQUESTS_COUNT: "users/friends/requests/count", // GET badge count
+    SUGGESTIONS: "users/friends/suggestions",        // GET gợi ý bạn bè
+  },
 };
 
 export const AUTH_TOKEN_NAME = "access_token";
