@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { mockProfile } from '@/data/mock/profileMock'
-import { mockPosts } from '@/data/mock/postsMock'
-import type { IPost } from '@/types/interfaces/post/IPost'
+import { useProfile, useUserPosts } from '@/hooks/useProfile'
+import OverlaySpinner from '@/components/OverlaySpinner'
 
 import ProfileCover from './partials/ProfileCover'
 import ProfileTabs from './partials/ProfileTabs'
@@ -15,53 +14,42 @@ import ProfilePostFeed from './partials/ProfilePostFeed'
 export default function Profile() {
   const { userId } = useParams()
   const [activeTab, setActiveTab] = useState<string>('posts')
-  const [profile, setProfile] = useState(mockProfile)
 
-  // In real app, fetch profile and posts by userId
-  if (userId) {
-    console.log('Fetching profile for:', userId)
-  }
-  const posts = mockPosts.map((p, index) => ({
-    id: index + 1,
-    author: {
-      id: p.authorId,
-      name: p.authorName,
-      avatar: p.authorAvatar,
-    },
-    isGroupPosted: false,
-    content: p.content,
-    createdAt: new Date().toISOString(), // Mock proper date
-    likeCount: p.likeCount,
-    commentCount: p.commentCount,
-  })) as unknown as IPost[]
+  const { profile, isOwner, loading, error } = useProfile(userId)
+  const { posts, loading: postsLoading } = useUserPosts(userId)
 
-  const handleProfileUpdate = (updatedData: Partial<typeof mockProfile>) => {
-    setProfile(prev => ({ ...prev, ...updatedData }))
+  if (loading) return <OverlaySpinner show text="Đang tải trang cá nhân..." />
+  if (error || !profile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-muted-foreground">
+        <p>{error ?? 'Không tìm thấy người dùng'}</p>
+      </div>
+    )
   }
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-muted/20 pb-10">
-      <ProfileCover profile={profile} onProfileUpdate={handleProfileUpdate} />
+      <ProfileCover profile={profile} isOwner={isOwner} />
       <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
-      
+
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-8 mt-4">
         {activeTab === 'posts' && (
           <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-4">
             <div className="flex flex-col gap-4">
-              <ProfileAbout profile={profile} />
+              <ProfileAbout profile={profile} isOwner={isOwner} />
               <ProfilePhotos />
               <ProfileFriends profile={profile} />
             </div>
             <div className="flex flex-col">
-              <ProfileCreatePost profile={profile} />
-              <ProfilePostFeed posts={posts} />
+              {isOwner && <ProfileCreatePost profile={profile} isOwner={isOwner} />}
+              <ProfilePostFeed posts={posts} loading={postsLoading} />
             </div>
           </div>
         )}
 
         {activeTab === 'about' && (
           <div className="w-full">
-            <ProfileAbout profile={profile} />
+            <ProfileAbout profile={profile} isOwner={isOwner} />
           </div>
         )}
 
