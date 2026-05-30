@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   ThumbsUp,
   MessageCircle,
   Send,
   MoreHorizontal,
   Smile,
-  Image,
   ChevronDown,
   X,
 } from "lucide-react";
@@ -15,10 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { currentUser } from "@/data/mock/home";
-import type { Comment } from "@/types/HomeFeed";
 import type { IPost } from "@/types/interfaces/post/IPost";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/stores/store";
+import { useComments, useCreateComment, useLikeComment } from "@/hooks/useComment";
+import { useLikePost } from "@/hooks/usePost";
+import CommentItem from "./CommentItem";
 
 function PostActionBtn({
   icon,
@@ -46,79 +49,6 @@ function PostActionBtn({
   );
 }
 
-function FacebookCommentItem({ comment }: { comment: Comment }) {
-  const [liked, setLiked] = useState(false);
-  const [showReplies, setShowReplies] = useState(false);
-
-  return (
-    <div className="flex gap-2">
-      {/* Avatar */}
-      <Avatar className="size-8 shrink-0">
-        <AvatarImage src={comment.author.avatarUrl} />
-        <AvatarFallback className="text-xs font-bold">
-          {comment.author.name.charAt(0)}
-        </AvatarFallback>
-      </Avatar>
-
-      <div className="flex flex-1 flex-col">
-        {/* Bubble */}
-        <div className="inline-block max-w-full rounded-2xl bg-[#3a3b3c] px-3 py-2">
-          <p className="text-[13px] font-semibold text-[#e4e6eb]">
-            {comment.author.name}
-          </p>
-          <p className="text-[13.5px] leading-snug text-[#e4e6eb]">
-            {comment.content}
-          </p>
-        </div>
-
-        {/* Actions row */}
-        <div className="mt-1 flex items-center gap-3 pl-1">
-          <span className="text-[12px] text-[#b0b3b8]">{comment.time}</span>
-          <button
-            onClick={() => setLiked((p) => !p)}
-            className={cn(
-              "text-[12px] font-semibold transition-colors hover:text-[#e4e6eb]",
-              liked ? "text-[#2d88ff]" : "text-[#b0b3b8]",
-            )}
-          >
-            Thích
-          </button>
-          <button className="text-[12px] font-semibold text-[#b0b3b8] transition-colors hover:text-[#e4e6eb]">
-            Trả lời
-          </button>
-          {comment.likeCount ? (
-            <div className="ml-auto flex items-center gap-1 text-[12px] text-[#b0b3b8]">
-              <span>👍</span>
-              <span>{comment.likeCount}</span>
-            </div>
-          ) : null}
-        </div>
-
-        {comment.replyCount ? (
-          <button
-            onClick={() => setShowReplies((p) => !p)}
-            className="mt-1.5 flex items-center gap-2 text-[12px] font-semibold text-[#b0b3b8] transition-colors hover:text-[#e4e6eb]"
-          >
-            <span className="h-px w-6 bg-[#b0b3b8]" />
-            {showReplies
-              ? "Ẩn phản hồi"
-              : `Xem tất cả ${comment.replyCount} phản hồi`}
-          </button>
-        ) : null}
-
-        {/* Replies */}
-        {showReplies && comment.replies && (
-          <div className="mt-2 flex flex-col gap-3 pl-2">
-            {comment.replies.map((reply) => (
-              <FacebookCommentItem key={reply.id} comment={reply} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function CommentModal({
   post,
   open,
@@ -128,13 +58,59 @@ export default function CommentModal({
   open: boolean;
   onClose: () => void;
 }) {
+  const { userId, username } = useSelector((r: RootState) => r.user);
+  const { comments, loading, hasMore, loadMore } = useComments(post.id);
+  const { create, loading: sending } = useCreateComment(post.id);
+  const { like, unlike } = useLikeComment(post.id);
+  const { like: likePost, unlike: unlikePost, loadingId: postLoadingId } = useLikePost();
+
   const [commentText, setCommentText] = useState("");
-  const [liked, setLiked] = useState(false);
+  const liked = post.hasLiked ?? false;
+  // Khi nhấn "Trả lời" trên comment, focus input và lưu parentId
+  const [replyingTo, setReplyingTo] = useState<{ id: number; name: string } | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Scroll sentinel để load more khi cuộn đến cuối
+  const observer = useRef<IntersectionObserver | null>(null);
+  const sentinelRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) loadMore();
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore, loadMore]
+  );
+
+  const handleSend = async () => {
+    const text = commentText.trim();
+    if (!text || sending) return;
+    setCommentText("");
+    await create(text, replyingTo?.id ?? null);
+    setReplyingTo(null);
+  };
+
+  const handleLikePostClick = async () => {
+    if (!userId || postLoadingId === post.id) return;
+    if (liked) {
+      await unlikePost(post.id, userId);
+    } else {
+      await likePost(post.id, userId);
+    }
+  };
+
+  const handleReply = (commentId: number, authorName: string) => {
+    setReplyingTo({ id: commentId, name: authorName });
+    setCommentText(`@${authorName} `);
+    setTimeout(() => inputRef.current?.focus(), 100);
+  };
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
-        // Override default padding & sizing; hide default close button
         className="flex max-h-[88vh] max-w-[500px] flex-col gap-0 overflow-hidden rounded-xl border-0 bg-[#242526] p-0 shadow-[0_8px_40px_rgba(0,0,0,0.7)] [&>button]:hidden"
       >
         <DialogTitle className="sr-only">Bình luận bài viết</DialogTitle>
@@ -167,17 +143,17 @@ export default function CommentModal({
                 <span className="text-[14px] font-semibold text-[#e4e6eb]">
                   {post.author?.name}
                 </span>
-                {post.author.badge && (
+                {post.authorRole && (
                   <Badge
                     variant="outline"
                     className="border-[#2d88ff44] bg-[#2d88ff15] px-1.5 py-0 text-[11px] font-semibold text-[#2d88ff]"
                   >
-                    ⭐ {post.author.badge}
+                    ⭐ {post.authorRole}
                   </Badge>
                 )}
               </div>
               <div className="mt-0.5 flex items-center gap-1 text-[13px] text-[#b0b3b8]">
-                <span>{new Date(post.createdAt).toLocaleString()}</span>
+                <span>{new Date(post.createdAt).toLocaleString("vi-VN")}</span>
               </div>
             </div>
             <button className="rounded-full p-1.5 text-[#b0b3b8] transition-colors hover:bg-[#3a3b3c] hover:text-[#e4e6eb]">
@@ -190,11 +166,6 @@ export default function CommentModal({
             <p className="px-4 pb-2 pt-2.5 text-[14px] leading-relaxed text-[#e4e6eb]">
               {post.content}
             </p>
-          )}
-
-          {/* Post image */}
-          {(post as any).image && (
-            <img src={(post as any).image} alt="" className="w-full object-cover" />
           )}
 
           {/* Reaction bar */}
@@ -210,9 +181,7 @@ export default function CommentModal({
               </div>
               <span>{post.likeCount}</span>
             </div>
-            <span className="cursor-pointer hover:underline">
-              {post.commentCount} bình luận
-            </span>
+            <span>{post.commentCount} bình luận</span>
           </div>
 
           {/* Action bar */}
@@ -221,11 +190,12 @@ export default function CommentModal({
               icon={<ThumbsUp className="size-[18px]" />}
               label="Thích"
               active={liked}
-              onClick={() => setLiked((p) => !p)}
+              onClick={handleLikePostClick}
             />
             <PostActionBtn
               icon={<MessageCircle className="size-[18px]" />}
               label="Bình luận"
+              onClick={() => setTimeout(() => inputRef.current?.focus(), 100)}
             />
             <PostActionBtn
               icon={<Send className="size-[18px]" />}
@@ -235,68 +205,106 @@ export default function CommentModal({
 
           {/* Comments list */}
           <div className="flex flex-col gap-3 px-4 py-3">
-            {/* Header */}
             <button className="flex items-center gap-1.5 text-left">
-              <span className="text-[14px] font-bold text-[#e4e6eb]">
-                Tất cả bình luận
-              </span>
+              <span className="text-[14px] font-bold text-[#e4e6eb]">Tất cả bình luận</span>
               <ChevronDown className="size-4 text-[#b0b3b8]" />
             </button>
 
-            {/* Comment items */}
-            {((post as any).commentList || []).map((comment: Comment) => (
-              <FacebookCommentItem key={comment.id} comment={comment} />
+            {/* Initial loading skeletons */}
+            {loading && comments.length === 0 && (
+              <div className="flex flex-col gap-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex gap-2">
+                    <Skeleton className="size-8 shrink-0 rounded-full bg-[#3a3b3c]" />
+                    <div className="flex flex-1 flex-col gap-1.5">
+                      <Skeleton className="h-16 w-full rounded-2xl bg-[#3a3b3c]" />
+                      <Skeleton className="h-3 w-32 rounded bg-[#3a3b3c]" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {comments.map((comment) => (
+              <CommentItem
+                key={comment.id}
+                comment={comment}
+                postId={post.id}
+                onReply={handleReply}
+              />
             ))}
+
+            {/* Load more sentinel */}
+            <div ref={sentinelRef} />
+
+            {loading && comments.length > 0 && (
+              <div className="flex justify-center py-2">
+                <span className="text-[13px] text-[#b0b3b8]">Đang tải thêm...</span>
+              </div>
+            )}
+
+            {!loading && !hasMore && comments.length > 0 && (
+              <p className="py-2 text-center text-[13px] text-[#b0b3b8]">
+                Đã xem hết bình luận.
+              </p>
+            )}
+
+            {!loading && comments.length === 0 && (
+              <p className="py-4 text-center text-[13px] text-[#b0b3b8]">
+                Hãy là người đầu tiên bình luận!
+              </p>
+            )}
           </div>
+          <div ref={bottomRef} />
         </ScrollArea>
 
         {/* ── Comment input ─────────────────────────── */}
-        <div className="flex items-end gap-2 border-t border-[#3a3b3c] px-3.5 py-2.5">
-          <Avatar className="size-[34px] shrink-0">
-            <AvatarImage src={currentUser.avatarUrl} />
-            <AvatarFallback className="text-xs font-bold">
-              {currentUser.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-
-          <div className="flex flex-1 items-center gap-2 rounded-full bg-[#3a3b3c] px-4 py-1.5">
-            <Input
-              placeholder="Viết bình luận..."
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && commentText.trim()) {
-                  setCommentText("");
-                }
-              }}
-              className="flex-1 border-none bg-transparent p-0 text-[14px] text-[#e4e6eb] shadow-none placeholder:text-[#b0b3b8] focus-visible:ring-0"
-            />
-            {/* Inline actions */}
-            <div className="flex items-center gap-0.5">
-              <button className="flex size-7 items-center justify-center rounded-full text-[#b0b3b8] transition-colors hover:bg-[#4a4b4c] hover:text-[#e4e6eb]">
-                <Smile className="size-[18px]" />
-              </button>
-              <button className="flex size-7 items-center justify-center rounded-full text-[#b0b3b8] transition-colors hover:bg-[#4a4b4c] hover:text-[#e4e6eb]">
-                <Image className="size-[18px]" />
-              </button>
-              <button className="flex size-7 items-center justify-center rounded-full text-[10px] font-bold text-[#b0b3b8] transition-colors hover:bg-[#4a4b4c] hover:text-[#e4e6eb]">
-                GIF
+        <div className="flex flex-col gap-1 border-t border-[#3a3b3c] px-3.5 py-2.5">
+          {replyingTo && (
+            <div className="flex items-center gap-1 text-[12px] text-[#b0b3b8]">
+              <span>Đang trả lời <span className="font-semibold text-[#e4e6eb]">{replyingTo.name}</span></span>
+              <button
+                onClick={() => { setReplyingTo(null); setCommentText(""); }}
+                className="ml-1 text-[#b0b3b8] hover:text-[#e4e6eb]"
+              >
+                <X className="size-3" />
               </button>
             </div>
-          </div>
+          )}
+          <div className="flex items-end gap-2">
+            <Avatar className="size-[34px] shrink-0">
+              <AvatarImage src={post.author?.avatar || ""} />
+              <AvatarFallback className="text-xs font-bold">
+                {username?.charAt(0) || "U"}
+              </AvatarFallback>
+            </Avatar>
 
-          {/* Send */}
-          <Button
-            size="icon"
-            variant="ghost"
-            disabled={!commentText.trim()}
-            onClick={() => {
-              if (commentText.trim()) setCommentText("");
-            }}
-            className="size-8 shrink-0 rounded-full text-[#2d88ff] hover:bg-[#2d88ff22] disabled:text-[#4a4b4c]"
-          >
-            <Send className="size-4" />
-          </Button>
+            <div className="flex flex-1 items-center gap-2 rounded-full bg-[#3a3b3c] px-4 py-1.5">
+              <Input
+                ref={inputRef}
+                placeholder={replyingTo ? `Trả lời ${replyingTo.name}...` : "Viết bình luận..."}
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) handleSend(); }}
+                className="flex-1 border-none bg-transparent p-0 text-[14px] text-[#e4e6eb] shadow-none placeholder:text-[#b0b3b8] focus-visible:ring-0"
+              />
+              <div className="flex items-center gap-0.5">
+                <button className="flex size-7 items-center justify-center rounded-full text-[#b0b3b8] transition-colors hover:bg-[#4a4b4c] hover:text-[#e4e6eb]">
+                  <Smile className="size-[18px]" />
+                </button>
+              </div>
+            </div>
+
+            <Button
+              size="icon"
+              variant="ghost"
+              disabled={!commentText.trim() || sending}
+              onClick={handleSend}
+              className="size-8 shrink-0 rounded-full text-[#2d88ff] hover:bg-[#2d88ff22] disabled:text-[#4a4b4c]"
+            >
+              <Send className="size-4" />
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

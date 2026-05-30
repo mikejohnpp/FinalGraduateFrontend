@@ -8,6 +8,7 @@ import { RegisterForm } from "./partials/RegisterForm";
 
 export default function Register() {
   const [registerFormData, setRegisterFormData] = useState<RegisterFormData>({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",

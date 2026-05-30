@@ -7,4 +7,5 @@ export interface IPostDetails extends IBase {
     createdAt: string;
     content: string;
     likeCount: number;
+    hasLiked?: boolean;
 }

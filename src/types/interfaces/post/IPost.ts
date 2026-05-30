@@ -8,4 +8,11 @@ export interface IPost extends IBase {
     commentCount: number;
     content: string;
     likeCount: number;
+    hasLiked?: boolean;
+    authorRole?: string;
+    group?: {
+        id: number;
+        name: string;
+        avatar: string | null;
+    };
 }

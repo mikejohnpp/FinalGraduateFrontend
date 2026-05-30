@@ -1,13 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import type { UserProfile } from '@/types/Profile'
+import type { UserProfileDTO } from '@/types/interfaces/user/UserProfileDTO'
 import { MapPin, GraduationCap, Briefcase, Heart, Rss } from 'lucide-react'
 
 interface ProfileAboutProps {
-  profile: UserProfile
+  profile: UserProfileDTO
+  isOwner: boolean
 }
 
-export default function ProfileAbout({ profile }: ProfileAboutProps) {
+export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -17,7 +18,7 @@ export default function ProfileAbout({ profile }: ProfileAboutProps) {
         {profile.bio && (
           <div className="text-center">
             <p className="text-sm">{profile.bio}</p>
-            {profile.isOwner && (
+            {isOwner && (
               <Button variant="secondary" className="w-full mt-3 h-8">
                 Chỉnh sửa tiểu sử
               </Button>
@@ -34,7 +35,7 @@ export default function ProfileAbout({ profile }: ProfileAboutProps) {
               </span>
             </div>
           )}
-          
+
           {profile.education && (
             <div className="flex items-center gap-2 text-sm">
               <GraduationCap className="size-5 text-muted-foreground" />
@@ -43,7 +44,7 @@ export default function ProfileAbout({ profile }: ProfileAboutProps) {
               </span>
             </div>
           )}
-          
+
           {profile.location && (
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="size-5 text-muted-foreground" />
@@ -53,10 +54,12 @@ export default function ProfileAbout({ profile }: ProfileAboutProps) {
             </div>
           )}
 
-          <div className="flex items-center gap-2 text-sm">
-            <Heart className="size-5 text-muted-foreground" />
-            <span>Độc thân</span>
-          </div>
+          {profile.relationship && (
+            <div className="flex items-center gap-2 text-sm">
+              <Heart className="size-5 text-muted-foreground" />
+              <span>{profile.relationship}</span>
+            </div>
+          )}
 
           <div className="flex items-center gap-2 text-sm">
             <Rss className="size-5 text-muted-foreground" />
@@ -64,7 +67,7 @@ export default function ProfileAbout({ profile }: ProfileAboutProps) {
           </div>
         </div>
 
-        {profile.isOwner && (
+        {isOwner && (
           <Button variant="secondary" className="w-full">
             Chỉnh sửa chi tiết
           </Button>

@@ -4,19 +4,32 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { X, Hand, MapPin, Home, Cake, Heart, VenusAndMars, MessageCircle, Globe } from 'lucide-react'
-import type { UserProfile } from '@/types/Profile'
+import { X, Hand, MapPin, Home, Cake, Heart, VenusAndMars, MessageCircle, Globe, GraduationCap, Briefcase } from 'lucide-react'
+import type { UserProfileDTO } from '@/types/interfaces/user/UserProfileDTO'
+import type { IProfileUpdate } from '@/types/interfaces/user/IProfileUpdate'
 import EditableRow from '@/components/profile/EditableRow'
+import { useUpdateProfile } from '@/hooks/useProfile'
 
 interface ProfileEditPanelProps {
-  profile: UserProfile
+  profile: UserProfileDTO
   onClose: () => void
-  onSave: (updatedProfile: Partial<UserProfile>) => void
 }
 
-export default function ProfileEditPanel({ profile, onClose, onSave }: ProfileEditPanelProps) {
+export default function ProfileEditPanel({ profile, onClose }: ProfileEditPanelProps) {
+  const { update, loading } = useUpdateProfile()
   const [activeField, setActiveField] = useState<string | null>(null)
-  const [draft, setDraft] = useState<Partial<UserProfile>>(profile)
+  const [draft, setDraft] = useState<IProfileUpdate>({
+    bio: profile.bio ?? '',
+    location: profile.location ?? '',
+    education: profile.education ?? '',
+    workplace: profile.workplace ?? '',
+    hometown: profile.hometown ?? '',
+    dateOfBirth: profile.dateOfBirth ?? '',
+    relationship: profile.relationship ?? '',
+    gender: profile.gender ?? '',
+    pronouns: profile.pronouns ?? '',
+    language: profile.language ?? '',
+  })
 
   const handleEdit = (field: string) => {
     if (activeField !== null) return
@@ -30,9 +43,9 @@ export default function ProfileEditPanel({ profile, onClose, onSave }: ProfileEd
     setActiveField(null)
   }
 
-  const handleFinalSave = () => {
-    onSave(draft)
-    onClose()
+  const handleFinalSave = async () => {
+    const result = await update(draft)
+    if (result) onClose()
   }
 
   return (
@@ -43,21 +56,21 @@ export default function ProfileEditPanel({ profile, onClose, onSave }: ProfileEd
           <X className="size-4" />
         </Button>
       </CardHeader>
-      
+
       <CardContent className="p-0 flex flex-col md:flex-row max-h-[70vh] overflow-y-auto">
         {/* Cột trái: Giới thiệu */}
         <div className="flex-1 p-4 md:border-r">
           <h3 className="font-semibold mb-3">Giới thiệu</h3>
           <Separator className="mb-4" />
-          
+
           {activeField === 'bio' ? (
             <div className="flex flex-col gap-2 p-2 border rounded-md bg-muted/30">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Hand className="size-5" />
                 <span className="font-medium">Giới thiệu về bạn</span>
               </div>
-              <Textarea 
-                value={draft.bio || ''} 
+              <Textarea
+                value={draft.bio || ''}
                 onChange={(e) => setDraft(prev => ({ ...prev, bio: e.target.value }))}
                 placeholder="Mô tả bản thân..."
                 className="resize-none h-24"
@@ -73,7 +86,7 @@ export default function ProfileEditPanel({ profile, onClose, onSave }: ProfileEd
               </div>
             </div>
           ) : (
-            <div 
+            <div
               className={`flex flex-col gap-2 p-3 border rounded-md transition-colors ${
                 activeField !== null ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-muted/50'
               }`}
@@ -92,49 +105,61 @@ export default function ProfileEditPanel({ profile, onClose, onSave }: ProfileEd
         <div className="flex-1 p-4">
           <h3 className="font-semibold mb-3">Thông tin cá nhân</h3>
           <Separator className="mb-4" />
-          
+
           <div className="flex flex-col gap-1">
-            <EditableRow 
+            <EditableRow
               icon={MapPin} label="Vị trí hiện tại" value={draft.location} placeholder="Thêm vị trí"
               field="location" isActive={activeField === 'location'} isLocked={activeField !== null && activeField !== 'location'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
-            <EditableRow 
+            <EditableRow
               icon={Home} label="Quê quán" value={draft.hometown} placeholder="Thêm quê quán"
               field="hometown" isActive={activeField === 'hometown'} isLocked={activeField !== null && activeField !== 'hometown'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
-            <EditableRow 
-              icon={Cake} label="Sinh nhật" value={draft.birthday} placeholder="Thêm ngày sinh"
-              field="birthday" isActive={activeField === 'birthday'} isLocked={activeField !== null && activeField !== 'birthday'}
+            <EditableRow
+              icon={Cake} label="Sinh nhật" value={draft.dateOfBirth} placeholder="Thêm ngày sinh (yyyy-MM-dd)"
+              field="dateOfBirth" isActive={activeField === 'dateOfBirth'} isLocked={activeField !== null && activeField !== 'dateOfBirth'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
-            <EditableRow 
+            <EditableRow
               icon={Heart} label="Tình trạng mối quan hệ" value={draft.relationship} placeholder="Thêm tình trạng"
               field="relationship" isActive={activeField === 'relationship'} isLocked={activeField !== null && activeField !== 'relationship'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
-            <EditableRow 
+            <EditableRow
               icon={VenusAndMars} label="Giới tính" value={draft.gender} placeholder="Thêm giới tính"
               field="gender" isActive={activeField === 'gender'} isLocked={activeField !== null && activeField !== 'gender'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
-            <EditableRow 
+            <EditableRow
               icon={MessageCircle} label="Danh xưng" value={draft.pronouns} placeholder="Thêm danh xưng"
               field="pronouns" isActive={activeField === 'pronouns'} isLocked={activeField !== null && activeField !== 'pronouns'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
-            <EditableRow 
+            <EditableRow
               icon={Globe} label="Ngôn ngữ" value={draft.language} placeholder="Thêm ngôn ngữ"
               field="language" isActive={activeField === 'language'} isLocked={activeField !== null && activeField !== 'language'}
+              onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
+            />
+            <EditableRow
+              icon={GraduationCap} label="Học vấn" value={draft.education} placeholder="Thêm trường học"
+              field="education" isActive={activeField === 'education'} isLocked={activeField !== null && activeField !== 'education'}
+              onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
+            />
+            <EditableRow
+              icon={Briefcase} label="Nơi làm việc" value={draft.workplace} placeholder="Thêm nơi làm việc"
+              field="workplace" isActive={activeField === 'workplace'} isLocked={activeField !== null && activeField !== 'workplace'}
               onEdit={handleEdit} onSave={handleSaveField} onCancel={handleCancel}
             />
           </div>
         </div>
       </CardContent>
-      
+
       <div className="p-4 border-t bg-muted/20 flex justify-end">
-         <Button onClick={handleFinalSave} disabled={activeField !== null}>Xác nhận & Lưu thay đổi</Button>
+        <Button onClick={handleFinalSave} disabled={activeField !== null || loading}>
+          {loading ? 'Đang lưu...' : 'Xác nhận & Lưu thay đổi'}
+        </Button>
       </div>
     </Card>
   )

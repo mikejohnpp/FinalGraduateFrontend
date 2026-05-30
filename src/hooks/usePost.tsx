@@ -99,6 +99,7 @@ export function useCreatePost() {
 export function usePostDetail(id: number) {
   const dispatch = useDispatch<AppDispatch>();
   const { currentPost } = useSelector((r: RootState) => r.post);
+  const { userId } = useSelector((r: RootState) => r.user);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,6 +110,7 @@ export function usePostDetail(id: number) {
         const result = await postService.getSingle<IPostDetails>(
           API.POST.BASE,
           id,
+          userId ? { userId } : undefined
         );
         dispatch(postActions.setCurrentPost(result));
       } catch (e: any) {
@@ -128,6 +130,7 @@ export function usePostDetail(id: number) {
 
 export function useUpdatePost() {
   const dispatch = useDispatch<AppDispatch>();
+  const { userId } = useSelector((r: RootState) => r.user);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -142,8 +145,9 @@ export function useUpdatePost() {
     }
     setLoading(true);
     try {
+      const url = userId ? `${API.POST.BASE}/${id}?userId=${userId}` : `${API.POST.BASE}/${id}`;
       const result = await postService.updateAndGetData<IPostDetails>(
-        `${API.POST.BASE}/${id}`,
+        url,
         data,
       );
       if (result) {
@@ -192,10 +196,7 @@ export function useLikePost() {
     setLoadingId(postId);
     dispatch(postActions.updateLikeCount({ postId, delta: 1 }));
     try {
-      const success = await postService.create(
-        `${API.POST.BASE}/${postId}/like`,
-        { userId },
-      );
+      const success = await postService.likePost(postId, userId);
       if (!success) {
         dispatch(postActions.updateLikeCount({ postId, delta: -1 }));
       }
@@ -212,10 +213,7 @@ export function useLikePost() {
     setLoadingId(postId);
     dispatch(postActions.updateLikeCount({ postId, delta: -1 }));
     try {
-      const success = await postService.deleteWithBody(
-        `${API.POST.BASE}/${postId}/like`,
-        { userId },
-      );
+      const success = await postService.unlikePost(postId, userId);
       if (!success) {
         dispatch(postActions.updateLikeCount({ postId, delta: 1 }));
       }

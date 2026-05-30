@@ -17,26 +17,30 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-
-const menuItems = [
-  { id: "home", label: "Trang chủ", to: "/friends", icon: LayoutGridIcon },
-  {
-    id: "requests",
-    label: "Lời mời kết bạn",
-    to: "/friends/request",
-    icon: UserPlusIcon,
-  },
-  {
-    id: "suggest",
-    label: "Gợi ý",
-    to: "/friends/suggest",
-    icon: UserCheckIcon,
-  },
-  { id: "all", label: "Tất cả bạn bè", to: "/friends/all", icon: UsersIcon },
-];
+import { useFriendRequestCount } from "@/hooks/useFriend";
 
 export default function FriendsSidebar() {
   const location = useLocation();
+  const { count } = useFriendRequestCount();
+
+  const menuItems = [
+    { id: "home", label: "Trang chủ", to: "/friends", icon: LayoutGridIcon, badge: null },
+    {
+      id: "requests",
+      label: "Lời mời kết bạn",
+      to: "/friends/request",
+      icon: UserPlusIcon,
+      badge: count > 0 ? count : null,
+    },
+    {
+      id: "suggest",
+      label: "Gợi ý",
+      to: "/friends/suggest",
+      icon: UserCheckIcon,
+      badge: null,
+    },
+    { id: "all", label: "Tất cả bạn bè", to: "/friends/all", icon: UsersIcon, badge: null },
+  ];
 
   return (
     <SidebarProvider
@@ -68,7 +72,12 @@ export default function FriendsSidebar() {
                         render={
                           <Link to={item.to}>
                             <Icon data-icon="inline-start" />
-                            <span>{item.label}</span>
+                            <span className="flex-1">{item.label}</span>
+                            {item.badge !== null && (
+                              <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
+                                {item.badge > 99 ? "99+" : item.badge}
+                              </span>
+                            )}
                           </Link>
                         }
                         isActive={isActive}

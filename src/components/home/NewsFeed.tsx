@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react"
 import CreatePostCard from "./CreatePostCard"
-import PostCard from "./PostCard"
+import PostCard from "@/components/PostCard"
 import StoriesBar from "./StoriesBar"
 import PostSkeleton from "./PostSkeleton"
 import { useSuggestedFeed } from "@/hooks/usePost"

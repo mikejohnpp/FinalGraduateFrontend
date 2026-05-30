@@ -43,6 +43,11 @@ const postSlice = createSlice({
             const post = state.suggestedFeed.items.find(p => p.id === action.payload.postId);
             if (post) {
                 post.likeCount += action.payload.delta;
+                post.hasLiked = action.payload.delta > 0;
+            }
+            if (state.currentPost && state.currentPost.id === action.payload.postId) {
+                state.currentPost.likeCount += action.payload.delta;
+                state.currentPost.hasLiked = action.payload.delta > 0;
             }
         },
         removePost: (state, action: PayloadAction<number>) => {

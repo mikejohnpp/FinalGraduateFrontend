@@ -11,9 +11,11 @@ interface GroupCreateFormProps {
   privacy: GroupPrivacy;
   onGroupNameChange: (name: string) => void;
   onPrivacyChange: (privacy: GroupPrivacy) => void;
+  onSubmit: () => void;
+  loading: boolean;
 }
 
-export default function GroupCreateForm({ groupName, privacy, onGroupNameChange, onPrivacyChange }: GroupCreateFormProps) {
+export default function GroupCreateForm({ groupName, privacy, onGroupNameChange, onPrivacyChange, onSubmit, loading }: GroupCreateFormProps) {
   return (
     <div className="hidden h-full w-[320px] shrink-0 flex-col overflow-y-auto border-r bg-background md:flex">
       <div className="flex flex-col gap-4 border-b p-4">
@@ -51,7 +53,7 @@ export default function GroupCreateForm({ groupName, privacy, onGroupNameChange,
             onChange={(e) => onGroupNameChange(e.target.value)} 
           />
 
-          <Select value={privacy} onValueChange={(val: GroupPrivacy) => onPrivacyChange(val)}>
+          <Select value={privacy} onValueChange={(val: string | null) => { if (val) onPrivacyChange(val as GroupPrivacy) }}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Chọn quyền riêng tư" />
             </SelectTrigger>
@@ -72,8 +74,8 @@ export default function GroupCreateForm({ groupName, privacy, onGroupNameChange,
       </div>
 
       <div className="mt-auto border-t p-4">
-        <Button className="w-full" disabled={!groupName.trim()}>
-          Tạo
+        <Button className="w-full" disabled={!groupName.trim() || loading} onClick={onSubmit}>
+          {loading ? "Đang tạo..." : "Tạo"}
         </Button>
       </div>
     </div>

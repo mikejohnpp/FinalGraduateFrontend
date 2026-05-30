@@ -50,6 +50,11 @@ const userSlice = createSlice({
                 state.username = action.payload.userName;
             }
         },
+        updateProfile: (state, action: PayloadAction<Partial<UserProfileDTO>>) => {
+            if (state.profile) {
+                state.profile = { ...state.profile, ...action.payload };
+            }
+        },
         resetUser: (state) => {
             state.userId = undefined;
             state.username = "";
