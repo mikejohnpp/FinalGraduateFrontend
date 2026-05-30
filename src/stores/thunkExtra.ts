@@ -1,5 +1,3 @@
-export type ThunkExtra = {
-};
+export type ThunkExtra = {};
 
-export const THUNK_EXTRA: ThunkExtra = {
-};
+export const THUNK_EXTRA: ThunkExtra = {};

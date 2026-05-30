@@ -47,9 +47,7 @@ const friendSlice = createSlice({
       state.requests.hasMore = action.payload.hasMore;
     },
     removeRequest: (state, action: PayloadAction<number>) => {
-      state.requests.items = state.requests.items.filter(
-        (r) => r.requestId !== action.payload
-      );
+      state.requests.items = state.requests.items.filter((r) => r.requestId !== action.payload);
     },
 
     // --- Friend Suggestions ---
@@ -64,9 +62,7 @@ const friendSlice = createSlice({
       state.suggestions.hasMore = action.payload.hasMore;
     },
     removeSuggestion: (state, action: PayloadAction<number>) => {
-      state.suggestions.items = state.suggestions.items.filter(
-        (s) => s.user.id !== action.payload
-      );
+      state.suggestions.items = state.suggestions.items.filter((s) => s.user.id !== action.payload);
     },
 
     // --- Friends List ---
@@ -81,9 +77,7 @@ const friendSlice = createSlice({
       state.friends.hasMore = action.payload.hasMore;
     },
     removeFriend: (state, action: PayloadAction<number>) => {
-      state.friends.items = state.friends.items.filter(
-        (f) => f.user.id !== action.payload
-      );
+      state.friends.items = state.friends.items.filter((f) => f.user.id !== action.payload);
     },
 
     // --- Badge Count ---

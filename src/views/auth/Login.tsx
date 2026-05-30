@@ -39,13 +39,9 @@ export default function Login() {
         <div className="hidden items-center justify-center bg-card/50 lg:flex">
           <div className="flex flex-col items-center gap-6 px-8">
             <div className="flex size-48 items-center justify-center rounded-full bg-primary">
-              <span className="text-7xl font-bold text-primary-foreground">
-                f
-              </span>
+              <span className="text-7xl font-bold text-primary-foreground">f</span>
             </div>
-            <p className="text-lg text-muted-foreground">
-              Kết nối cộng đồng, chia sẻ khoảnh khắc.
-            </p>
+            <p className="text-lg text-muted-foreground">Kết nối cộng đồng, chia sẻ khoảnh khắc.</p>
           </div>
         </div>
 
@@ -56,9 +52,7 @@ export default function Login() {
               <h1 className="text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
                 Đang xảy ra ngay bây giờ
               </h1>
-              <h2 className="text-xl font-bold text-foreground lg:text-2xl">
-                Chào mừng trở lại.
-              </h2>
+              <h2 className="text-xl font-bold text-foreground lg:text-2xl">Chào mừng trở lại.</h2>
             </div>
 
             <div className="flex flex-col gap-4">
@@ -77,10 +71,7 @@ export default function Login() {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="login-password">Mật khẩu</Label>
-                  <Button
-                    variant="link"
-                    className="h-auto p-0 text-xs text-primary"
-                  >
+                  <Button variant="link" className="h-auto p-0 text-xs text-primary">
                     Quên mật khẩu?
                   </Button>
                 </div>
@@ -98,11 +89,7 @@ export default function Login() {
 
               {error && <p className="text-sm text-destructive">{error}</p>}
 
-              <Button
-                className="w-full rounded-full"
-                onClick={handleLogin}
-                disabled={isLoading}
-              >
+              <Button className="w-full rounded-full" onClick={handleLogin} disabled={isLoading}>
                 {isLoading && <Spinner data-icon="inline-start" />}
                 Đăng nhập
               </Button>

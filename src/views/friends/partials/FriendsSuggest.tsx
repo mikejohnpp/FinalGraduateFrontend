@@ -13,7 +13,7 @@ export default function FriendsSuggest() {
   const { dismiss } = useDismissSuggestion();
 
   return (
-    <ScrollArea className="w-full h-full px-8 pt-8 pb-0">
+    <ScrollArea className="h-full w-full px-8 pt-8 pb-0">
       <div className="flex flex-col gap-6">
         <h1 className="text-2xl font-semibold">Bạn có thể biết</h1>
 
@@ -37,11 +37,7 @@ export default function FriendsSuggest() {
 
             {hasMore && (
               <div className="flex justify-center py-4">
-                <Button
-                  variant="outline"
-                  onClick={loadMore}
-                  disabled={loading}
-                >
+                <Button variant="outline" onClick={loadMore} disabled={loading}>
                   {loading ? "Đang tải..." : "Xem thêm"}
                 </Button>
               </div>

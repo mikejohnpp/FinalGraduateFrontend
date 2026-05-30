@@ -8,7 +8,7 @@ export default function FriendsAll() {
   const { unfriend, loadingId } = useUnfriend();
 
   return (
-    <ScrollArea className="w-full h-full flex flex-col px-8 pt-8 pb-0">
+    <ScrollArea className="flex h-full w-full flex-col px-8 pt-8 pb-0">
       <div className="flex flex-col gap-6">
         <h1 className="text-2xl font-semibold">Tất cả bạn bè</h1>
 
@@ -31,11 +31,7 @@ export default function FriendsAll() {
 
             {hasMore && (
               <div className="flex justify-center py-4">
-                <Button
-                  variant="outline"
-                  onClick={loadMore}
-                  disabled={loading}
-                >
+                <Button variant="outline" onClick={loadMore} disabled={loading}>
                   {loading ? "Đang tải..." : "Xem thêm"}
                 </Button>
               </div>

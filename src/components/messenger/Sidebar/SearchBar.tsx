@@ -1,9 +1,5 @@
 import { Search } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupInput,
-  InputGroupText,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 
 interface SearchBarProps {
   value: string;
@@ -21,7 +17,7 @@ export default function SearchBar({ value, onChange }: SearchBarProps) {
           placeholder="Tìm kiếm trên Messenger"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-secondary border-none"
+          className="border-none bg-secondary"
         />
       </InputGroup>
     </div>

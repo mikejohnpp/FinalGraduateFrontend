@@ -2,8 +2,7 @@ import { AUTH_TOKEN_NAME } from "@/common/constants";
 
 export function RemoveToken() {
   const token = localStorage.getItem(AUTH_TOKEN_NAME);
-  if (token != null)
-    localStorage.removeItem(AUTH_TOKEN_NAME);
+  if (token != null) localStorage.removeItem(AUTH_TOKEN_NAME);
 }
 
 export function RedirectLogin() {
@@ -17,9 +16,7 @@ export function RedirectLoginAndResetParam() {
   if (window.location.href.indexOf("/login") == -1) {
     window.location.href = "/login";
   }
-
 }
-
 
 export function RedirectToPage() {
   const params = new URL(window.location.href).searchParams;

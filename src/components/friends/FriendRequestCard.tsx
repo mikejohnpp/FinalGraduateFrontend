@@ -27,9 +27,7 @@ export default function FriendRequestCard({
       <CardHeader>
         <CardTitle>{request.sender.name}</CardTitle>
         {request.mutualFriendCount > 0 ? (
-          <p className="text-xs text-muted-foreground">
-            {request.mutualFriendCount} bạn chung
-          </p>
+          <p className="text-xs text-muted-foreground">{request.mutualFriendCount} bạn chung</p>
         ) : null}
       </CardHeader>
       <CardContent className="flex flex-col gap-2">

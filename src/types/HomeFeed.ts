@@ -1,55 +1,56 @@
 export interface Story {
-  id: string
-  name: string
-  avatarUrl: string
-  imageUrl?: string
-  isViewed?: boolean
+  id: string;
+  name: string;
+  avatarUrl: string;
+  imageUrl?: string;
+  isViewed?: boolean;
 }
 
 export interface Comment {
-  id: string
+  id: string;
   author: {
-    name: string
-    avatarUrl: string
-  }
-  content: string
-  time: string
-  likeCount?: number
-  replyCount?: number
-  replies?: Comment[]
+    name: string;
+    avatarUrl: string;
+  };
+  content: string;
+  time: string;
+  likeCount?: number;
+  replyCount?: number;
+  replies?: Comment[];
 }
 
 export interface Post {
-  id: string
+  id: string;
   author: {
-    name: string
-    avatarUrl: string
-    subName?: string
-    badge?: string
-  }
-  content: string
-  image?: string
-  likes: number
-  comments: number
-  commentList: Comment[]
-  time: string
-  reactionCount?: number
-  commentCount?: number
+    name: string;
+    avatarUrl: string;
+    subName?: string;
+    badge?: string;
+  };
+  content: string;
+  image?: string;
+  likes: number;
+  comments: number;
+  commentList: Comment[];
+  time: string;
+  reactionCount?: number;
+  commentCount?: number;
 }
 export interface Contact {
-  id: string
-  name: string
-  avatarUrl: string
-  isOnline: boolean
+  id: string;
+  name: string;
+  avatarUrl: string;
+  isOnline: boolean;
 }
 
 export interface Shortcut {
-  id: string
-  label: string
-  icon: string
+  id: string;
+  label: string;
+  icon: string;
+  to?: string;
 }
 
 export interface CurrentUser {
-  name: string
-  avatarUrl: string
+  name: string;
+  avatarUrl: string;
 }

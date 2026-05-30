@@ -11,9 +11,7 @@ const GROUP_PATH_CONSTRAINT = {
 
 const GroupsLayout = React.lazy(() => import("@/views/layouts/GroupsLayout"));
 const GroupsFeed = React.lazy(() => import("@/views/groups/GroupsFeed"));
-const GroupsDiscover = React.lazy(
-  () => import("@/views/groups/GroupsDiscover"),
-);
+const GroupsDiscover = React.lazy(() => import("@/views/groups/GroupsDiscover"));
 const GroupsMine = React.lazy(() => import("@/views/groups/GroupsMine"));
 const GroupCreate = React.lazy(() => import("@/views/groups/GroupCreate"));
 const GroupDetail = React.lazy(() => import("@/views/groups/GroupDetail"));

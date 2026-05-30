@@ -1,6 +1,6 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { stories } from "@/data/mock/home"
-import StoryItem from "./StoryItem"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { stories } from "@/data/mock/home";
+import StoryItem from "./StoryItem";
 
 export default function StoriesBar() {
   return (
@@ -13,5 +13,5 @@ export default function StoriesBar() {
       </div>
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
-  )
+  );
 }

@@ -103,7 +103,10 @@ export function useGroupActions() {
     if (!userId) return false;
     setLoading(true);
     try {
-      const success = await groupService.create(`${API.GROUP.BASE}/${group.id}/join?userId=${userId}`, null);
+      const success = await groupService.create(
+        `${API.GROUP.BASE}/${group.id}/join?userId=${userId}`,
+        null,
+      );
       if (success) {
         dispatch(groupActions.addJoinedGroup({ ...group, isJoined: true, role: "MEMBER" }));
         toast.success("Đã tham gia nhóm");
@@ -121,7 +124,10 @@ export function useGroupActions() {
     if (!userId) return false;
     setLoading(true);
     try {
-      const success = await groupService.create(`${API.GROUP.BASE}/${groupId}/leave?userId=${userId}`, null);
+      const success = await groupService.create(
+        `${API.GROUP.BASE}/${groupId}/leave?userId=${userId}`,
+        null,
+      );
       if (success) {
         dispatch(groupActions.removeJoinedGroup(groupId));
         toast.success("Đã rời nhóm");
@@ -135,11 +141,18 @@ export function useGroupActions() {
     return false;
   };
 
-  const createGroup = async (data: { name: string; privacy: "public" | "private"; invitees?: number[] }) => {
+  const createGroup = async (data: {
+    name: string;
+    privacy: "public" | "private";
+    invitees?: number[];
+  }) => {
     if (!userId) return null;
     setLoading(true);
     try {
-      const newGroup = await groupService.createAndGetData<IGroup>(`${API.GROUP.BASE}?userId=${userId}`, data);
+      const newGroup = await groupService.createAndGetData<IGroup>(
+        `${API.GROUP.BASE}?userId=${userId}`,
+        data,
+      );
       if (newGroup) {
         dispatch(groupActions.addJoinedGroup(newGroup));
         toast.success("Tạo nhóm thành công");
@@ -163,32 +176,35 @@ export function useGroupFeed() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchFeed = useCallback(async (isLoadMore = false) => {
-    if (!userId) return;
-    if (isLoadMore && (!groupFeed.hasMore || loading)) return;
+  const fetchFeed = useCallback(
+    async (isLoadMore = false) => {
+      if (!userId) return;
+      if (isLoadMore && (!groupFeed.hasMore || loading)) return;
 
-    setLoading(true);
-    setError(null);
-    try {
-      const cursor = isLoadMore ? (groupFeed.nextCursor || undefined) : undefined;
-      const data = await groupService.getSingle<CursorPageResponse<IPost>>(
-        API.GROUP.FEED,
-        undefined,
-        { userId, ...(cursor ? { cursor } : {}), size: 10 }
-      );
-      if (data) {
-        if (isLoadMore) {
-          dispatch(groupActions.appendGroupFeed(data));
-        } else {
-          dispatch(groupActions.setGroupFeed(data));
+      setLoading(true);
+      setError(null);
+      try {
+        const cursor = isLoadMore ? groupFeed.nextCursor || undefined : undefined;
+        const data = await groupService.getSingle<CursorPageResponse<IPost>>(
+          API.GROUP.FEED,
+          undefined,
+          { userId, ...(cursor ? { cursor } : {}), size: 10 },
+        );
+        if (data) {
+          if (isLoadMore) {
+            dispatch(groupActions.appendGroupFeed(data));
+          } else {
+            dispatch(groupActions.setGroupFeed(data));
+          }
         }
+      } catch (e: any) {
+        setError(e?.response?.data?.message || "Lỗi tải bảng tin nhóm");
+      } finally {
+        setLoading(false);
       }
-    } catch (e: any) {
-      setError(e?.response?.data?.message || "Lỗi tải bảng tin nhóm");
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, groupFeed.hasMore, groupFeed.nextCursor, loading, dispatch]);
+    },
+    [userId, groupFeed.hasMore, groupFeed.nextCursor, loading, dispatch],
+  );
 
   useEffect(() => {
     if (userId && groupFeed.items.length === 0) {
@@ -211,34 +227,37 @@ export function useSingleGroupPosts(groupId: number) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPosts = useCallback(async (isLoadMore = false) => {
-    if (!userId || !groupId) return;
-    if (isLoadMore && (!hasMore || loading)) return;
+  const fetchPosts = useCallback(
+    async (isLoadMore = false) => {
+      if (!userId || !groupId) return;
+      if (isLoadMore && (!hasMore || loading)) return;
 
-    setLoading(true);
-    setError(null);
-    try {
-      const cursor = isLoadMore ? (nextCursor || undefined) : undefined;
-      const data = await groupService.getSingle<CursorPageResponse<IPost>>(
-        `${API.GROUP.BASE}/${groupId}/posts`,
-        undefined,
-        { userId, ...(cursor ? { cursor } : {}), size: 10 }
-      );
-      if (data) {
-        if (isLoadMore) {
-          setPosts(prev => [...prev, ...data.data]);
-        } else {
-          setPosts(data.data);
+      setLoading(true);
+      setError(null);
+      try {
+        const cursor = isLoadMore ? nextCursor || undefined : undefined;
+        const data = await groupService.getSingle<CursorPageResponse<IPost>>(
+          `${API.GROUP.BASE}/${groupId}/posts`,
+          undefined,
+          { userId, ...(cursor ? { cursor } : {}), size: 10 },
+        );
+        if (data) {
+          if (isLoadMore) {
+            setPosts((prev) => [...prev, ...data.data]);
+          } else {
+            setPosts(data.data);
+          }
+          setNextCursor(data.nextCursor);
+          setHasMore(data.hasMore);
         }
-        setNextCursor(data.nextCursor);
-        setHasMore(data.hasMore);
+      } catch (e: any) {
+        setError(e?.response?.data?.message || "Lỗi tải bài viết nhóm");
+      } finally {
+        setLoading(false);
       }
-    } catch (e: any) {
-      setError(e?.response?.data?.message || "Lỗi tải bài viết nhóm");
-    } finally {
-      setLoading(false);
-    }
-  }, [userId, groupId, hasMore, nextCursor, loading]);
+    },
+    [userId, groupId, hasMore, nextCursor, loading],
+  );
 
   useEffect(() => {
     fetchPosts();
@@ -247,10 +266,18 @@ export function useSingleGroupPosts(groupId: number) {
   const loadMore = () => {
     fetchPosts(true);
   };
-  
+
   const prependPost = (post: IPost) => {
-    setPosts(prev => [post, ...prev]);
+    setPosts((prev) => [post, ...prev]);
   };
 
-  return { posts, loading, error, hasMore, loadMore, refetch: () => fetchPosts(false), prependPost };
+  return {
+    posts,
+    loading,
+    error,
+    hasMore,
+    loadMore,
+    refetch: () => fetchPosts(false),
+    prependPost,
+  };
 }

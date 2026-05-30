@@ -1,11 +1,7 @@
 import FriendRequestCard from "@/components/friends/FriendRequestCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import {
-  useAcceptRequest,
-  useDeclineRequest,
-  useFriendRequests,
-} from "@/hooks/useFriend";
+import { useAcceptRequest, useDeclineRequest, useFriendRequests } from "@/hooks/useFriend";
 
 export default function FriendsRequests() {
   const { requests, hasMore, loadMore, loading } = useFriendRequests();
@@ -15,7 +11,7 @@ export default function FriendsRequests() {
   const requestLoadingId = acceptLoadingId ?? declineLoadingId;
 
   return (
-    <ScrollArea className="w-full h-full px-8 pt-8 pb-0">
+    <ScrollArea className="h-full w-full px-8 pt-8 pb-0">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-semibold">Lời mời kết bạn</h1>
 
@@ -39,11 +35,7 @@ export default function FriendsRequests() {
 
             {hasMore && (
               <div className="flex justify-center py-4">
-                <Button
-                  variant="outline"
-                  onClick={loadMore}
-                  disabled={loading}
-                >
+                <Button variant="outline" onClick={loadMore} disabled={loading}>
                   {loading ? "Đang tải..." : "Xem thêm"}
                 </Button>
               </div>

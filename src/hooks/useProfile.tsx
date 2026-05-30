@@ -89,7 +89,7 @@ export function useUpdateProfile() {
         setLoading(false);
       }
     },
-    [userId, dispatch]
+    [userId, dispatch],
   );
 
   return { update, loading, error };
@@ -128,7 +128,7 @@ export function useUploadAvatar() {
         setLoading(false);
       }
     },
-    [userId, dispatch]
+    [userId, dispatch],
   );
 
   return { upload, loading, error };
@@ -167,7 +167,7 @@ export function useUploadCover() {
         setLoading(false);
       }
     },
-    [userId, dispatch]
+    [userId, dispatch],
   );
 
   return { upload, loading, error };

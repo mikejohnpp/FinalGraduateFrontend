@@ -27,9 +27,7 @@ export default function FriendSuggestCard({
       <CardHeader>
         <CardTitle className="text-sm">{suggestion.user.name}</CardTitle>
         {suggestion.mutualFriendCount > 0 ? (
-          <p className="text-xs text-muted-foreground">
-            {suggestion.mutualFriendCount} bạn chung
-          </p>
+          <p className="text-xs text-muted-foreground">{suggestion.mutualFriendCount} bạn chung</p>
         ) : null}
       </CardHeader>
       <CardContent className="flex flex-col gap-2">

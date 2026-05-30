@@ -1,10 +1,23 @@
 import type { GroupPrivacy } from "@/types/Group";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronDown, X } from "lucide-react";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator, BreadcrumbLink, BreadcrumbPage } from "@/components/ui/breadcrumb";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbLink,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 
 interface GroupCreateFormProps {
   groupName: string;
@@ -15,7 +28,14 @@ interface GroupCreateFormProps {
   loading: boolean;
 }
 
-export default function GroupCreateForm({ groupName, privacy, onGroupNameChange, onPrivacyChange, onSubmit, loading }: GroupCreateFormProps) {
+export default function GroupCreateForm({
+  groupName,
+  privacy,
+  onGroupNameChange,
+  onPrivacyChange,
+  onSubmit,
+  loading,
+}: GroupCreateFormProps) {
   return (
     <div className="hidden h-full w-[320px] shrink-0 flex-col overflow-y-auto border-r bg-background md:flex">
       <div className="flex flex-col gap-4 border-b p-4">
@@ -34,7 +54,10 @@ export default function GroupCreateForm({ groupName, privacy, onGroupNameChange,
       </div>
 
       <div className="flex flex-1 flex-col gap-5 p-4">
-        <Button variant="ghost" className="h-auto w-full justify-start gap-3 px-2 py-2 hover:bg-muted">
+        <Button
+          variant="ghost"
+          className="h-auto w-full justify-start gap-3 px-2 py-2 hover:bg-muted"
+        >
           <Avatar className="size-10">
             <AvatarImage src="https://i.pravatar.cc/100?u=me" />
             <AvatarFallback>Me</AvatarFallback>
@@ -47,13 +70,18 @@ export default function GroupCreateForm({ groupName, privacy, onGroupNameChange,
         </Button>
 
         <div className="flex flex-col gap-4">
-          <Input 
-            placeholder="Tên nhóm" 
-            value={groupName} 
-            onChange={(e) => onGroupNameChange(e.target.value)} 
+          <Input
+            placeholder="Tên nhóm"
+            value={groupName}
+            onChange={(e) => onGroupNameChange(e.target.value)}
           />
 
-          <Select value={privacy} onValueChange={(val: string | null) => { if (val) onPrivacyChange(val as GroupPrivacy) }}>
+          <Select
+            value={privacy}
+            onValueChange={(val: string | null) => {
+              if (val) onPrivacyChange(val as GroupPrivacy);
+            }}
+          >
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Chọn quyền riêng tư" />
             </SelectTrigger>
@@ -62,11 +90,11 @@ export default function GroupCreateForm({ groupName, privacy, onGroupNameChange,
               <SelectItem value="private">Riêng tư</SelectItem>
             </SelectContent>
           </Select>
-          
+
           <p className="px-1 text-sm text-muted-foreground">
-            {privacy === 'public' 
-              ? 'Bất kỳ ai cũng có thể nhìn thấy mọi người trong nhóm và những gì họ đăng.' 
-              : 'Chỉ thành viên mới nhìn thấy mọi người trong nhóm và những gì họ đăng.'}
+            {privacy === "public"
+              ? "Bất kỳ ai cũng có thể nhìn thấy mọi người trong nhóm và những gì họ đăng."
+              : "Chỉ thành viên mới nhìn thấy mọi người trong nhóm và những gì họ đăng."}
           </p>
 
           <Input placeholder="Mời bạn bè (không bắt buộc)" className="bg-muted/50" />

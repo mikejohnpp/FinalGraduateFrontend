@@ -22,7 +22,7 @@ export default function GroupCreate() {
 
   return (
     <div className="flex h-[calc(100vh-64px)] bg-background">
-      <GroupCreateForm 
+      <GroupCreateForm
         groupName={groupName}
         privacy={privacy}
         onGroupNameChange={setGroupName}
@@ -30,7 +30,7 @@ export default function GroupCreate() {
         onSubmit={handleCreate}
         loading={loading}
       />
-      <GroupCreatePreview 
+      <GroupCreatePreview
         groupName={groupName}
         privacy={privacy}
         previewMode={previewMode}

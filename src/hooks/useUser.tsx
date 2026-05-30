@@ -5,10 +5,7 @@ import type { AppDispatch, RootState } from "@/stores/store";
 import { userActions } from "@/stores/userSlice";
 import type { RegisterFormData } from "@/types/interfaces/auth/RegisterFormData";
 import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
-import {
-  parseResDataOrMessage,
-  type ParsedErrorRes,
-} from "@/utils/errorHelper";
+import { parseResDataOrMessage, type ParsedErrorRes } from "@/utils/errorHelper";
 import { RedirectLogin, RemoveToken } from "@/utils/redirectHelper";
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -55,7 +52,9 @@ export function useLoginUser() {
     } catch (error: any) {
       console.error("Login failed:", error);
       dispatch(userActions.setLoginSuccess(false));
-      toast.error(error?.response?.data?.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!");
+      toast.error(
+        error?.response?.data?.message || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!",
+      );
     } finally {
       dispatch(userActions.setIsLoading(false));
     }
@@ -75,8 +74,7 @@ export function useLogoutUser() {
     try {
       dispatch(userActions.setIsLoading(true));
 
-      const res: ApiResultGeneric<undefined> | undefined =
-        await userService.logout();
+      const res: ApiResultGeneric<undefined> | undefined = await userService.logout();
       if (res?.success) {
         dispatch(userActions.resetUser());
         toast.info("Đã đăng xuất");
@@ -154,9 +152,7 @@ export function useUserRegister() {
 }
 
 export function useUserActivate(code: string | undefined) {
-  const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading",
-  );
+  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {

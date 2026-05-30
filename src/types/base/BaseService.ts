@@ -18,7 +18,7 @@ class BaseService {
 
   async create<T, TData = any>(url: string, data: TData): Promise<boolean> {
     const response = await http.post<ApiResultGeneric<T>>(url, data);
-    return response.data != null;
+    return response.data != null || response.code === 200 || response.code === 201;
   }
 
   async createAndGetData<T, TData = any>(url: string, data: TData): Promise<T | null> {
@@ -36,13 +36,8 @@ class BaseService {
     return response.data ?? null;
   }
 
-  async delete(
-    url: string,
-    id: Array<string> | Array<number>
-  ): Promise<boolean> {
-    const response = await http.delete<ApiResult>(
-      `${url}/${id.join(",")}`
-    );
+  async delete(url: string, id: Array<string> | Array<number>): Promise<boolean> {
+    const response = await http.delete<ApiResult>(`${url}/${id.join(",")}`);
     return response.code === 200;
   }
 
@@ -50,7 +45,6 @@ class BaseService {
     const response = await http.deleteWithBody<ApiResult>(url, data);
     return response.success ?? (response.code === 200 || response.code === 204);
   }
-
 }
 
 export default BaseService;

@@ -1,4 +1,4 @@
 export interface TokenResult {
-    token: string,
-    userId: number
+  token: string;
+  userId: number;
 }

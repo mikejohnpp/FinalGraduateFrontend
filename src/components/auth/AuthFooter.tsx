@@ -23,9 +23,7 @@ export default function AuthFooter() {
             {link}
           </span>
         ))}
-        <span className="text-xs text-muted-foreground">
-          © 2026 Tiệm Cũ
-        </span>
+        <span className="text-xs text-muted-foreground">© 2026 Tiệm Cũ</span>
       </div>
     </nav>
   );

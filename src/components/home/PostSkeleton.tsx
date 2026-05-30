@@ -1,5 +1,5 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PostSkeleton() {
   return (
@@ -23,12 +23,12 @@ export default function PostSkeleton() {
           <Skeleton className="h-3 w-[60px]" />
           <Skeleton className="h-3 w-[80px]" />
         </div>
-        <div className="flex w-full items-center justify-around border-t pt-2 mt-2">
+        <div className="mt-2 flex w-full items-center justify-around border-t pt-2">
           <Skeleton className="h-8 w-[80px]" />
           <Skeleton className="h-8 w-[100px]" />
           <Skeleton className="h-8 w-[80px]" />
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

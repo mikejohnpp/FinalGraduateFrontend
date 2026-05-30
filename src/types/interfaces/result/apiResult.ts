@@ -1,6 +1,6 @@
 export interface ApiResult {
   code: number;
-  success?: boolean
+  success?: boolean;
   message?: string;
   exception?: string;
 }

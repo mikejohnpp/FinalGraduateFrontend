@@ -1,12 +1,14 @@
 import GroupCard from "./GroupCard";
-import { suggestedGroups } from "@/data/mock/groupsMock";
+import { useGroupsData, useGroupActions } from "@/hooks/useGroup";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { PATH_CONSTRAINT } from "@/plugins/routers";
 
 export default function GroupDiscoverSection() {
   const navigate = useNavigate();
-  // Lấy 6 nhóm đầu tiên cho phần cuộn ngang
+  const { suggestedGroups, loading } = useGroupsData();
+  const { joinGroup } = useGroupActions();
+  
   const topSuggested = suggestedGroups.slice(0, 6);
 
   return (
@@ -21,12 +23,15 @@ export default function GroupDiscoverSection() {
         </Button>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-4 snap-x">
-        {topSuggested.map(group => (
+      <div className="flex snap-x gap-3 overflow-x-auto pb-4">
+        {topSuggested.map((group) => (
           <GroupCard 
             key={group.id} 
             group={group} 
             className="w-[240px] shrink-0 snap-start" 
+            onJoin={async () => {
+              await joinGroup(group);
+            }}
           />
         ))}
       </div>

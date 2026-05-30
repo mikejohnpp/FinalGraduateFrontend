@@ -17,17 +17,9 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
 import ButtonPopover from "./ButtonPopover";
 import MessagesInnerPopover from "./MessagesInnerPopover";
@@ -63,12 +55,17 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-20 shrink-0 h-[62px] border-b border-border bg-card/95 backdrop-blur">
-      <div className="grid grid-cols-[1fr_auto_1fr] w-full items-center h-full px-4">
+    <header className="sticky top-0 z-20 h-[62px] shrink-0 border-b border-border bg-card/95 backdrop-blur">
+      <div className="grid h-full w-full grid-cols-[1fr_auto_1fr] items-center px-4">
         <div className="flex items-center gap-3 justify-self-start">
-          <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold">
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground transition-opacity hover:opacity-80"
+            aria-label="Về trang chủ"
+          >
             f
-          </div>
+          </button>
           <div className="hidden w-[260px] sm:block">
             <div className="rounded-full bg-secondary">
               <AutoComplete />
@@ -76,7 +73,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-2 justify-self-center h-full">
+        <div className="flex h-full items-center justify-center gap-2 justify-self-center">
           {navItems.map((item) => {
             const Icon = item.icon;
             var isActive = false;
@@ -149,33 +146,22 @@ export default function Header() {
               <ItemMedia>
                 <div className="flex -space-x-2 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background *:data-[slot=avatar]:grayscale">
                   <Avatar className="hidden sm:flex">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
+                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <Avatar className="hidden sm:flex">
-                    <AvatarImage
-                      src="https://github.com/maxleiter.png"
-                      alt="@maxleiter"
-                    />
+                    <AvatarImage src="https://github.com/maxleiter.png" alt="@maxleiter" />
                     <AvatarFallback>LR</AvatarFallback>
                   </Avatar>
                   <Avatar>
-                    <AvatarImage
-                      src="https://github.com/evilrabbit.png"
-                      alt="@evilrabbit"
-                    />
+                    <AvatarImage src="https://github.com/evilrabbit.png" alt="@evilrabbit" />
                     <AvatarFallback>ER</AvatarFallback>
                   </Avatar>
                 </div>
               </ItemMedia>
               <ItemContent>
                 <ItemTitle>No Team Members</ItemTitle>
-                <ItemDescription>
-                  Invite your team to collaborate on this project.
-                </ItemDescription>
+                <ItemDescription>Invite your team to collaborate on this project.</ItemDescription>
               </ItemContent>
               <ItemActions>
                 <Button size="sm" variant="outline">
@@ -191,7 +177,7 @@ export default function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="relative size-10 rounded-full hover:bg-secondary p-0 ml-1"
+                  className="relative ml-1 size-10 rounded-full p-0 hover:bg-secondary"
                   aria-label="Tài khoản"
                 >
                   <Avatar className="size-10">
@@ -204,14 +190,14 @@ export default function Header() {
             <PopoverContent
               align="end"
               sideOffset={8}
-              className="w-[360px] p-4 shadow-lg rounded-xl"
+              className="w-[360px] rounded-xl p-4 shadow-lg"
             >
               <div className="flex flex-col gap-2">
                 {/* Card đầu tiên (Thông tin user) */}
-                <div className="p-3 bg-secondary/50 rounded-lg shadow-sm border">
+                <div className="rounded-lg border bg-secondary/50 p-3 shadow-sm">
                   <Item
                     size="default"
-                    className="p-0 bg-transparent border-none shadow-none mb-3 pointer-events-none gap-3"
+                    className="pointer-events-none mb-3 gap-3 border-none bg-transparent p-0 shadow-none"
                   >
                     <ItemMedia>
                       <Avatar className="size-10">
@@ -220,14 +206,12 @@ export default function Header() {
                       </Avatar>
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle className="text-lg font-bold">
-                        {displayName}
-                      </ItemTitle>
+                      <ItemTitle className="text-lg font-bold">{displayName}</ItemTitle>
                     </ItemContent>
                   </Item>
                   <Button
                     variant="secondary"
-                    className="w-full h-9 font-semibold text-[15px]"
+                    className="h-9 w-full text-[15px] font-semibold"
                     onClick={() => navigate(`/profile/${userId}`)}
                   >
                     Xem tất cả trang cá nhân
@@ -236,18 +220,16 @@ export default function Header() {
 
                 {/* Nút đăng xuất */}
                 <Item
-                  className="px-2 py-2 rounded-lg cursor-pointer hover:bg-secondary border-none shadow-none mt-2"
+                  className="mt-2 cursor-pointer rounded-lg border-none px-2 py-2 shadow-none hover:bg-secondary"
                   onClick={() => handleLogout()}
                 >
                   <ItemMedia>
-                    <div className="size-9 flex items-center justify-center rounded-full bg-secondary">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-secondary">
                       <LogOutIcon className="size-5" />
                     </div>
                   </ItemMedia>
                   <ItemContent>
-                    <ItemTitle className="font-semibold text-[15px]">
-                      Đăng xuất
-                    </ItemTitle>
+                    <ItemTitle className="text-[15px] font-semibold">Đăng xuất</ItemTitle>
                   </ItemContent>
                 </Item>
               </div>

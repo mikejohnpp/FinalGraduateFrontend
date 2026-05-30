@@ -1,12 +1,19 @@
-import type { Group } from "@/types/Group";
+import type { IGroup } from "@/types/interfaces/group/IGroup";
+import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface GroupMineGridProps {
-  groups: Group[];
+  groups: IGroup[];
 }
 
 export default function GroupMineGrid({ groups }: GroupMineGridProps) {
@@ -24,20 +31,22 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => (
           <Card key={group.id} className="flex items-center gap-3 p-3">
-            <img 
-              src={group.coverPhoto} 
-              alt={group.name} 
-              className="size-[72px] shrink-0 rounded-lg object-cover" 
+            <img
+              src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"}
+              alt={group.name}
+              className="size-[72px] shrink-0 rounded-lg object-cover"
             />
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="truncate font-semibold">{group.name}</p>
-              {group.lastAccessed && (
-                <p className="mb-2 truncate text-sm text-muted-foreground">Truy cập {group.lastAccessed}</p>
+              {group.memberCount && (
+                <p className="mb-2 truncate text-sm text-muted-foreground">
+                  {group.memberCount.toLocaleString("vi-VN")} thành viên
+                </p>
               )}
               <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  variant="secondary" 
+                <Button
+                  size="sm"
+                  variant="secondary"
                   className="h-8 flex-1 text-sm"
                   onClick={() => navigate(`/groups/${group.id}`)}
                 >
@@ -46,7 +55,11 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     render={
-                      <Button variant="secondary" size="icon" className="size-8 shrink-0 rounded-lg bg-muted/50 text-muted-foreground">
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="size-8 shrink-0 rounded-lg bg-muted/50 text-muted-foreground"
+                      >
                         <MoreHorizontal data-icon="inline" />
                       </Button>
                     }

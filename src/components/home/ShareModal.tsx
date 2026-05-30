@@ -1,26 +1,11 @@
-import {
-  GlobeIcon,
-  MessageCircleIcon,
-  SendHorizonalIcon,
-  UsersIcon,
-} from "lucide-react"
+import { GlobeIcon, MessageCircleIcon, SendHorizonalIcon, UsersIcon } from "lucide-react";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { currentUser } from "@/data/mock/home"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { currentUser } from "@/data/mock/home";
 
-export default function ShareModal({
-  open,
-  onClose,
-}: {
-  open: boolean
-  onClose: () => void
-}) {
+export default function ShareModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-sm">
@@ -77,5 +62,5 @@ export default function ShareModal({
         </button>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

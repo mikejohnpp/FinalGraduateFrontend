@@ -28,7 +28,7 @@ export default function FriendsHome() {
   const requestLoadingId = acceptLoadingId ?? declineLoadingId;
 
   return (
-    <ScrollArea className="w-full h-full px-8 pt-8 pb-0">
+    <ScrollArea className="h-full w-full px-8 pt-8 pb-0">
       <div className="flex flex-col gap-6">
         {/* Lời mời kết bạn */}
         <section className="flex flex-col gap-4">

@@ -7,16 +7,13 @@ export default function GroupsFeed() {
   const { feed, loading, loadMore } = useGroupFeed();
 
   return (
-    <div className="max-w-2xl mx-auto py-6 px-4 space-y-4">
+    <div className="mx-auto max-w-2xl space-y-4 px-4 py-6">
       <h3 className="text-[17px] font-bold text-foreground">Hoạt động mới đây</h3>
-      
+
       {feed.items.map((post) => (
-        <PostCard 
-          key={post.id} 
-          post={post} 
-        />
+        <PostCard key={post.id} post={post} />
       ))}
-      
+
       {loading && (
         <div className="space-y-4 pt-4">
           <Skeleton className="h-[200px] w-full rounded-xl bg-muted/50" />
@@ -25,17 +22,17 @@ export default function GroupsFeed() {
       )}
 
       {!loading && feed.hasMore && (
-        <Button variant="outline" className="w-full mt-4" onClick={loadMore}>
+        <Button variant="outline" className="mt-4 w-full" onClick={loadMore}>
           Tải thêm bài viết
         </Button>
       )}
-      
+
       {!loading && !feed.hasMore && feed.items.length > 0 && (
-        <p className="text-center text-muted-foreground pt-4">Bạn đã xem hết bài viết.</p>
+        <p className="pt-4 text-center text-muted-foreground">Bạn đã xem hết bài viết.</p>
       )}
 
       {!loading && feed.items.length === 0 && (
-        <div className="text-center py-8">
+        <div className="py-8 text-center">
           <p className="text-muted-foreground">Chưa có bài viết nào từ các nhóm của bạn.</p>
         </div>
       )}

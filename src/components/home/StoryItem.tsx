@@ -1,15 +1,9 @@
-import { PlusIcon } from "lucide-react"
+import { PlusIcon } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import type { Story } from "@/types/HomeFeed"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { Story } from "@/types/HomeFeed";
 
-export default function StoryItem({
-  story,
-  isCreate,
-}: {
-  story: Story
-  isCreate?: boolean
-}) {
+export default function StoryItem({ story, isCreate }: { story: Story; isCreate?: boolean }) {
   if (isCreate) {
     return (
       <div className="flex shrink-0 flex-col items-center gap-1">
@@ -24,11 +18,9 @@ export default function StoryItem({
             </span>
           </div>
         </div>
-        <span className="max-w-16 truncate text-xs text-muted-foreground">
-          {story.name}
-        </span>
+        <span className="max-w-16 truncate text-xs text-muted-foreground">{story.name}</span>
       </div>
-    )
+    );
   }
 
   return (
@@ -39,9 +31,7 @@ export default function StoryItem({
           <AvatarFallback>{story.name.charAt(0)}</AvatarFallback>
         </Avatar>
       </div>
-      <span className="max-w-16 truncate text-xs text-muted-foreground">
-        {story.name}
-      </span>
+      <span className="max-w-16 truncate text-xs text-muted-foreground">{story.name}</span>
     </div>
-  )
+  );
 }

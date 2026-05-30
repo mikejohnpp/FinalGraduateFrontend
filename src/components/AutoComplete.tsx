@@ -89,40 +89,42 @@ export default function AutoComplete({
   const handleRemove = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     e.preventDefault();
-    setRecentSearches(prev => prev.filter(item => item.id !== id));
+    setRecentSearches((prev) => prev.filter((item) => item.id !== id));
     onRemove?.(id);
   };
 
   return (
-    <Combobox
-      items={recentSearches}
-      itemToStringValue={(item: SearchItem) => item.title}
-    >
+    <Combobox items={recentSearches} itemToStringValue={(item: SearchItem) => item.title}>
       <div className="relative w-full">
-        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground z-10 pointer-events-none" />
-        <ComboboxInput 
-          showTrigger={false} 
-          placeholder="Tìm kiếm trên Facebook" 
-          className="pl-9 w-full rounded-full bg-secondary border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0" 
+        <SearchIcon className="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-muted-foreground" />
+        <ComboboxInput
+          showTrigger={false}
+          placeholder="Tìm kiếm trên Facebook"
+          className="w-full rounded-full border-none bg-secondary pl-9 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
           onChange={(e) => onSearch?.(e.target.value)}
         />
       </div>
-      <ComboboxContent className="w-[360px] p-2 bg-card rounded-xl border border-border shadow-lg">
-        <div className="flex items-center justify-between px-2 pb-2 pt-1">
-          <h3 className="font-semibold text-base">Mới đây</h3>
-          <Button variant="link" className="h-auto p-0 font-normal text-primary">Chỉnh sửa</Button>
+      <ComboboxContent className="w-[360px] rounded-xl border border-border bg-card p-2 shadow-lg">
+        <div className="flex items-center justify-between px-2 pt-1 pb-2">
+          <h3 className="text-base font-semibold">Mới đây</h3>
+          <Button variant="link" className="h-auto p-0 font-normal text-primary">
+            Chỉnh sửa
+          </Button>
         </div>
         <ComboboxEmpty>Không có tìm kiếm gần đây.</ComboboxEmpty>
         <ComboboxList className="max-h-[500px]">
           {(item) => (
-            <ComboboxItem 
-              key={item.id} 
-              value={item} 
-              className="px-2 py-1.5 rounded-lg data-highlighted:bg-muted cursor-pointer pr-2 [&>span]:hidden" 
+            <ComboboxItem
+              key={item.id}
+              value={item}
+              className="cursor-pointer rounded-lg px-2 py-1.5 pr-2 data-highlighted:bg-muted [&>span]:hidden"
               onClick={() => onSelect?.(item)}
               /* [&>span]:hidden disables the CheckIcon indicator from ComboboxItem */
             >
-              <Item size="sm" className="p-0 w-full bg-transparent border-none shadow-none gap-3 items-center">
+              <Item
+                size="sm"
+                className="w-full items-center gap-3 border-none bg-transparent p-0 shadow-none"
+              >
                 <ItemMedia>
                   {item.image ? (
                     <Avatar className="size-10 rounded-lg">
@@ -130,31 +132,33 @@ export default function AutoComplete({
                       <AvatarFallback className="rounded-lg">{item.title.charAt(0)}</AvatarFallback>
                     </Avatar>
                   ) : item.icon ? (
-                    <div className="size-9 rounded-full bg-muted flex items-center justify-center">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-muted">
                       <item.icon className="size-5 text-muted-foreground" />
                     </div>
                   ) : (
-                    <div className="size-9 rounded-full bg-muted flex items-center justify-center">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-muted">
                       <SearchIcon className="size-5 text-muted-foreground" />
                     </div>
                   )}
                 </ItemMedia>
                 <ItemContent className="flex-1 overflow-hidden py-1">
-                  <ItemTitle className="whitespace-normal text-[15px] font-medium leading-tight">
+                  <ItemTitle className="text-[15px] leading-tight font-medium whitespace-normal">
                     {item.title}
                   </ItemTitle>
                   {item.subtitle && (
-                    <ItemDescription className="text-[13px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                      {item.subtitle.includes('mới') && <span className="size-2 rounded-full bg-primary inline-block shrink-0"></span>}
+                    <ItemDescription className="mt-0.5 flex items-center gap-1.5 text-[13px] text-muted-foreground">
+                      {item.subtitle.includes("mới") && (
+                        <span className="inline-block size-2 shrink-0 rounded-full bg-primary"></span>
+                      )}
                       <span className="truncate">{item.subtitle}</span>
                     </ItemDescription>
                   )}
                 </ItemContent>
                 <ItemActions>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="size-8 rounded-full text-muted-foreground hover:bg-muted shrink-0"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 shrink-0 rounded-full text-muted-foreground hover:bg-muted"
                     onClick={(e) => handleRemove(e, item.id)}
                   >
                     <XIcon className="size-4" />

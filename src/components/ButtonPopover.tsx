@@ -1,8 +1,4 @@
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "./ui/button";
 import type React from "react";
 import { Badge } from "./ui/badge";
@@ -38,7 +34,7 @@ export default function ButtonPopover({
             {badgeEnable && (
               <Badge
                 variant="destructive"
-                className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full p-0 text-[10px]"
+                className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full p-0 text-[10px]"
               >
                 {badgeContent}
               </Badge>
@@ -47,11 +43,7 @@ export default function ButtonPopover({
           </Button>
         }
       ></PopoverTrigger>
-      <PopoverContent
-        align="end"
-        sideOffset={8}
-        className="w-[360px] p-0 shadow-lg"
-      >
+      <PopoverContent align="end" sideOffset={8} className="w-[360px] p-0 shadow-lg">
         {children}
       </PopoverContent>
     </Popover>

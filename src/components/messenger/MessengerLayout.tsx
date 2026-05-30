@@ -11,14 +11,11 @@ import type { Message } from "@/types/messenger";
 
 export default function MessengerLayout() {
   const [conversations] = useState(initialConversations);
-  const [messagesMap, setMessagesMap] =
-    useState<Record<string, Message[]>>(initialMessages);
+  const [messagesMap, setMessagesMap] = useState<Record<string, Message[]>>(initialMessages);
   const [activeConversationId, setActiveConversationId] = useState("1");
   const [showInfoPanel, setShowInfoPanel] = useState(true);
 
-  const activeConversation = conversations.find(
-    (c) => c.id === activeConversationId
-  );
+  const activeConversation = conversations.find((c) => c.id === activeConversationId);
   const activeMessages = messagesMap[activeConversationId] ?? [];
 
   const handleSendMessage = useCallback(
@@ -35,13 +32,10 @@ export default function MessengerLayout() {
       };
       setMessagesMap((prev) => ({
         ...prev,
-        [activeConversationId]: [
-          ...(prev[activeConversationId] ?? []),
-          newMessage,
-        ],
+        [activeConversationId]: [...(prev[activeConversationId] ?? []), newMessage],
       }));
     },
-    [activeConversationId]
+    [activeConversationId],
   );
 
   if (!activeConversation) return null;
@@ -66,10 +60,7 @@ export default function MessengerLayout() {
 
       {/* Info Panel */}
       {showInfoPanel && (
-        <InfoPanel
-          conversation={activeConversation}
-          onClose={() => setShowInfoPanel(false)}
-        />
+        <InfoPanel conversation={activeConversation} onClose={() => setShowInfoPanel(false)} />
       )}
     </div>
   );

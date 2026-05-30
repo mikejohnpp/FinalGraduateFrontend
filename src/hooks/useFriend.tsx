@@ -6,7 +6,10 @@ import { API } from "@/common/constants";
 import friendService from "@/services/friendService";
 import { friendActions } from "@/stores/friendSlice";
 import type { AppDispatch, RootState } from "@/stores/store";
-import type { IFriendRequest, IFriendRequestCreate } from "@/types/interfaces/friend/IFriendRequest";
+import type {
+  IFriendRequest,
+  IFriendRequestCreate,
+} from "@/types/interfaces/friend/IFriendRequest";
 import type { IFriendSuggestion } from "@/types/interfaces/friend/IFriendSuggestion";
 import type { IFriendship } from "@/types/interfaces/friend/IFriendship";
 import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
@@ -30,7 +33,11 @@ export function useFriendRequests() {
         const result = await friendService.getSingle<CursorPageResponse<IFriendRequest>>(
           API.FRIEND.REQUESTS,
           undefined,
-          { userId, ...(cursor ? { cursor } : {}), size: 10 }
+          {
+            userId,
+            ...(cursor ? { cursor } : {}),
+            size: 10,
+          },
         );
         if (result) {
           cursor
@@ -44,7 +51,7 @@ export function useFriendRequests() {
         setLoading(false);
       }
     },
-    [dispatch, userId]
+    [dispatch, userId],
   );
 
   useEffect(() => {
@@ -57,7 +64,12 @@ export function useFriendRequests() {
     }
   }, [load, requests.hasMore, requests.nextCursor]);
 
-  return { requests: requests.items, hasMore: requests.hasMore, loadMore, loading };
+  return {
+    requests: requests.items,
+    hasMore: requests.hasMore,
+    loadMore,
+    loading,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -80,7 +92,11 @@ export function useFriendSuggestions() {
         const result = await friendService.getSingle<CursorPageResponse<IFriendSuggestion>>(
           API.FRIEND.SUGGESTIONS,
           undefined,
-          { userId, ...(cursor ? { cursor } : {}), size: 20 }
+          {
+            userId,
+            ...(cursor ? { cursor } : {}),
+            size: 20,
+          },
         );
         if (result) {
           cursor
@@ -94,7 +110,7 @@ export function useFriendSuggestions() {
         setLoading(false);
       }
     },
-    [dispatch, userId]
+    [dispatch, userId],
   );
 
   useEffect(() => {
@@ -107,7 +123,12 @@ export function useFriendSuggestions() {
     }
   }, [load, suggestions.hasMore, suggestions.nextCursor]);
 
-  return { suggestions: suggestions.items, hasMore: suggestions.hasMore, loadMore, loading };
+  return {
+    suggestions: suggestions.items,
+    hasMore: suggestions.hasMore,
+    loadMore,
+    loading,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -129,7 +150,11 @@ export function useAllFriends() {
         const result = await friendService.getSingle<CursorPageResponse<IFriendship>>(
           API.FRIEND.BASE,
           undefined,
-          { userId, ...(cursor ? { cursor } : {}), size: 20 }
+          {
+            userId,
+            ...(cursor ? { cursor } : {}),
+            size: 20,
+          },
         );
         if (result) {
           cursor
@@ -143,7 +168,7 @@ export function useAllFriends() {
         setLoading(false);
       }
     },
-    [dispatch, userId]
+    [dispatch, userId],
   );
 
   useEffect(() => {
@@ -156,7 +181,12 @@ export function useAllFriends() {
     }
   }, [load, friends.hasMore, friends.nextCursor]);
 
-  return { friends: friends.items, hasMore: friends.hasMore, loadMore, loading };
+  return {
+    friends: friends.items,
+    hasMore: friends.hasMore,
+    loadMore,
+    loading,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -186,11 +216,13 @@ export function useAcceptRequest() {
       } else {
         // Rollback
         if (snapshot) {
-          dispatch(friendActions.setRequests({
-            data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
-            nextCursor: requests.nextCursor,
-            hasMore: requests.hasMore,
-          }));
+          dispatch(
+            friendActions.setRequests({
+              data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
+              nextCursor: requests.nextCursor,
+              hasMore: requests.hasMore,
+            }),
+          );
           dispatch(friendActions.setRequestCount(requests.items.length));
         }
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
@@ -199,11 +231,13 @@ export function useAcceptRequest() {
     } catch {
       // Rollback on error
       if (snapshot) {
-        dispatch(friendActions.setRequests({
-          data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
-          nextCursor: requests.nextCursor,
-          hasMore: requests.hasMore,
-        }));
+        dispatch(
+          friendActions.setRequests({
+            data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
+            nextCursor: requests.nextCursor,
+            hasMore: requests.hasMore,
+          }),
+        );
         dispatch(friendActions.setRequestCount(requests.items.length));
       }
       toast.error("Có lỗi xảy ra, vui lòng thử lại");
@@ -225,8 +259,8 @@ export function useDeclineRequest() {
   const requests = useSelector((s: RootState) => s.friend.requests);
   const [loadingId, setLoadingId] = useState<number | null>(null);
 
-  const decline = async (requestId: number): Promise<boolean> => {
-    if (!userId) return false;
+  const decline = async (requestId: number): Promise<void> => {
+    if (!userId) return;
 
     const snapshot = requests.items.find((r) => r.requestId === requestId);
 
@@ -240,27 +274,32 @@ export function useDeclineRequest() {
       if (!success) {
         // Rollback
         if (snapshot) {
-          dispatch(friendActions.setRequests({
-            data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
-            nextCursor: requests.nextCursor,
-            hasMore: requests.hasMore,
-          }));
+          dispatch(
+            friendActions.setRequests({
+              data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
+              nextCursor: requests.nextCursor,
+              hasMore: requests.hasMore,
+            }),
+          );
           dispatch(friendActions.setRequestCount(requests.items.length));
         }
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
+        return;
+      } else {
+        toast.success("Đã từ chối lời mời kết bạn");
       }
-      return success;
     } catch {
       if (snapshot) {
-        dispatch(friendActions.setRequests({
-          data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
-          nextCursor: requests.nextCursor,
-          hasMore: requests.hasMore,
-        }));
+        dispatch(
+          friendActions.setRequests({
+            data: [snapshot, ...requests.items.filter((r) => r.requestId !== requestId)],
+            nextCursor: requests.nextCursor,
+            hasMore: requests.hasMore,
+          }),
+        );
         dispatch(friendActions.setRequestCount(requests.items.length));
       }
       toast.error("Có lỗi xảy ra, vui lòng thử lại");
-      return false;
     } finally {
       setLoadingId(null);
     }
@@ -295,22 +334,26 @@ export function useSendFriendRequest() {
       } else {
         // Rollback
         if (snapshot) {
-          dispatch(friendActions.setSuggestions({
-            data: [snapshot, ...suggestions.items.filter((s) => s.user.id !== targetUserId)],
-            nextCursor: suggestions.nextCursor,
-            hasMore: suggestions.hasMore,
-          }));
+          dispatch(
+            friendActions.setSuggestions({
+              data: [snapshot, ...suggestions.items.filter((s) => s.user.id !== targetUserId)],
+              nextCursor: suggestions.nextCursor,
+              hasMore: suggestions.hasMore,
+            }),
+          );
         }
         toast.error("Gửi lời mời thất bại, vui lòng thử lại");
       }
       return success;
     } catch (e: any) {
       if (snapshot) {
-        dispatch(friendActions.setSuggestions({
-          data: [snapshot, ...suggestions.items.filter((s) => s.user.id !== targetUserId)],
-          nextCursor: suggestions.nextCursor,
-          hasMore: suggestions.hasMore,
-        }));
+        dispatch(
+          friendActions.setSuggestions({
+            data: [snapshot, ...suggestions.items.filter((s) => s.user.id !== targetUserId)],
+            nextCursor: suggestions.nextCursor,
+            hasMore: suggestions.hasMore,
+          }),
+        );
       }
       // 409: đã là bạn bè hoặc đã gửi rồi
       const message: string = e?.response?.data?.message ?? "Có lỗi xảy ra";
@@ -348,22 +391,26 @@ export function useUnfriend() {
         toast.success("Đã huỷ kết bạn");
       } else {
         if (snapshot) {
-          dispatch(friendActions.setFriends({
-            data: [...friends.items.filter((f) => f.user.id !== friendUserId), snapshot],
-            nextCursor: friends.nextCursor,
-            hasMore: friends.hasMore,
-          }));
+          dispatch(
+            friendActions.setFriends({
+              data: [...friends.items.filter((f) => f.user.id !== friendUserId), snapshot],
+              nextCursor: friends.nextCursor,
+              hasMore: friends.hasMore,
+            }),
+          );
         }
         toast.error("Có lỗi xảy ra, vui lòng thử lại");
       }
       return success;
     } catch {
       if (snapshot) {
-        dispatch(friendActions.setFriends({
-          data: [...friends.items.filter((f) => f.user.id !== friendUserId), snapshot],
-          nextCursor: friends.nextCursor,
-          hasMore: friends.hasMore,
-        }));
+        dispatch(
+          friendActions.setFriends({
+            data: [...friends.items.filter((f) => f.user.id !== friendUserId), snapshot],
+            nextCursor: friends.nextCursor,
+            hasMore: friends.hasMore,
+          }),
+        );
       }
       toast.error("Có lỗi xảy ra, vui lòng thử lại");
       return false;
@@ -381,9 +428,12 @@ export function useUnfriend() {
 export function useDismissSuggestion() {
   const dispatch = useDispatch<AppDispatch>();
 
-  const dismiss = useCallback((targetUserId: number) => {
-    dispatch(friendActions.removeSuggestion(targetUserId));
-  }, [dispatch]);
+  const dismiss = useCallback(
+    (targetUserId: number) => {
+      dispatch(friendActions.removeSuggestion(targetUserId));
+    },
+    [dispatch],
+  );
 
   return { dismiss };
 }

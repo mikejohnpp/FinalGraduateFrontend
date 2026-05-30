@@ -1,13 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import {
-  ThumbsUp,
-  MessageCircle,
-  Send,
-  MoreHorizontal,
-  Smile,
-  ChevronDown,
-  X,
-} from "lucide-react";
+import { ThumbsUp, MessageCircle, Send, MoreHorizontal, Smile, ChevronDown, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -82,7 +74,7 @@ export default function CommentModal({
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore, loadMore]
+    [loading, hasMore, loadMore],
   );
 
   const handleSend = async () => {
@@ -110,9 +102,7 @@ export default function CommentModal({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent
-        className="flex max-h-[88vh] max-w-[500px] flex-col gap-0 overflow-hidden rounded-xl border-0 bg-[#242526] p-0 shadow-[0_8px_40px_rgba(0,0,0,0.7)] [&>button]:hidden"
-      >
+      <DialogContent className="flex max-h-[88vh] max-w-[500px] flex-col gap-0 overflow-hidden rounded-xl border-0 bg-[#242526] p-0 shadow-[0_8px_40px_rgba(0,0,0,0.7)] [&>button]:hidden">
         <DialogTitle className="sr-only">Bình luận bài viết</DialogTitle>
 
         {/* ── Header ───────────────────────────────── */}
@@ -163,7 +153,7 @@ export default function CommentModal({
 
           {/* Post text */}
           {post.content && (
-            <p className="px-4 pb-2 pt-2.5 text-[14px] leading-relaxed text-[#e4e6eb]">
+            <p className="px-4 pt-2.5 pb-2 text-[14px] leading-relaxed text-[#e4e6eb]">
               {post.content}
             </p>
           )}
@@ -197,10 +187,7 @@ export default function CommentModal({
               label="Bình luận"
               onClick={() => setTimeout(() => inputRef.current?.focus(), 100)}
             />
-            <PostActionBtn
-              icon={<Send className="size-[18px]" />}
-              label="Gửi"
-            />
+            <PostActionBtn icon={<Send className="size-[18px]" />} label="Gửi" />
           </div>
 
           {/* Comments list */}
@@ -244,9 +231,7 @@ export default function CommentModal({
             )}
 
             {!loading && !hasMore && comments.length > 0 && (
-              <p className="py-2 text-center text-[13px] text-[#b0b3b8]">
-                Đã xem hết bình luận.
-              </p>
+              <p className="py-2 text-center text-[13px] text-[#b0b3b8]">Đã xem hết bình luận.</p>
             )}
 
             {!loading && comments.length === 0 && (
@@ -262,9 +247,14 @@ export default function CommentModal({
         <div className="flex flex-col gap-1 border-t border-[#3a3b3c] px-3.5 py-2.5">
           {replyingTo && (
             <div className="flex items-center gap-1 text-[12px] text-[#b0b3b8]">
-              <span>Đang trả lời <span className="font-semibold text-[#e4e6eb]">{replyingTo.name}</span></span>
+              <span>
+                Đang trả lời <span className="font-semibold text-[#e4e6eb]">{replyingTo.name}</span>
+              </span>
               <button
-                onClick={() => { setReplyingTo(null); setCommentText(""); }}
+                onClick={() => {
+                  setReplyingTo(null);
+                  setCommentText("");
+                }}
                 className="ml-1 text-[#b0b3b8] hover:text-[#e4e6eb]"
               >
                 <X className="size-3" />
@@ -285,7 +275,9 @@ export default function CommentModal({
                 placeholder={replyingTo ? `Trả lời ${replyingTo.name}...` : "Viết bình luận..."}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) handleSend(); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) handleSend();
+                }}
                 className="flex-1 border-none bg-transparent p-0 text-[14px] text-[#e4e6eb] shadow-none placeholder:text-[#b0b3b8] focus-visible:ring-0"
               />
               <div className="flex items-center gap-0.5">

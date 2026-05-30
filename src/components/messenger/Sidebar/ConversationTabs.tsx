@@ -6,17 +6,14 @@ interface ConversationTabsProps {
   onTabChange: (tab: TabFilter) => void;
 }
 
-export default function ConversationTabs({
-  activeTab,
-  onTabChange,
-}: ConversationTabsProps) {
+export default function ConversationTabs({ activeTab, onTabChange }: ConversationTabsProps) {
   return (
     <Tabs
       value={activeTab}
       onValueChange={(v) => onTabChange(v as TabFilter)}
       className="px-3 pb-2"
     >
-      <TabsList className="w-full bg-transparent justify-start gap-1">
+      <TabsList className="w-full justify-start gap-1 bg-transparent">
         <TabsTrigger
           value="all"
           className="rounded-full data-[state=active]:bg-primary/10 data-[state=active]:text-primary"

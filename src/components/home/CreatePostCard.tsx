@@ -24,18 +24,14 @@ interface CreatePostCardProps {
   onPostCreated?: (post: IPost) => void;
 }
 
-export default function CreatePostCard({
-  groupId,
-  onPostCreated,
-}: CreatePostCardProps) {
+export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState("");
   const { create, loading, error } = useCreatePost();
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
 
   const userAvatar = profile?.avatar || undefined;
-  const displayName =
-    profile?.nickName || profile?.userName || username || "Người dùng";
+  const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
   const initial = displayName.charAt(0).toUpperCase();
 
   const handleCreatePost = async () => {
@@ -79,13 +75,11 @@ export default function CreatePostCard({
               render={
                 <button
                   type="button"
-                  className="flex flex-1 text-left cursor-pointer rounded-full bg-muted px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/80"
+                  className="flex flex-1 cursor-pointer rounded-full bg-muted px-4 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/80"
                 />
               }
             >
-              {username
-                ? `${username} ơi, bạn đang nghĩ gì thế?`
-                : "Bạn đang nghĩ gì thế?"}
+              {username ? `${username} ơi, bạn đang nghĩ gì thế?` : "Bạn đang nghĩ gì thế?"}
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-[500px]">
@@ -108,15 +102,13 @@ export default function CreatePostCard({
 
                 <textarea
                   placeholder={`${displayName} ơi, bạn đang nghĩ gì thế?`}
-                  className="min-h-[150px] w-full resize-none border-none bg-transparent p-0 text-lg outline-none placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+                  className="min-h-[150px] w-full resize-none border-none bg-transparent p-0 text-lg outline-none placeholder:text-muted-foreground focus:ring-0 focus:outline-none"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   disabled={loading}
                 />
 
-                {error && (
-                  <div className="text-sm text-destructive">{error}</div>
-                )}
+                {error && <div className="text-sm text-destructive">{error}</div>}
               </div>
 
               <DialogFooter>

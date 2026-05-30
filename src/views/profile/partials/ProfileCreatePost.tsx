@@ -1,18 +1,18 @@
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
-import { Video, Image as ImageIcon, Smile } from 'lucide-react'
-import type { UserProfileDTO } from '@/types/interfaces/user/UserProfileDTO'
-import { resolveUploadUrl } from '@/utils/uploadHelper'
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Video, Image as ImageIcon, Smile } from "lucide-react";
+import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
+import { resolveUploadUrl } from "@/utils/uploadHelper";
 
 interface ProfileCreatePostProps {
-  profile: UserProfileDTO
-  isOwner: boolean
+  profile: UserProfileDTO;
+  isOwner: boolean;
 }
 
 export default function ProfileCreatePost({ profile, isOwner }: ProfileCreatePostProps) {
-  const avatarSrc = resolveUploadUrl(profile.avatar) ?? undefined
+  const avatarSrc = resolveUploadUrl(profile.avatar) ?? undefined;
 
   return (
     <Card className="mb-4">
@@ -24,9 +24,11 @@ export default function ProfileCreatePost({ profile, isOwner }: ProfileCreatePos
           </Avatar>
           <Button
             variant="outline"
-            className="flex-1 rounded-full justify-start text-muted-foreground font-normal bg-muted/50 border-none hover:bg-muted"
+            className="flex-1 justify-start rounded-full border-none bg-muted/50 font-normal text-muted-foreground hover:bg-muted"
           >
-            {isOwner ? `Bạn đang nghĩ gì thế?` : `Viết gì đó cho ${profile.nickName ?? profile.userName}...`}
+            {isOwner
+              ? `Bạn đang nghĩ gì thế?`
+              : `Viết gì đó cho ${profile.nickName ?? profile.userName}...`}
           </Button>
         </div>
 
@@ -41,12 +43,15 @@ export default function ProfileCreatePost({ profile, isOwner }: ProfileCreatePos
             <ImageIcon className="text-green-500" data-icon="inline-start" />
             Ảnh/video
           </Button>
-          <Button variant="ghost" className="flex-1 text-muted-foreground hover:bg-muted hidden sm:flex">
+          <Button
+            variant="ghost"
+            className="hidden flex-1 text-muted-foreground hover:bg-muted sm:flex"
+          >
             <Smile className="text-yellow-500" data-icon="inline-start" />
             Cảm xúc
           </Button>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

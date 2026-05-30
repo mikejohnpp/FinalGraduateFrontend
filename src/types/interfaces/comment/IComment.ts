@@ -8,6 +8,6 @@ export interface IComment {
   content: string;
   likeCount: number;
   replyCount: number; // Chỉ > 0 nếu là comment gốc
-  liked: boolean;     // User hiện tại đã like chưa
+  liked: boolean; // User hiện tại đã like chưa
   createdAt: string;
 }

@@ -1,32 +1,37 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   HeartIcon,
   MessageCircleIcon,
   Share2Icon,
   ThumbsUpIcon,
-  MoreHorizontal
-} from "lucide-react"
+  MoreHorizontal,
+} from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
-import type { IPost } from "@/types/interfaces/post/IPost"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/stores/store"
-import { useLikePost } from "@/hooks/usePost"
-import CommentModal from "./home/CommentModal"
-import ShareModal from "./home/ShareModal"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import type { IPost } from "@/types/interfaces/post/IPost";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/stores/store";
+import { useLikePost } from "@/hooks/usePost";
+import CommentModal from "./home/CommentModal";
+import ShareModal from "./home/ShareModal";
 
 export default function PostCard({ post }: { post: IPost }) {
-  const liked = post.hasLiked ?? false
-  const likesCount = post.likeCount
-  const [commentModalOpen, setCommentModalOpen] = useState(false)
-  const [shareModalOpen, setShareModalOpen] = useState(false)
-  const { userId } = useSelector((state: RootState) => state.user)
-  const { like, unlike, loadingId } = useLikePost()
+  const liked = post.hasLiked ?? false;
+  const likesCount = post.likeCount;
+  const [commentModalOpen, setCommentModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const { userId } = useSelector((state: RootState) => state.user);
+  const { like, unlike, loadingId } = useLikePost();
 
   const handleLikeClick = async () => {
     if (!userId || loadingId === post.id) return;
@@ -35,24 +40,27 @@ export default function PostCard({ post }: { post: IPost }) {
     } else {
       await like(post.id, userId);
     }
-  }
+  };
 
-  const groupName = post.group?.name
-  const groupId = post.group?.id
-  const authorName = post.author?.name || "Người dùng"
-  const authorId = post.author?.id
-  const authorAvatar = post.author?.avatar || `https://i.pravatar.cc/100?u=${authorId || "fallback"}`
+  const groupName = post.group?.name;
+  const groupId = post.group?.id;
+  const authorName = post.author?.name || "Người dùng";
+  const authorId = post.author?.id;
+  const authorAvatar =
+    post.author?.avatar || `https://i.pravatar.cc/100?u=${authorId || "fallback"}`;
 
   return (
     <>
       <Card className="mb-4">
-        <CardHeader className="flex flex-row items-start justify-between px-4 pb-2 pt-4">
+        <CardHeader className="flex flex-row items-start justify-between px-4 pt-4 pb-2">
           <div className="flex gap-2">
             {post.group ? (
               <Avatar className="relative size-10 overflow-visible border">
-                <AvatarImage src={post.group.avatar || `https://picsum.photos/seed/${groupId}/100/100`} />
+                <AvatarImage
+                  src={post.group.avatar || `https://picsum.photos/seed/${groupId}/100/100`}
+                />
                 <AvatarFallback>{groupName?.charAt(0) || "G"}</AvatarFallback>
-                <Avatar className="absolute -bottom-1 -right-1 size-5 border-2 border-background">
+                <Avatar className="absolute -right-1 -bottom-1 size-5 border-2 border-background">
                   <AvatarImage src={authorAvatar} />
                   <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
                 </Avatar>
@@ -63,7 +71,7 @@ export default function PostCard({ post }: { post: IPost }) {
                 <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
               </Avatar>
             )}
-            
+
             <div>
               <div className="flex flex-wrap items-center gap-1">
                 {post.group ? (
@@ -85,11 +93,11 @@ export default function PostCard({ post }: { post: IPost }) {
                     <span>·</span>
                   </>
                 )}
-                <span>{new Date(post.createdAt).toLocaleString('vi-VN')}</span>
+                <span>{new Date(post.createdAt).toLocaleString("vi-VN")}</span>
               </div>
             </div>
           </div>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
@@ -118,10 +126,16 @@ export default function PostCard({ post }: { post: IPost }) {
               <span>{likesCount}</span>
             </div>
             <div className="flex gap-3">
-              <span className="cursor-pointer hover:underline" onClick={() => setCommentModalOpen(true)}>
+              <span
+                className="cursor-pointer hover:underline"
+                onClick={() => setCommentModalOpen(true)}
+              >
                 {post.commentCount} bình luận
               </span>
-              <span className="cursor-pointer hover:underline" onClick={() => setShareModalOpen(true)}>
+              <span
+                className="cursor-pointer hover:underline"
+                onClick={() => setShareModalOpen(true)}
+              >
                 0 chia sẻ
               </span>
             </div>
@@ -132,9 +146,9 @@ export default function PostCard({ post }: { post: IPost }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-between px-2 py-1 mt-1">
-            <Button 
-              variant="ghost" 
+          <div className="mt-1 flex justify-between px-2 py-1">
+            <Button
+              variant="ghost"
               className={cn("flex-1 rounded-sm text-muted-foreground", liked && "text-blue-500")}
               onClick={handleLikeClick}
               disabled={loadingId === post.id}
@@ -146,15 +160,15 @@ export default function PostCard({ post }: { post: IPost }) {
               )}
               Thích
             </Button>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="flex-1 rounded-sm text-muted-foreground"
               onClick={() => setCommentModalOpen(true)}
             >
               <MessageCircleIcon data-icon="inline-start" /> Bình luận
             </Button>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="flex-1 rounded-sm text-muted-foreground"
               onClick={() => setShareModalOpen(true)}
             >
@@ -170,10 +184,7 @@ export default function PostCard({ post }: { post: IPost }) {
         onClose={() => setCommentModalOpen(false)}
       />
 
-      <ShareModal
-        open={shareModalOpen}
-        onClose={() => setShareModalOpen(false)}
-      />
+      <ShareModal open={shareModalOpen} onClose={() => setShareModalOpen(false)} />
     </>
-  )
+  );
 }

@@ -9,10 +9,7 @@ interface MessageListProps {
   conversation: Conversation;
 }
 
-export default function MessageList({
-  messages,
-  conversation,
-}: MessageListProps) {
+export default function MessageList({ messages, conversation }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,20 +38,15 @@ export default function MessageList({
               </div>
             )}
           </div>
-          <p className="text-base font-semibold text-foreground">
-            {conversation.name}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Các bạn là bạn bè trên Facebook
-          </p>
+          <p className="text-base font-semibold text-foreground">{conversation.name}</p>
+          <p className="text-xs text-muted-foreground">Các bạn là bạn bè trên Facebook</p>
         </div>
 
         {/* Messages */}
         {messages.map((msg, index) => {
           const prevMsg = messages[index - 1];
           const showAvatar =
-            msg.senderId !== CURRENT_USER_ID &&
-            (!prevMsg || prevMsg.senderId !== msg.senderId);
+            msg.senderId !== CURRENT_USER_ID && (!prevMsg || prevMsg.senderId !== msg.senderId);
 
           return (
             <MessageBubble

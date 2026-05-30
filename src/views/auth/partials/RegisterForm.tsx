@@ -44,9 +44,7 @@ export function RegisterForm({ models, setModels }: RegisterFormProps) {
   return (
     <>
       <div className="flex flex-col gap-2">
-        <Field
-          data-invalid={getParsedErrorValue(error, "username") ? true : false}
-        >
+        <Field data-invalid={getParsedErrorValue(error, "username") ? true : false}>
           <FieldLabel htmlFor="register-username">Tên đầy đủ</FieldLabel>
 
           <Input
@@ -58,15 +56,11 @@ export function RegisterForm({ models, setModels }: RegisterFormProps) {
             autoFocus
             aria-invalid={getParsedErrorValue(error, "username") ? true : false}
           />
-          <FieldDescription>
-            {getParsedErrorValue(error, "username")}
-          </FieldDescription>
+          <FieldDescription>{getParsedErrorValue(error, "username")}</FieldDescription>
         </Field>
       </div>
       <div className="flex flex-col gap-2">
-        <Field
-          data-invalid={getParsedErrorValue(error, "email") ? true : false}
-        >
+        <Field data-invalid={getParsedErrorValue(error, "email") ? true : false}>
           <FieldLabel htmlFor="register-email">Email</FieldLabel>
 
           <Input
@@ -78,16 +72,12 @@ export function RegisterForm({ models, setModels }: RegisterFormProps) {
             autoFocus
             aria-invalid={getParsedErrorValue(error, "email") ? true : false}
           />
-          <FieldDescription>
-            {getParsedErrorValue(error, "email")}
-          </FieldDescription>
+          <FieldDescription>{getParsedErrorValue(error, "email")}</FieldDescription>
         </Field>
       </div>
 
       <div className="flex flex-col gap-2">
-        <Field
-          data-invalid={getParsedErrorValue(error, "password") ? true : false}
-        >
+        <Field data-invalid={getParsedErrorValue(error, "password") ? true : false}>
           <FieldLabel htmlFor="register-password">Mật khẩu</FieldLabel>
           <Input
             id="register-password"
@@ -97,53 +87,33 @@ export function RegisterForm({ models, setModels }: RegisterFormProps) {
             onChange={(e) => setModels({ ...models, password: e.target.value })}
             aria-invalid={getParsedErrorValue(error, "password") ? true : false}
           />
-          <FieldDescription>
-            {getParsedErrorValue(error, "password")}
-          </FieldDescription>
+          <FieldDescription>{getParsedErrorValue(error, "password")}</FieldDescription>
         </Field>
       </div>
 
       <div className="flex flex-col gap-2">
-        <Field
-          data-invalid={
-            getParsedErrorValue(error, "confirmPassword") ? true : false
-          }
-        >
-          <FieldLabel htmlFor="register-confirm-password">
-            Xác nhận mật khẩu
-          </FieldLabel>
+        <Field data-invalid={getParsedErrorValue(error, "confirmPassword") ? true : false}>
+          <FieldLabel htmlFor="register-confirm-password">Xác nhận mật khẩu</FieldLabel>
           <Input
             id="register-confirm-password"
             type="password"
             placeholder="Nhập lại mật khẩu"
             value={models.confirmPassword}
-            onChange={(e) =>
-              setModels({ ...models, confirmPassword: e.target.value })
-            }
+            onChange={(e) => setModels({ ...models, confirmPassword: e.target.value })}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleRegister();
             }}
-            aria-invalid={
-              getParsedErrorValue(error, "confirmPassword") ? true : false
-            }
+            aria-invalid={getParsedErrorValue(error, "confirmPassword") ? true : false}
           />
-          <FieldDescription>
-            {getParsedErrorValue(error, "confirmPassword")}
-          </FieldDescription>
+          <FieldDescription>{getParsedErrorValue(error, "confirmPassword")}</FieldDescription>
         </Field>
       </div>
 
       {error && (
-        <p className="text-sm text-destructive">
-          {typeof error === "string" ? error : ""}
-        </p>
+        <p className="text-sm text-destructive">{typeof error === "string" ? error : ""}</p>
       )}
 
-      <Button
-        className="w-full rounded-full"
-        onClick={handleRegister}
-        disabled={loading}
-      >
+      <Button className="w-full rounded-full" onClick={handleRegister} disabled={loading}>
         {loading && <Spinner data-icon="inline-start" />}
         Tạo tài khoản
       </Button>

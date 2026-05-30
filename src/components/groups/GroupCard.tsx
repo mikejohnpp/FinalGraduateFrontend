@@ -1,4 +1,5 @@
-import type { Group } from "@/types/Group";
+import type { IGroup } from "@/types/interfaces/group/IGroup";
+import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,7 +7,7 @@ import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface GroupCardProps {
-  group: Group;
+  group: IGroup;
   onDismiss?: () => void;
   onJoin?: () => void;
   className?: string;
@@ -16,12 +17,12 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
   return (
     <Card className={cn("relative flex h-full flex-col overflow-hidden", className)}>
       <div className="relative aspect-[16/9]">
-        <img src={group.coverPhoto} alt={group.name} className="size-full object-cover" />
+        <img src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"} alt={group.name} className="size-full object-cover" />
         {onDismiss && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute right-1 top-1 size-8 rounded-full bg-black/30 text-white hover:bg-black/50"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-1 right-1 size-8 rounded-full bg-black/30 text-white hover:bg-black/50"
             onClick={onDismiss}
           >
             <X data-icon="inline" />
@@ -29,12 +30,11 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
-        <p className="line-clamp-2 text-sm font-semibold leading-tight">{group.name}</p>
+        <p className="line-clamp-2 text-sm leading-tight font-semibold">{group.name}</p>
         <p className="mt-1 text-xs text-muted-foreground">
           {group.memberCount.toLocaleString("vi-VN")} thành viên
-          {group.postFrequency && ` · ${group.postFrequency}`}
         </p>
-        
+
         {group.mutualFriendCount && group.mutualFriendCount > 0 ? (
           <div className="mt-2 flex items-center gap-2">
             <div className="flex items-center -space-x-1">
@@ -47,11 +47,13 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
               ))}
             </div>
             <p className="truncate text-[11px] text-muted-foreground">
-              {group.mutualFriends?.join(", ")} {group.mutualFriendCount > (group.mutualFriends?.length || 0) && "và những người khác"}
+              {group.mutualFriendCount > 0 && `${group.mutualFriendCount} bạn chung`}
             </p>
           </div>
-        ) : <div className="mt-2" />}
-        
+        ) : (
+          <div className="mt-2" />
+        )}
+
         <div className="mt-auto pt-3">
           <Button variant="outline" className="w-full bg-secondary/50" size="sm" onClick={onJoin}>
             Tham gia nhóm

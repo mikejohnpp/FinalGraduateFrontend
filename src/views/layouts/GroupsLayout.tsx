@@ -6,7 +6,7 @@ export default function GroupsLayout() {
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-background">
       <GroupsSidebar />
-      <ScrollArea className="flex-1 h-full">
+      <ScrollArea className="h-full flex-1">
         <main className="min-h-full">
           <Outlet />
         </main>

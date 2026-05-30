@@ -6,18 +6,10 @@ const FRIENDS_PATH_CONSTRAINT = {
 };
 
 const Friends = React.lazy(() => import("@/views/friends/Friends"));
-const FriendsHome = React.lazy(
-  () => import("@/views/friends/partials/FriendsHome"),
-);
-const FriendsRequests = React.lazy(
-  () => import("@/views/friends/partials/FriendsRequests"),
-);
-const FriendsSuggest = React.lazy(
-  () => import("@/views/friends/partials/FriendsSuggest"),
-);
-const FriendsAll = React.lazy(
-  () => import("@/views/friends/partials/FriendsAll"),
-);
+const FriendsHome = React.lazy(() => import("@/views/friends/partials/FriendsHome"));
+const FriendsRequests = React.lazy(() => import("@/views/friends/partials/FriendsRequests"));
+const FriendsSuggest = React.lazy(() => import("@/views/friends/partials/FriendsSuggest"));
+const FriendsAll = React.lazy(() => import("@/views/friends/partials/FriendsAll"));
 
 const friendRoutes: RouteObject[] = [
   {

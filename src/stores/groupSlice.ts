@@ -1,7 +1,7 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { IGroup } from '@/types/interfaces/group/IGroup';
-import type { IPost } from '@/types/interfaces/post/IPost';
-import type { CursorPageResponse } from '@/types/interfaces/post/IPostPage';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { IGroup } from "@/types/interfaces/group/IGroup";
+import type { IPost } from "@/types/interfaces/post/IPost";
+import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
 
 interface GroupState {
   joinedGroups: IGroup[];
@@ -24,7 +24,7 @@ const initialState: GroupState = {
 };
 
 export const groupSlice = createSlice({
-  name: 'group',
+  name: "group",
   initialState,
   reducers: {
     setJoinedGroups: (state, action: PayloadAction<IGroup[]>) => {
@@ -36,10 +36,10 @@ export const groupSlice = createSlice({
     addJoinedGroup: (state, action: PayloadAction<IGroup>) => {
       state.joinedGroups.push(action.payload);
       // Remove from suggested if exists
-      state.suggestedGroups = state.suggestedGroups.filter(g => g.id !== action.payload.id);
+      state.suggestedGroups = state.suggestedGroups.filter((g) => g.id !== action.payload.id);
     },
     removeJoinedGroup: (state, action: PayloadAction<number>) => {
-      state.joinedGroups = state.joinedGroups.filter(g => g.id !== action.payload);
+      state.joinedGroups = state.joinedGroups.filter((g) => g.id !== action.payload);
     },
     setGroupFeed: (state, action: PayloadAction<CursorPageResponse<IPost>>) => {
       state.groupFeed.items = action.payload.data ?? [];
@@ -54,8 +54,11 @@ export const groupSlice = createSlice({
     prependPostToGroupFeed: (state, action: PayloadAction<IPost>) => {
       state.groupFeed.items.unshift(action.payload);
     },
-    updateGroupFeedPostLikeCount: (state, action: PayloadAction<{ postId: number; delta: number }>) => {
-      const post = state.groupFeed.items.find(p => p.id === action.payload.postId);
+    updateGroupFeedPostLikeCount: (
+      state,
+      action: PayloadAction<{ postId: number; delta: number }>,
+    ) => {
+      const post = state.groupFeed.items.find((p) => p.id === action.payload.postId);
       if (post) {
         post.likeCount = Math.max(0, post.likeCount + action.payload.delta);
       }

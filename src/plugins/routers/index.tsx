@@ -1,10 +1,7 @@
 import Default from "@/views/layouts/Default";
 import MainLayout from "@/views/layouts/MainLayout";
 import { createBrowserRouter } from "react-router-dom";
-import {
-  friendRoutes,
-  FRIENDS_PATH_CONSTRAINS as FRIENDS_PATH_CONSTRAINT,
-} from "./friendRoutes";
+import { friendRoutes, FRIENDS_PATH_CONSTRAINS as FRIENDS_PATH_CONSTRAINT } from "./friendRoutes";
 import { GROUP_PATH_CONSTRAINT, groupsRoutes } from "./groupRoutes";
 import { AUTH_PATH_CONSTRAINT, authRoutes } from "./authRoutes";
 import { MESSENGER_ROUTE_CONSTRAINT, messengerRoutes } from "./messengerRoutes";

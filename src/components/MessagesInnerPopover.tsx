@@ -113,18 +113,16 @@ function ConversationItem({ conversation, onClick }: ConversationItemProps) {
       onClick={() => onClick?.(conversation)}
       className={cn(
         "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left",
-        "transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
         unread && "font-medium",
       )}
     >
       <div className="relative flex-shrink-0">
         <Avatar className="h-11 w-11">
-          <AvatarFallback className="text-xs font-semibold">
-            {avatar}
-          </AvatarFallback>
+          <AvatarFallback className="text-xs font-semibold">{avatar}</AvatarFallback>
         </Avatar>
         {online && (
-          <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-background" />
+          <span className="absolute right-0 bottom-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-background" />
         )}
       </div>
 
@@ -132,20 +130,13 @@ function ConversationItem({ conversation, onClick }: ConversationItemProps) {
         <p
           className={cn(
             "truncate text-sm",
-            unread
-              ? "font-semibold text-foreground"
-              : "font-medium text-foreground",
+            unread ? "font-semibold text-foreground" : "font-medium text-foreground",
           )}
         >
           {name}
         </p>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <span
-            className={cn(
-              "truncate",
-              unread && !muted && "font-medium text-foreground",
-            )}
-          >
+          <span className={cn("truncate", unread && !muted && "font-medium text-foreground")}>
             {preview}
           </span>
           <span className="flex-shrink-0">· {time}</span>
@@ -155,9 +146,7 @@ function ConversationItem({ conversation, onClick }: ConversationItemProps) {
       {/* Trailing indicators */}
       <div className="flex flex-shrink-0 items-center gap-1">
         {muted && <BellOff className="h-3.5 w-3.5 text-muted-foreground" />}
-        {unread && !muted && (
-          <span className="h-2 w-2 rounded-full bg-foreground" />
-        )}
+        {unread && !muted && <span className="h-2 w-2 rounded-full bg-foreground" />}
       </div>
     </button>
   );
@@ -178,8 +167,7 @@ export function MessagesInnerPopover({
 
   const filtered = React.useMemo(() => {
     return CONVERSATIONS.filter((c) => {
-      if (search && !c.name.toLowerCase().includes(search.toLowerCase()))
-        return false;
+      if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
       if (tab === "unread" && !c.unread) return false;
       if (tab === "groups" && !c.group) return false;
       return true;
@@ -192,38 +180,23 @@ export function MessagesInnerPopover({
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Đoạn chat</h2>
           <div className="flex items-center gap-0.5">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              aria-label="Tuỳ chọn"
-            >
+            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Tuỳ chọn">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              aria-label="Mở rộng"
-            >
+            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Mở rộng">
               <Maximize2 className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              aria-label="Tin nhắn mới"
-            >
+            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Tin nhắn mới">
               <Edit className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         <div className="relative mb-3">
-          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Tìm kiếm trên Messenger"
-            className="pl-8 h-9 text-sm"
+            className="h-9 pl-8 text-sm"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -270,17 +243,11 @@ export function MessagesInnerPopover({
           {filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-10 text-center">
               <MessageCircle className="mb-2 h-8 w-8 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">
-                Không tìm thấy cuộc trò chuyện
-              </p>
+              <p className="text-sm text-muted-foreground">Không tìm thấy cuộc trò chuyện</p>
             </div>
           ) : (
             filtered.map((conv) => (
-              <ConversationItem
-                key={conv.id}
-                conversation={conv}
-                onClick={onConversationClick}
-              />
+              <ConversationItem key={conv.id} conversation={conv} onClick={onConversationClick} />
             ))
           )}
         </div>
@@ -289,12 +256,7 @@ export function MessagesInnerPopover({
       <Separator />
 
       <div className="flex items-center justify-center p-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-xs font-medium"
-          onClick={() => {}}
-        >
+        <Button variant="ghost" size="sm" className="text-xs font-medium" onClick={() => {}}>
           Xem tất cả trong Messenger
         </Button>
       </div>

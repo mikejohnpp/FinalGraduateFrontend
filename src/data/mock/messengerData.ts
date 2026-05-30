@@ -129,8 +129,7 @@ export const messages: Record<string, Message[]> = {
     },
     {
       id: "m6",
-      content:
-        "Đúng rồi, React + TypeScript + Tailwind. Đang làm phần Messenger nè 💪",
+      content: "Đúng rồi, React + TypeScript + Tailwind. Đang làm phần Messenger nè 💪",
       senderId: CURRENT_USER_ID,
       timestamp: "10:07",
       type: "text",

@@ -10,8 +10,7 @@ import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
 import { toast } from "sonner";
 
 // URL builders — template literals từ constants, không dùng hàm trong constants
-const commentUrl = (postId: number) =>
-  `${API.POST.BASE}/${postId}/${API.COMMENT.PATH}`;
+const commentUrl = (postId: number) => `${API.POST.BASE}/${postId}/${API.COMMENT.PATH}`;
 const commentSingleUrl = (postId: number, commentId: number) =>
   `${API.POST.BASE}/${postId}/${API.COMMENT.PATH}/${commentId}`;
 const repliesUrl = (postId: number, commentId: number) =>
@@ -42,7 +41,7 @@ export function useComments(postId: number) {
         const result = await commentService.getSingle<CursorPageResponse<IComment>>(
           commentUrl(postId),
           undefined,
-          { userId, ...(cursor ? { cursor } : {}), size: 10 }
+          { userId, ...(cursor ? { cursor } : {}), size: 10 },
         );
         if (result) {
           cursor
@@ -56,7 +55,7 @@ export function useComments(postId: number) {
         setLoading(false);
       }
     },
-    [dispatch, userId, postId]
+    [dispatch, userId, postId],
   );
 
   useEffect(() => {
@@ -94,7 +93,7 @@ export function useReplies(postId: number, commentId: number) {
         const result = await commentService.getSingle<CursorPageResponse<IComment>>(
           repliesUrl(postId, commentId),
           undefined,
-          { userId, ...(cursor ? { cursor } : {}), size: 5 }
+          { userId, ...(cursor ? { cursor } : {}), size: 5 },
         );
         if (result) {
           cursor
@@ -108,7 +107,7 @@ export function useReplies(postId: number, commentId: number) {
         setLoading(false);
       }
     },
-    [dispatch, userId, postId, commentId]
+    [dispatch, userId, postId, commentId],
   );
 
   const load = useCallback(() => fetch(), [fetch]);
@@ -139,10 +138,7 @@ export function useCreateComment(postId: number) {
       setLoading(true);
       try {
         const body: ICommentCreate = { userId, content: content.trim(), parentId };
-        const result = await commentService.createAndGetData<IComment>(
-          commentUrl(postId),
-          body
-        );
+        const result = await commentService.createAndGetData<IComment>(commentUrl(postId), body);
         if (result) {
           if (parentId) {
             dispatch(commentActions.appendReply({ commentId: parentId, reply: result, postId }));
@@ -161,7 +157,7 @@ export function useCreateComment(postId: number) {
         setLoading(false);
       }
     },
-    [dispatch, userId, postId]
+    [dispatch, userId, postId],
   );
 
   return { create, loading, error };
@@ -190,7 +186,7 @@ export function useEditComment(postId: number) {
         // userId là query param theo API spec — append vào URL
         const result = await commentService.updateAndGetData<IComment>(
           `${commentSingleUrl(postId, commentId)}?userId=${userId}`,
-          body
+          body,
         );
         if (result) dispatch(commentActions.updateComment(result));
         return result;
@@ -205,7 +201,7 @@ export function useEditComment(postId: number) {
         setLoading(false);
       }
     },
-    [dispatch, userId, postId]
+    [dispatch, userId, postId],
   );
 
   return { edit, loading, error };
@@ -227,7 +223,7 @@ export function useDeleteComment(postId: number) {
         // userId là query param: append vào URL để BaseService.deleteWithBody gửi đúng
         const success = await commentService.deleteWithBody(
           `${commentSingleUrl(postId, commentId)}?userId=${userId}`,
-          {}
+          {},
         );
         if (success) {
           dispatch(commentActions.removeComment({ postId, commentId, parentId }));
@@ -244,7 +240,7 @@ export function useDeleteComment(postId: number) {
         setLoading(false);
       }
     },
-    [dispatch, userId, postId]
+    [dispatch, userId, postId],
   );
 
   return { remove, loading };
@@ -273,7 +269,7 @@ export function useLikeComment(postId: number) {
         setLoadingId(null);
       }
     },
-    [dispatch, userId, postId]
+    [dispatch, userId, postId],
   );
 
   const unlike = useCallback(
@@ -291,7 +287,7 @@ export function useLikeComment(postId: number) {
         setLoadingId(null);
       }
     },
-    [dispatch, userId, postId]
+    [dispatch, userId, postId],
   );
 
   return { like, unlike, loadingId };

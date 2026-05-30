@@ -22,9 +22,7 @@ export default function Sidebar({
   const [activeTab, setActiveTab] = useState<TabFilter>("all");
 
   const filtered = conversations.filter((conv) => {
-    const matchesSearch = conv.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+    const matchesSearch = conv.name.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
     if (activeTab === "unread") return (conv.unreadCount ?? 0) > 0;
     if (activeTab === "groups") return conv.isGroup;

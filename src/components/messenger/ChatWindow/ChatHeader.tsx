@@ -9,20 +9,13 @@ interface ChatHeaderProps {
   showInfo: boolean;
 }
 
-export default function ChatHeader({
-  conversation,
-  onToggleInfo,
-  showInfo,
-}: ChatHeaderProps) {
+export default function ChatHeader({ conversation, onToggleInfo, showInfo }: ChatHeaderProps) {
   return (
     <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-border px-4">
       <div className="flex items-center gap-3">
         <div className="relative">
           <Avatar className="size-10">
-            <AvatarImage
-              src={conversation.avatar}
-              alt={conversation.name}
-            />
+            <AvatarImage src={conversation.avatar} alt={conversation.name} />
             <AvatarFallback>
               {conversation.name
                 .split(" ")
@@ -32,13 +25,11 @@ export default function ChatHeader({
             </AvatarFallback>
           </Avatar>
           {conversation.isOnline && (
-            <span className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-background bg-green-500" />
+            <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-background bg-green-500" />
           )}
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-semibold text-foreground">
-            {conversation.name}
-          </span>
+          <span className="text-sm font-semibold text-foreground">{conversation.name}</span>
           <span className="text-xs text-muted-foreground">
             {conversation.isOnline ? "Đang hoạt động" : "Không hoạt động"}
           </span>
@@ -54,7 +45,7 @@ export default function ChatHeader({
         <Button
           variant="ghost"
           size="icon"
-          className={`size-9 rounded-full ${showInfo ? "text-primary bg-primary/10" : "text-primary"}`}
+          className={`size-9 rounded-full ${showInfo ? "bg-primary/10 text-primary" : "text-primary"}`}
           onClick={onToggleInfo}
         >
           <Info data-icon />

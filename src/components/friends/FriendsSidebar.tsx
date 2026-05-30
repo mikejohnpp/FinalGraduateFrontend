@@ -1,9 +1,4 @@
-import {
-  LayoutGridIcon,
-  UserCheckIcon,
-  UserPlusIcon,
-  UsersIcon,
-} from "lucide-react";
+import { LayoutGridIcon, UserCheckIcon, UserPlusIcon, UsersIcon } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import {
@@ -52,11 +47,8 @@ export default function FriendsSidebar() {
       }
       className="h-full"
     >
-      <Sidebar
-        collapsible="none"
-        className="bg-sidebar text-sidebar-foreground"
-      >
-        <SidebarHeader className="gap-0 px-4 pb-2 pt-4">
+      <Sidebar collapsible="none" className="bg-sidebar text-sidebar-foreground">
+        <SidebarHeader className="gap-0 px-4 pt-4 pb-2">
           <h2 className="text-lg font-semibold">Bạn bè</h2>
         </SidebarHeader>
         <SidebarContent className="px-3 pb-4">
@@ -74,7 +66,7 @@ export default function FriendsSidebar() {
                             <Icon data-icon="inline-start" />
                             <span className="flex-1">{item.label}</span>
                             {item.badge !== null && (
-                              <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
+                              <span className="text-destructive-foreground ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold">
                                 {item.badge > 99 ? "99+" : item.badge}
                               </span>
                             )}

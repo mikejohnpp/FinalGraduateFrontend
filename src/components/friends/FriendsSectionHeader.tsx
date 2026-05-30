@@ -14,9 +14,7 @@ export default function FriendsSectionHeader({
   return (
     <div className="flex items-center justify-between">
       <h3 className="text-lg font-semibold">{title}</h3>
-      {showAction ? (
-        <span className="text-sm font-medium text-primary">{actionLabel}</span>
-      ) : null}
+      {showAction ? <span className="text-sm font-medium text-primary">{actionLabel}</span> : null}
     </div>
   );
 }

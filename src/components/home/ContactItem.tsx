@@ -1,12 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { cn } from "@/lib/utils"
-import type { Contact } from "@/types/HomeFeed"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import type { Contact } from "@/types/HomeFeed";
 
-export default function ContactItem({
-  contact,
-}: {
-  contact: Contact
-}) {
+export default function ContactItem({ contact }: { contact: Contact }) {
   return (
     <div className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm font-medium transition-colors hover:bg-muted">
       <div className="relative shrink-0">
@@ -23,5 +19,5 @@ export default function ContactItem({
       </div>
       <span className="truncate">{contact.name}</span>
     </div>
-  )
+  );
 }

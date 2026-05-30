@@ -3,7 +3,7 @@ import GroupDiscoverGrid from "@/components/groups/GroupDiscoverGrid";
 
 export default function GroupsDiscover() {
   return (
-    <div className="p-4 md:p-6 space-y-8 max-w-[1200px] mx-auto">
+    <div className="mx-auto max-w-[1200px] space-y-8 p-4 md:p-6">
       <GroupDiscoverSection />
       <GroupDiscoverGrid />
     </div>

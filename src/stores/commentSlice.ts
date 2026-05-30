@@ -30,7 +30,7 @@ const commentSlice = createSlice({
     // ── Comments ────────────────────────────────────────────
     setComments: (
       state,
-      action: PayloadAction<{ postId: number; data: CursorPageResponse<IComment> }>
+      action: PayloadAction<{ postId: number; data: CursorPageResponse<IComment> }>,
     ) => {
       const { postId, data } = action.payload;
       state.commentsByPost[postId] = {
@@ -42,7 +42,7 @@ const commentSlice = createSlice({
 
     appendComments: (
       state,
-      action: PayloadAction<{ postId: number; data: CursorPageResponse<IComment> }>
+      action: PayloadAction<{ postId: number; data: CursorPageResponse<IComment> }>,
     ) => {
       const { postId, data } = action.payload;
       const existing = state.commentsByPost[postId];
@@ -53,10 +53,7 @@ const commentSlice = createSlice({
       }
     },
 
-    prependComment: (
-      state,
-      action: PayloadAction<{ postId: number; comment: IComment }>
-    ) => {
+    prependComment: (state, action: PayloadAction<{ postId: number; comment: IComment }>) => {
       const { postId, comment } = action.payload;
       if (state.commentsByPost[postId]) {
         state.commentsByPost[postId].items.unshift(comment);
@@ -88,7 +85,7 @@ const commentSlice = createSlice({
 
     removeComment: (
       state,
-      action: PayloadAction<{ postId: number; commentId: number; parentId: number | null }>
+      action: PayloadAction<{ postId: number; commentId: number; parentId: number | null }>,
     ) => {
       const { postId, commentId, parentId } = action.payload;
       if (parentId) {
@@ -116,7 +113,12 @@ const commentSlice = createSlice({
 
     toggleLikeComment: (
       state,
-      action: PayloadAction<{ postId: number; commentId: number; parentId: number | null; delta: number }>
+      action: PayloadAction<{
+        postId: number;
+        commentId: number;
+        parentId: number | null;
+        delta: number;
+      }>,
     ) => {
       const { postId, commentId, parentId, delta } = action.payload;
       if (parentId) {
@@ -143,7 +145,7 @@ const commentSlice = createSlice({
     // ── Replies ────────────────────────────────────────────
     setReplies: (
       state,
-      action: PayloadAction<{ commentId: number; data: CursorPageResponse<IComment> }>
+      action: PayloadAction<{ commentId: number; data: CursorPageResponse<IComment> }>,
     ) => {
       const { commentId, data } = action.payload;
       state.repliesByComment[commentId] = {
@@ -156,7 +158,7 @@ const commentSlice = createSlice({
 
     appendReplies: (
       state,
-      action: PayloadAction<{ commentId: number; data: CursorPageResponse<IComment> }>
+      action: PayloadAction<{ commentId: number; data: CursorPageResponse<IComment> }>,
     ) => {
       const { commentId, data } = action.payload;
       const existing = state.repliesByComment[commentId];
@@ -169,7 +171,7 @@ const commentSlice = createSlice({
 
     appendReply: (
       state,
-      action: PayloadAction<{ commentId: number; reply: IComment; postId: number }>
+      action: PayloadAction<{ commentId: number; reply: IComment; postId: number }>,
     ) => {
       const { commentId, reply, postId } = action.payload;
       if (state.repliesByComment[commentId]) {

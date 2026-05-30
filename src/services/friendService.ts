@@ -7,25 +7,23 @@ export class FriendService extends BaseService {
   async acceptRequest(requestId: number, userId: number): Promise<boolean> {
     const response = await http.put<ApiResult>(
       `users/friends/requests/${requestId}/accept?userId=${userId}`,
-      null
+      null,
     );
-    return response.success ?? response.code === 200;
+    return response.success ?? (response.code === 200 || response.code === 201);
   }
 
   /** PUT /users/friends/requests/{requestId}/decline?userId={userId} */
   async declineRequest(requestId: number, userId: number): Promise<boolean> {
     const response = await http.put<ApiResult>(
       `users/friends/requests/${requestId}/decline?userId=${userId}`,
-      null
+      null,
     );
     return response.success ?? response.code === 200;
   }
 
   /** DELETE /users/friends/{friendUserId}?userId={userId} */
   async unfriend(friendUserId: number, userId: number): Promise<boolean> {
-    const response = await http.delete<ApiResult>(
-      `users/friends/${friendUserId}?userId=${userId}`
-    );
+    const response = await http.delete<ApiResult>(`users/friends/${friendUserId}?userId=${userId}`);
     return response.success ?? response.code === 200;
   }
 }

@@ -6,16 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import {
-  Pin,
-  Image,
-  FileText,
-  Link,
-  Palette,
-  Shield,
-  AlertTriangle,
-  Ban,
-} from "lucide-react";
+import { Pin, Image, FileText, Link, Palette, Shield, AlertTriangle, Ban } from "lucide-react";
 
 export default function InfoAccordion() {
   return (
@@ -23,7 +14,7 @@ export default function InfoAccordion() {
     <Accordion type="multiple" className="px-2">
       {/* Chat info */}
       <AccordionItem value="chat-info" className="border-none">
-        <AccordionTrigger className="px-2 py-3 text-sm font-medium hover:no-underline rounded-lg hover:bg-secondary">
+        <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Thông tin về đoạn chat
         </AccordionTrigger>
         <AccordionContent className="px-2 pb-2">
@@ -41,7 +32,7 @@ export default function InfoAccordion() {
 
       {/* Customize chat */}
       <AccordionItem value="customize" className="border-none">
-        <AccordionTrigger className="px-2 py-3 text-sm font-medium hover:no-underline rounded-lg hover:bg-secondary">
+        <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Tùy chỉnh đoạn chat
         </AccordionTrigger>
         <AccordionContent className="px-2 pb-2">
@@ -59,7 +50,7 @@ export default function InfoAccordion() {
 
       {/* Media & files */}
       <AccordionItem value="media" className="border-none">
-        <AccordionTrigger className="px-2 py-3 text-sm font-medium hover:no-underline rounded-lg hover:bg-secondary">
+        <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           File phương tiện và file
         </AccordionTrigger>
         <AccordionContent className="px-2 pb-2">
@@ -91,7 +82,7 @@ export default function InfoAccordion() {
 
       {/* Privacy & support */}
       <AccordionItem value="privacy" className="border-none">
-        <AccordionTrigger className="px-2 py-3 text-sm font-medium hover:no-underline rounded-lg hover:bg-secondary">
+        <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Quyền riêng tư và hỗ trợ
         </AccordionTrigger>
         <AccordionContent className="px-2 pb-2">

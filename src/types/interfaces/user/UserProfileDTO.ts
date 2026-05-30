@@ -3,9 +3,9 @@ export interface UserProfileDTO {
   userName: string;
   nickName: string | null;
   avatar: string | null;
-  email: string | null;       // null khi xem profile người khác
-  phoneNumber: number | null;  // null khi xem profile người khác
-  dateOfBirth: string | null;  // format: "yyyy-MM-dd"
+  email: string | null; // null khi xem profile người khác
+  phoneNumber: number | null; // null khi xem profile người khác
+  dateOfBirth: string | null; // format: "yyyy-MM-dd"
   role: string;
   isActive: boolean;
 

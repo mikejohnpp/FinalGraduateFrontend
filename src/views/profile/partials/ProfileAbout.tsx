@@ -1,11 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import type { UserProfileDTO } from '@/types/interfaces/user/UserProfileDTO'
-import { MapPin, GraduationCap, Briefcase, Heart, Rss } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
+import { MapPin, GraduationCap, Briefcase, Heart, Rss } from "lucide-react";
 
 interface ProfileAboutProps {
-  profile: UserProfileDTO
-  isOwner: boolean
+  profile: UserProfileDTO;
+  isOwner: boolean;
 }
 
 export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
@@ -19,14 +19,14 @@ export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
           <div className="text-center">
             <p className="text-sm">{profile.bio}</p>
             {isOwner && (
-              <Button variant="secondary" className="w-full mt-3 h-8">
+              <Button variant="secondary" className="mt-3 h-8 w-full">
                 Chỉnh sửa tiểu sử
               </Button>
             )}
           </div>
         )}
 
-        <div className="flex flex-col gap-3 mt-2">
+        <div className="mt-2 flex flex-col gap-3">
           {profile.workplace && (
             <div className="flex items-center gap-2 text-sm">
               <Briefcase className="size-5 text-muted-foreground" />
@@ -74,5 +74,5 @@ export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -2,9 +2,7 @@ import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 
 export type ParsedErrorRes = Record<string, string> | string;
 
-export function parseResDataOrMessage(
-  res: ApiResultGeneric<unknown>,
-): ParsedErrorRes {
+export function parseResDataOrMessage(res: ApiResultGeneric<unknown>): ParsedErrorRes {
   const { data, message } = res ?? {};
 
   if (data && typeof data === "object" && !Array.isArray(data)) {
@@ -23,9 +21,7 @@ export function parseResDataOrMessage(
   return message ?? "Có lỗi xảy ra";
 }
 
-export function isParsedErrorRecord(
-  error: ParsedErrorRes,
-): error is Record<string, string> {
+export function isParsedErrorRecord(error: ParsedErrorRes): error is Record<string, string> {
   return typeof error === "object" && error !== null && !Array.isArray(error);
 }
 

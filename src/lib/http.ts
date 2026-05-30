@@ -1,13 +1,14 @@
 import { API, AUTH_TOKEN_NAME } from "@/common/constants";
-import {
-  RedirectLogin,
-  RedirectLoginAndResetParam,
-  RemoveToken,
-} from "@/utils/redirectHelper";
+import { RedirectLogin, RedirectLoginAndResetParam, RemoveToken } from "@/utils/redirectHelper";
 import type { LoggedIn } from "@/types/interfaces/auth/LoggedIn";
 import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 import axios from "axios";
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { toast } from "sonner";
 
 type CallbackQueue = Array<(token: string | null) => void>;
@@ -33,14 +34,9 @@ export class Http {
       this.instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
 
-    this.instance.interceptors.request.use(
-      this.handleBeforeRequest.bind(this)
-    );
+    this.instance.interceptors.request.use(this.handleBeforeRequest.bind(this));
 
-    this.instance.interceptors.response.use(
-      this.handleSuccess,
-      this.handleRequestError.bind(this)
-    );
+    this.instance.interceptors.response.use(this.handleSuccess, this.handleRequestError.bind(this));
   }
 
   private handleBeforeRequest(request: InternalAxiosRequestConfig) {
@@ -64,7 +60,10 @@ export class Http {
       return Promise.reject(error);
     }
 
-    const { config, response: { status } } = error;
+    const {
+      config,
+      response: { status },
+    } = error;
     const originalRequest = config;
 
     if (status === 401 && window.location.href.indexOf("/login") === -1) {
@@ -88,7 +87,7 @@ export class Http {
         const response = await axios.post<ApiResultGeneric<LoggedIn>>(
           `${this.baseUrl}/${API.REFRESH}`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         const data = response.data;
@@ -127,11 +126,7 @@ export class Http {
     return Promise.reject(error);
   }
 
-  public async post<T>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
+  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.instance.post<T>(url, data, config);
     return response.data;
   }
@@ -162,7 +157,6 @@ export class Http {
     });
     return response.data;
   }
-
 
   public async ExportFile<T>(url: string): Promise<T> {
     const response = await this.instance.get(url, { responseType: "blob" });

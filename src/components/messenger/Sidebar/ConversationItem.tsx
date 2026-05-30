@@ -20,7 +20,7 @@ export default function ConversationItem({
       onClick={onClick}
       className={cn(
         "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-secondary",
-        isActive && "bg-secondary"
+        isActive && "bg-secondary",
       )}
     >
       <div className="relative flex-shrink-0">
@@ -31,10 +31,7 @@ export default function ConversationItem({
             </AvatarFallback>
           ) : (
             <>
-              <AvatarImage
-                src={conversation.avatar}
-                alt={conversation.name}
-              />
+              <AvatarImage src={conversation.avatar} alt={conversation.name} />
               <AvatarFallback>
                 {conversation.name
                   .split(" ")
@@ -46,7 +43,7 @@ export default function ConversationItem({
           )}
         </Avatar>
         {conversation.isOnline && !conversation.isGroup && (
-          <span className="absolute bottom-0 right-0 size-3 rounded-full border-2 border-background bg-green-500" />
+          <span className="absolute right-0 bottom-0 size-3 rounded-full border-2 border-background bg-green-500" />
         )}
       </div>
 
@@ -55,9 +52,7 @@ export default function ConversationItem({
           <span
             className={cn(
               "truncate text-sm",
-              conversation.unreadCount
-                ? "font-semibold text-foreground"
-                : "text-foreground"
+              conversation.unreadCount ? "font-semibold text-foreground" : "text-foreground",
             )}
           >
             {conversation.name}
@@ -65,9 +60,7 @@ export default function ConversationItem({
           <span
             className={cn(
               "flex-shrink-0 text-xs",
-              conversation.unreadCount
-                ? "text-primary font-medium"
-                : "text-muted-foreground"
+              conversation.unreadCount ? "font-medium text-primary" : "text-muted-foreground",
             )}
           >
             {conversation.timestamp}
@@ -77,9 +70,7 @@ export default function ConversationItem({
           <span
             className={cn(
               "truncate text-xs",
-              conversation.unreadCount
-                ? "font-medium text-foreground"
-                : "text-muted-foreground"
+              conversation.unreadCount ? "font-medium text-foreground" : "text-muted-foreground",
             )}
           >
             {conversation.lastMessage}
@@ -87,7 +78,7 @@ export default function ConversationItem({
           {conversation.unreadCount && conversation.unreadCount > 0 && (
             <Badge
               variant="destructive"
-              className="flex-shrink-0 rounded-full px-1.5 py-0 text-[10px] font-bold leading-5"
+              className="flex-shrink-0 rounded-full px-1.5 py-0 text-[10px] leading-5 font-bold"
             >
               {conversation.unreadCount}
             </Badge>

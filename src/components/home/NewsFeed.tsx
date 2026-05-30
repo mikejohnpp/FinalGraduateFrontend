@@ -1,33 +1,36 @@
-import { useEffect, useRef, useCallback } from "react"
-import CreatePostCard from "./CreatePostCard"
-import PostCard from "@/components/PostCard"
-import StoriesBar from "./StoriesBar"
-import PostSkeleton from "./PostSkeleton"
-import { useSuggestedFeed } from "@/hooks/usePost"
-import { Loader2 } from "lucide-react"
+import { useEffect, useRef, useCallback } from "react";
+import CreatePostCard from "./CreatePostCard";
+import PostCard from "@/components/PostCard";
+import StoriesBar from "./StoriesBar";
+import PostSkeleton from "./PostSkeleton";
+import { useSuggestedFeed } from "@/hooks/usePost";
+import { Loader2 } from "lucide-react";
 
 export default function NewsFeed() {
-  const { posts, loading, hasMore, loadMore } = useSuggestedFeed()
-  const observer = useRef<IntersectionObserver | null>(null)
-  
-  const lastPostElementRef = useCallback((node: HTMLDivElement) => {
-    if (loading) return
-    if (observer.current) observer.current.disconnect()
-    
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) {
-        loadMore()
-      }
-    })
-    
-    if (node) observer.current.observe(node)
-  }, [loading, hasMore, loadMore])
+  const { posts, loading, hasMore, loadMore } = useSuggestedFeed();
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastPostElementRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMore();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore, loadMore],
+  );
 
   return (
-    <div className="mx-auto flex w-full max-w-[760px] flex-col gap-4 py-4 px-4">
+    <div className="mx-auto flex w-full max-w-[760px] flex-col gap-4 px-4 py-4">
       <CreatePostCard />
       <StoriesBar />
-      
+
       {/* Initial Loading State */}
       {loading && posts.length === 0 ? (
         <>
@@ -43,12 +46,12 @@ export default function NewsFeed() {
                 {/* @ts-ignore */}
                 <PostCard post={post} />
               </div>
-            )
+            );
           } else {
             return (
               /* @ts-ignore */
               <PostCard key={post.id} post={post} />
-            )
+            );
           }
         })
       )}
@@ -62,10 +65,10 @@ export default function NewsFeed() {
       )}
 
       {!hasMore && posts.length > 0 && (
-        <div className="text-center py-6 text-sm text-muted-foreground border-t mt-4">
+        <div className="mt-4 border-t py-6 text-center text-sm text-muted-foreground">
           Bạn đã xem hết bài viết.
         </div>
       )}
     </div>
-  )
+  );
 }

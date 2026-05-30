@@ -1,4 +1,4 @@
 export interface LoggedIn {
-    token: string,
-    userId: number
+  token: string;
+  userId: number;
 }

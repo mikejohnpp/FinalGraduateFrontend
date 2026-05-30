@@ -25,17 +25,17 @@ export const API = {
   },
 
   FRIEND: {
-    BASE: "users/friends",                          // GET danh sách bạn bè, DELETE unfriend
-    REQUESTS: "users/friends/requests",              // GET lời mời, POST gửi lời mời
+    BASE: "users/friends", // GET danh sách bạn bè, DELETE unfriend
+    REQUESTS: "users/friends/requests", // GET lời mời, POST gửi lời mời
     REQUESTS_COUNT: "users/friends/requests/count", // GET badge count
-    SUGGESTIONS: "users/friends/suggestions",        // GET gợi ý bạn bè
+    SUGGESTIONS: "users/friends/suggestions", // GET gợi ý bạn bè
   },
 
   PROFILE: {
-    BASE: "users",                   // GET /users/{id}/profile
-    UPDATE: "users/profile",         // PUT /users/profile?userId=
-    AVATAR: "users/profile/avatar",  // POST multipart/form-data
-    COVER: "users/profile/cover",    // POST multipart/form-data
+    BASE: "users", // GET /users/{id}/profile
+    UPDATE: "users/profile", // PUT /users/profile?userId=
+    AVATAR: "users/profile/avatar", // POST multipart/form-data
+    COVER: "users/profile/cover", // POST multipart/form-data
   },
 };
 

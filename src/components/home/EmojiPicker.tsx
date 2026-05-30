@@ -5,9 +5,9 @@ import {
   LaughIcon,
   SmilePlusIcon,
   ThumbsUpIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const emojis = [
   { icon: ThumbsUpIcon, label: "Thích", color: "text-blue-500" },
@@ -16,27 +16,25 @@ const emojis = [
   { icon: SmilePlusIcon, label: "Wow", color: "text-amber-500" },
   { icon: FrownIcon, label: "Buồn", color: "text-amber-500" },
   { icon: AngryIcon, label: "Phẫn nộ", color: "text-orange-600" },
-]
+];
 
 export default function EmojiPicker({
   open,
   onSelect,
 }: {
-  open: boolean
-  onSelect: (label: string) => void
+  open: boolean;
+  onSelect: (label: string) => void;
 }) {
   return (
     <div
       data-open={open}
       className={cn(
-        "absolute -top-12 left-1/2 -translate-x-1/2 flex items-center gap-0.5 rounded-full bg-popover px-2 py-1.5 shadow-lg ring-1 ring-foreground/10 transition-all duration-150",
-        open
-          ? "scale-100 opacity-100 visible"
-          : "scale-90 opacity-0 invisible pointer-events-none",
+        "absolute -top-12 left-1/2 flex -translate-x-1/2 items-center gap-0.5 rounded-full bg-popover px-2 py-1.5 shadow-lg ring-1 ring-foreground/10 transition-all duration-150",
+        open ? "visible scale-100 opacity-100" : "pointer-events-none invisible scale-90 opacity-0",
       )}
     >
       {emojis.map((emoji) => {
-        const Icon = emoji.icon
+        const Icon = emoji.icon;
         return (
           <button
             key={emoji.label}
@@ -50,8 +48,8 @@ export default function EmojiPicker({
           >
             <Icon className="size-5 fill-current" />
           </button>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

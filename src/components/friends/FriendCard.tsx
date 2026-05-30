@@ -36,9 +36,7 @@ export default function FriendCard({ friendship, onUnfriend, loadingId }: Friend
           Bạn bè từ {formatFriendSince(friendship.friendSince)}
         </p>
         {friendship.mutualFriendCount > 0 ? (
-          <p className="text-xs text-muted-foreground">
-            {friendship.mutualFriendCount} bạn chung
-          </p>
+          <p className="text-xs text-muted-foreground">{friendship.mutualFriendCount} bạn chung</p>
         ) : null}
       </CardHeader>
       <CardContent>

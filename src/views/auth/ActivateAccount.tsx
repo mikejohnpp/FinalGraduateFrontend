@@ -20,16 +20,23 @@ export default function ActivateAccount() {
               <h2 className="text-2xl font-bold">Đang kích hoạt tài khoản...</h2>
             </div>
           )}
-          
+
           {status === "success" && (
             <div className="flex flex-col items-center space-y-4">
               <div className="flex size-16 items-center justify-center rounded-full bg-green-100 text-green-600">
                 <svg className="size-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-green-600">Kích hoạt thành công!</h2>
-              <p className="text-muted-foreground">Tài khoản của bạn đã được kích hoạt. Bây giờ bạn có thể đăng nhập.</p>
+              <p className="text-muted-foreground">
+                Tài khoản của bạn đã được kích hoạt. Bây giờ bạn có thể đăng nhập.
+              </p>
               <Button onClick={() => navigate(`/${PATH_CONSTRAINT.LOGIN}`)} className="mt-4">
                 Đi đến trang đăng nhập
               </Button>
@@ -40,12 +47,21 @@ export default function ActivateAccount() {
             <div className="flex flex-col items-center space-y-4">
               <div className="flex size-16 items-center justify-center rounded-full bg-destructive/10 text-destructive">
                 <svg className="size-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-destructive">Kích hoạt thất bại</h2>
               <p className="text-muted-foreground">{errorMessage}</p>
-              <Button variant="outline" onClick={() => navigate(`/${PATH_CONSTRAINT.LOGIN}`)} className="mt-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate(`/${PATH_CONSTRAINT.LOGIN}`)}
+                className="mt-4"
+              >
                 Quay lại trang đăng nhập
               </Button>
             </div>

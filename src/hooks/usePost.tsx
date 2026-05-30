@@ -4,10 +4,7 @@ import type { AppDispatch, RootState } from "@/stores/store";
 import { postActions } from "@/stores/postSlice";
 import type { IPost } from "@/types/interfaces/post/IPost";
 import type { IPostDetails } from "@/types/interfaces/post/IPostDetails";
-import type {
-  IPostCreate,
-  IPostUpdate,
-} from "@/types/interfaces/post/IPostCreate";
+import type { IPostCreate, IPostUpdate } from "@/types/interfaces/post/IPostCreate";
 import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -76,10 +73,7 @@ export function useCreatePost() {
     }
     setLoading(true);
     try {
-      const result = await postService.createAndGetData<IPostDetails>(
-        API.POST.BASE,
-        data,
-      );
+      const result = await postService.createAndGetData<IPostDetails>(API.POST.BASE, data);
       if (result) {
         const asPost: IPost = { ...result, commentCount: 0 };
         dispatch(postActions.prependPost(asPost));
@@ -110,7 +104,7 @@ export function usePostDetail(id: number) {
         const result = await postService.getSingle<IPostDetails>(
           API.POST.BASE,
           id,
-          userId ? { userId } : undefined
+          userId ? { userId } : undefined,
         );
         dispatch(postActions.setCurrentPost(result));
       } catch (e: any) {
@@ -134,10 +128,7 @@ export function useUpdatePost() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const update = async (
-    id: number,
-    data: IPostUpdate,
-  ): Promise<IPostDetails | null> => {
+  const update = async (id: number, data: IPostUpdate): Promise<IPostDetails | null> => {
     setError(null);
     if (!data.content.trim()) {
       setError("Nội dung bài viết không được để trống");
@@ -146,10 +137,7 @@ export function useUpdatePost() {
     setLoading(true);
     try {
       const url = userId ? `${API.POST.BASE}/${id}?userId=${userId}` : `${API.POST.BASE}/${id}`;
-      const result = await postService.updateAndGetData<IPostDetails>(
-        url,
-        data,
-      );
+      const result = await postService.updateAndGetData<IPostDetails>(url, data);
       if (result) {
         dispatch(postActions.setCurrentPost(result));
       }

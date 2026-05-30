@@ -76,7 +76,9 @@ class GroupService extends BaseService {
   // Lấy thành viên nhóm
   async getGroupMembers(groupId: number): Promise<IGroupMember[]> {
     try {
-      const response = await http.get<ApiResultGeneric<IGroupMember[]>>(`${API.GROUP.BASE}/${groupId}/members`);
+      const response = await http.get<ApiResultGeneric<IGroupMember[]>>(
+        `${API.GROUP.BASE}/${groupId}/members`,
+      );
       return response.data || [];
     } catch (error) {
       console.error("Error fetching group members", error);
@@ -85,7 +87,11 @@ class GroupService extends BaseService {
   }
 
   // Lấy feed của toàn bộ nhóm (Infinite Scroll)
-  async getGroupFeed(userId: number, cursor?: string, size = 10): Promise<CursorPageResponse<IPost> | null> {
+  async getGroupFeed(
+    userId: number,
+    cursor?: string,
+    size = 10,
+  ): Promise<CursorPageResponse<IPost> | null> {
     try {
       const response = await http.get<ApiResultGeneric<CursorPageResponse<IPost>>>(API.GROUP.FEED, {
         params: { userId, cursor, size },
@@ -98,11 +104,19 @@ class GroupService extends BaseService {
   }
 
   // Lấy feed của một nhóm cụ thể
-  async getSingleGroupPosts(groupId: number, userId: number, cursor?: string, size = 10): Promise<CursorPageResponse<IPost> | null> {
+  async getSingleGroupPosts(
+    groupId: number,
+    userId: number,
+    cursor?: string,
+    size = 10,
+  ): Promise<CursorPageResponse<IPost> | null> {
     try {
-      const response = await http.get<ApiResultGeneric<CursorPageResponse<IPost>>>(`${API.GROUP.BASE}/${groupId}/posts`, {
-        params: { userId, cursor, size },
-      });
+      const response = await http.get<ApiResultGeneric<CursorPageResponse<IPost>>>(
+        `${API.GROUP.BASE}/${groupId}/posts`,
+        {
+          params: { userId, cursor, size },
+        },
+      );
       return response.data ?? null;
     } catch (error) {
       console.error("Error fetching single group posts", error);
@@ -111,7 +125,10 @@ class GroupService extends BaseService {
   }
 
   // Tạo nhóm mới
-  async createGroup(userId: number, data: { name: string; privacy: "public" | "private"; invitees?: number[] }): Promise<IGroup | null> {
+  async createGroup(
+    userId: number,
+    data: { name: string; privacy: "public" | "private"; invitees?: number[] },
+  ): Promise<IGroup | null> {
     try {
       const response = await http.post<ApiResultGeneric<IGroup>>(API.GROUP.BASE, data, {
         params: { userId },
