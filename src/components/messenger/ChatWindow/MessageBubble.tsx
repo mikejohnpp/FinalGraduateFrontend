@@ -1,5 +1,4 @@
 import type { Message } from "@/types/messenger";
-import { CURRENT_USER_ID } from "@/data/mock/messengerData";
 import { cn } from "@/lib/utils";
 
 interface MessageBubbleProps {
@@ -7,6 +6,7 @@ interface MessageBubbleProps {
   showAvatar?: boolean;
   senderAvatar?: string;
   senderName?: string;
+  currentUserId?: string | number;
 }
 
 export default function MessageBubble({
@@ -14,8 +14,9 @@ export default function MessageBubble({
   showAvatar,
   senderAvatar,
   senderName,
+  currentUserId,
 }: MessageBubbleProps) {
-  const isMine = message.senderId === CURRENT_USER_ID;
+  const isMine = String(message.senderId) === String(currentUserId);
 
   return (
     <div
