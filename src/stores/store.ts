@@ -6,6 +6,8 @@ import groupReducer from "./groupSlice.ts";
 import commentReducer from "./commentSlice.ts";
 import friendReducer from "./friendSlice.ts";
 import { THUNK_EXTRA } from "./thunkExtra.ts";
+import socketSlice from "./socketSlice.ts";
+import chatSlice from "./chatSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +17,8 @@ export const store = configureStore({
     group: groupReducer,
     comment: commentReducer,
     friend: friendReducer,
+    socket: socketSlice.reducer,
+    chat: chatSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

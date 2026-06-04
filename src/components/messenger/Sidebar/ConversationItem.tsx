@@ -1,89 +1,61 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import type { Conversation } from "@/types/messenger";
 import { cn } from "@/lib/utils";
+import type { Conversation } from "../interface/Conversation";
 import { Users } from "lucide-react";
 
 interface ConversationItemProps {
   conversation: Conversation;
   isActive: boolean;
   onClick: () => void;
+  userId: number;
 }
 
 export default function ConversationItem({
   conversation,
   isActive,
   onClick,
+  userId,
 }: ConversationItemProps) {
+  const isGroup = conversation.group || (conversation as any).isGroup;
+  const otherMember = isGroup
+    ? undefined
+    : (conversation.members.find((member) => member.id !== userId) ?? conversation.members[0]);
+
+  const title = isGroup ? conversation.name : (otherMember?.username ?? "Người dùng");
+  const avatarUrl = otherMember?.avatarUrl;
+  const initials = title
+    ?.split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("");
+
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-secondary",
-        isActive && "bg-secondary",
+        "flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors",
+        "hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        isActive && "bg-muted",
       )}
     >
-      <div className="relative flex-shrink-0">
-        <Avatar className="size-12">
-          {conversation.isGroup ? (
-            <AvatarFallback className="bg-muted">
-              <Users className="size-5 text-muted-foreground" />
-            </AvatarFallback>
-          ) : (
-            <>
-              <AvatarImage src={conversation.avatar} alt={conversation.name} />
-              <AvatarFallback>
-                {conversation.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .slice(-2)
-                  .join("")}
-              </AvatarFallback>
-            </>
-          )}
+      {isGroup ? (
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground border">
+          <Users className="h-5 w-5" />
+        </div>
+      ) : (
+        <Avatar className="h-11 w-11">
+          {avatarUrl ? <AvatarImage src={avatarUrl} alt={title} /> : null}
+          <AvatarFallback className="text-xs font-semibold">{initials || "?"}</AvatarFallback>
         </Avatar>
-        {conversation.isOnline && !conversation.isGroup && (
-          <span className="absolute right-0 bottom-0 size-3 rounded-full border-2 border-background bg-green-500" />
-        )}
-      </div>
+      )}
 
-      <div className="flex-1 overflow-hidden">
-        <div className="flex items-center justify-between">
-          <span
-            className={cn(
-              "truncate text-sm",
-              conversation.unreadCount ? "font-semibold text-foreground" : "text-foreground",
-            )}
-          >
-            {conversation.name}
-          </span>
-          <span
-            className={cn(
-              "flex-shrink-0 text-xs",
-              conversation.unreadCount ? "font-medium text-primary" : "text-muted-foreground",
-            )}
-          >
-            {conversation.timestamp}
-          </span>
-        </div>
-        <div className="flex items-center justify-between gap-2">
-          <span
-            className={cn(
-              "truncate text-xs",
-              conversation.unreadCount ? "font-medium text-foreground" : "text-muted-foreground",
-            )}
-          >
-            {conversation.lastMessage}
-          </span>
-          {conversation.unreadCount && conversation.unreadCount > 0 && (
-            <Badge
-              variant="destructive"
-              className="flex-shrink-0 rounded-full px-1.5 py-0 text-[10px] leading-5 font-bold"
-            >
-              {conversation.unreadCount}
-            </Badge>
-          )}
-        </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground">{title}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {isGroup ? "Cuộc trò chuyện nhóm" : "Trò chuyện riêng"}
+        </p>
       </div>
     </button>
   );

@@ -1,38 +1,50 @@
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import type { Conversation } from "@/types/messenger";
-import { Phone, Video, Info } from "lucide-react";
+import type { MessageChat } from "@/stores/chatSlice";
+import { Phone, Video, Info, UserPlus } from "lucide-react";
+import AddMemberDialog from "./AddMemberDialog";
 
 interface ChatHeaderProps {
-  conversation: Conversation;
-  onToggleInfo: () => void;
-  showInfo: boolean;
+  chatInfo: MessageChat;
+  userId: number;
 }
 
-export default function ChatHeader({ conversation, onToggleInfo, showInfo }: ChatHeaderProps) {
+export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
+  const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+
+  const otherMember = chatInfo.group
+    ? undefined
+    : (chatInfo.members.find((member) => member.id !== userId) ?? chatInfo.members[0]);
+
+  const title = chatInfo.group
+    ? chatInfo.conversationName
+    : (otherMember?.username ?? "Người dùng");
+  const avatarUrl = otherMember?.avatarUrl;
+  const initials = title
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("");
   return (
-    <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-border px-4">
+    <div className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-4">
       <div className="flex items-center gap-3">
         <div className="relative">
           <Avatar className="size-10">
-            <AvatarImage src={conversation.avatar} alt={conversation.name} />
-            <AvatarFallback>
-              {conversation.name
-                .split(" ")
-                .map((n) => n[0])
-                .slice(-2)
-                .join("")}
-            </AvatarFallback>
+            <AvatarImage src={otherMember?.avatarUrl} alt={chatInfo.conversationName} />
+            <AvatarFallback>{initials || "?"}</AvatarFallback>
           </Avatar>
-          {conversation.isOnline && (
-            <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-background bg-green-500" />
-          )}
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-semibold text-foreground">{conversation.name}</span>
-          <span className="text-xs text-muted-foreground">
-            {conversation.isOnline ? "Đang hoạt động" : "Không hoạt động"}
+          <span className="text-sm font-semibold text-foreground">
+            {chatInfo.conversationName || otherMember?.username || "Người dùng"}
           </span>
+          {chatInfo.group && (
+            <span className="text-xs text-muted-foreground">
+              {chatInfo.members.length} thành viên
+            </span>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-1">
@@ -42,15 +54,29 @@ export default function ChatHeader({ conversation, onToggleInfo, showInfo }: Cha
         <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
           <Video data-icon />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={`size-9 rounded-full ${showInfo ? "bg-primary/10 text-primary" : "text-primary"}`}
-          onClick={onToggleInfo}
-        >
+        {chatInfo.group && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-9 rounded-full text-primary"
+            onClick={() => setIsAddMemberOpen(true)}
+            title="Thêm thành viên"
+          >
+            <UserPlus data-icon />
+          </Button>
+        )}
+        <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
           <Info data-icon />
         </Button>
       </div>
+      {chatInfo.group && (
+        <AddMemberDialog
+          isOpen={isAddMemberOpen}
+          onClose={() => setIsAddMemberOpen(false)}
+          userId={userId}
+          chatInfo={chatInfo}
+        />
+      )}
     </div>
   );
 }
