@@ -19,7 +19,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  
+
   const connected = useSelector((state: any) => state.socket.connected);
   const conversationId = useSelector((state: any) => state.chat.conversationId);
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
         console.log("MessageList: Received typing event:", data);
         const typing = data.typing !== undefined ? data.typing : data.isTyping;
         dispatch(chatSlice.actions.setTyping({ userId: data.senderId, isTyping: typing }));
-      }
+      },
     );
     return () => {
       subscription.unsubscribe();
@@ -73,22 +73,30 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       if (chatInfo && chatInfo.currentPage + 1 < chatInfo.totalPages && !isLoadingMore) {
         setIsLoadingMore(true);
         const previousScrollHeight = target.scrollHeight;
-        
+
         try {
-          const res = await chatService.getConversationDetail(conversationId, chatInfo.currentPage + 1, 50);
+          const res = await chatService.getConversationDetail(
+            conversationId,
+            chatInfo.currentPage + 1,
+            50,
+          );
           if (res?.data) {
             const data = res.data as MessageChat;
-            dispatch(chatSlice.actions.prependMessages({
-              messages: data.messages, 
-              currentPage: data.currentPage
-            }));
-            
+            dispatch(
+              chatSlice.actions.prependMessages({
+                messages: data.messages,
+                currentPage: data.currentPage,
+              }),
+            );
+
             // Restore scroll position so it doesn't jump to top
             setTimeout(() => {
               if (scrollAreaRef.current) {
-                const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+                const viewport = scrollAreaRef.current.querySelector(
+                  "[data-radix-scroll-area-viewport]",
+                );
                 if (viewport) {
-                   viewport.scrollTop = viewport.scrollHeight - previousScrollHeight;
+                  viewport.scrollTop = viewport.scrollHeight - previousScrollHeight;
                 }
               }
             }, 0);
@@ -103,9 +111,15 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
   };
 
   return (
-    <ScrollArea ref={scrollAreaRef} className="min-h-0 flex-1 overflow-hidden py-4" onScrollCapture={handleScroll}>
+    <ScrollArea
+      ref={scrollAreaRef}
+      className="min-h-0 flex-1 overflow-hidden py-4"
+      onScrollCapture={handleScroll}
+    >
       <div className="flex flex-col gap-1">
-        {isLoadingMore && <div className="text-center text-xs text-muted-foreground py-2">Đang tải thêm...</div>}
+        {isLoadingMore && (
+          <div className="py-2 text-center text-xs text-muted-foreground">Đang tải thêm...</div>
+        )}
         {[...(chatInfo?.messages || [])].reverse().map((message: any) => {
           return (
             <div
@@ -116,7 +130,11 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
                 className={`flex w-fit flex-col gap-1 rounded-lg px-3 py-2 ${message.senderId === userId ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"}`}
               >
                 <div>{message.content}</div>
-                <div className={`text-[10px] ${message.senderId === userId ? "text-blue-100" : "text-gray-500"}`}>{dinhDangThoiGian(message.createdAt)}</div>
+                <div
+                  className={`text-[10px] ${message.senderId === userId ? "text-blue-100" : "text-gray-500"}`}
+                >
+                  {dinhDangThoiGian(message.createdAt)}
+                </div>
               </div>
             </div>
           );

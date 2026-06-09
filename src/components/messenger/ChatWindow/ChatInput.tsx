@@ -13,7 +13,7 @@ interface ChatInputProps {
 export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const [isEmojiOpen, setIsEmojiOpen] = useState(false);
-  
+
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -26,11 +26,11 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
 
   const handleChange = (val: string) => {
     setMessage(val);
-    
+
     if (!isTyping && val.trim() !== "") {
       setIsTyping(true);
     }
-    
+
     if (val.trim() === "") {
       setIsTyping(false);
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
@@ -92,7 +92,11 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
                 <Smile data-icon className="text-primary" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent side="top" align="end" className="w-auto p-0 border-none shadow-none bg-transparent">
+            <PopoverContent
+              side="top"
+              align="end"
+              className="w-auto border-none bg-transparent p-0 shadow-none"
+            >
               <EmojiPicker onEmojiClick={handleEmojiClick} />
             </PopoverContent>
           </Popover>
