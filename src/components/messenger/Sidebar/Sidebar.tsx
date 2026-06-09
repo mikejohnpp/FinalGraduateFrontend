@@ -27,8 +27,8 @@ export default function Sidebar({
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
 
   // conversations filter by isGroup (API returns isGroup, UI might use group)
-  const privateConversations = conversations.filter(c => !c.group && (c as any).isGroup !== true);
-  const groupConversations = conversations.filter(c => c.group || (c as any).isGroup === true);
+  const privateConversations = conversations.filter((c) => !c.group && (c as any).isGroup !== true);
+  const groupConversations = conversations.filter((c) => c.group || (c as any).isGroup === true);
 
   return (
     <div className="flex h-full w-[320px] shrink-0 flex-col border-r border-border bg-background">
@@ -36,7 +36,13 @@ export default function Sidebar({
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <h1 className="text-2xl font-bold text-foreground">Đoạn chat</h1>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="size-9 rounded-full" onClick={() => setIsCreateGroupOpen(true)} title="Tạo nhóm mới">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-9 rounded-full"
+            onClick={() => setIsCreateGroupOpen(true)}
+            title="Tạo nhóm mới"
+          >
             <Users data-icon />
           </Button>
           <Button variant="ghost" size="icon" className="size-9 rounded-full">
@@ -51,16 +57,23 @@ export default function Sidebar({
       {/* Search */}
       <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
-      <Tabs defaultValue="private" className="flex-1 flex flex-col mt-2 h-0">
-        <div className="px-4 mb-2 shrink-0">
+      <Tabs defaultValue="private" className="mt-2 flex h-0 flex-1 flex-col">
+        <div className="mb-2 shrink-0 px-4">
           <TabsList className="w-full">
-            <TabsTrigger value="private" className="flex-1">Cá nhân</TabsTrigger>
-            <TabsTrigger value="group" className="flex-1">Nhóm</TabsTrigger>
+            <TabsTrigger value="private" className="flex-1">
+              Cá nhân
+            </TabsTrigger>
+            <TabsTrigger value="group" className="flex-1">
+              Nhóm
+            </TabsTrigger>
           </TabsList>
         </div>
 
-        <TabsContent value="private" className="flex-1 m-0 flex flex-col min-h-0 data-[state=inactive]:hidden">
-          <ScrollArea className="flex-1 px-1 h-full">
+        <TabsContent
+          value="private"
+          className="m-0 flex min-h-0 flex-1 flex-col data-[state=inactive]:hidden"
+        >
+          <ScrollArea className="h-full flex-1 px-1">
             <div className="flex flex-col gap-0.5">
               {privateConversations.map((conv) => (
                 <ConversationItem
@@ -80,8 +93,11 @@ export default function Sidebar({
           </ScrollArea>
         </TabsContent>
 
-        <TabsContent value="group" className="flex-1 m-0 flex flex-col min-h-0 data-[state=inactive]:hidden">
-          <ScrollArea className="flex-1 px-1 h-full">
+        <TabsContent
+          value="group"
+          className="m-0 flex min-h-0 flex-1 flex-col data-[state=inactive]:hidden"
+        >
+          <ScrollArea className="h-full flex-1 px-1">
             <div className="flex flex-col gap-0.5">
               {groupConversations.map((conv) => (
                 <ConversationItem
@@ -102,9 +118,9 @@ export default function Sidebar({
         </TabsContent>
       </Tabs>
 
-      <CreateGroupDialog 
-        isOpen={isCreateGroupOpen} 
-        onClose={() => setIsCreateGroupOpen(false)} 
+      <CreateGroupDialog
+        isOpen={isCreateGroupOpen}
+        onClose={() => setIsCreateGroupOpen(false)}
         userId={userId}
         onSuccess={onConversationCreated}
       />

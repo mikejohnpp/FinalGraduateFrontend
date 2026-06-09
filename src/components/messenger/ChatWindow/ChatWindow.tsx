@@ -20,8 +20,8 @@ export default function ChatWindow({
 }: ChatWindowProps) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
-      <ChatHeader conversation={conversation} onToggleInfo={onToggleInfo} showInfo={showInfo} />
-      <MessageList messages={messages} conversation={conversation} />
+      <ChatHeader conversation={conversation} />
+      {/* <MessageList messages={messages} conversation={conversation} /> */}
       <ChatInput onSendMessage={onSendMessage} />
     </div>
   );

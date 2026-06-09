@@ -41,7 +41,7 @@ export default function ConversationItem({
       )}
     >
       {isGroup ? (
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground border">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border bg-muted text-muted-foreground">
           <Users className="h-5 w-5" />
         </div>
       ) : (

@@ -1,67 +1,59 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/messenger/Sidebar/Sidebar";
-import ChatWindow from "@/components/messenger/ChatWindow/ChatWindow";
-import InfoPanel from "@/components/messenger/InfoPanel/InfoPanel";
-import {
-  conversations as initialConversations,
-  messages as initialMessages,
-  CURRENT_USER_ID,
-} from "@/data/mock/messengerData";
-import type { Message } from "@/types/messenger";
+import http from "@/lib/http";
+import { useDispatch, useSelector } from "react-redux";
+import type { Conversation } from "./interface/Conversation";
+import chatSlice from "@/stores/chatSlice";
 
 export default function MessengerLayout() {
-  const [conversations] = useState(initialConversations);
-  const [messagesMap, setMessagesMap] = useState<Record<string, Message[]>>(initialMessages);
-  const [activeConversationId, setActiveConversationId] = useState("1");
-  const [showInfoPanel, setShowInfoPanel] = useState(true);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<any>(null);
+  const userId = useSelector((state: any) => state.user?.userId);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    http
+      .get(`/chat/conversations/user/${userId}`)
+      .then((res: any) => {
+        setConversations(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch conversations", err);
+      });
+  }, []);
 
-  const activeConversation = conversations.find((c) => c.id === activeConversationId);
-  const activeMessages = messagesMap[activeConversationId] ?? [];
-
-  const handleSendMessage = useCallback(
-    (content: string) => {
-      const newMessage: Message = {
-        id: `m-${Date.now()}`,
-        content,
-        senderId: CURRENT_USER_ID,
-        timestamp: new Date().toLocaleTimeString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        type: "text",
-      };
-      setMessagesMap((prev) => ({
-        ...prev,
-        [activeConversationId]: [...(prev[activeConversationId] ?? []), newMessage],
-      }));
-    },
-    [activeConversationId],
-  );
-
-  if (!activeConversation) return null;
-
+  const onSelectConversation = (id: any) => {
+    dispatch(chatSlice.actions.setConversationId(id));
+    setActiveConversationId(id);
+  };
+  const onConversationCreated = () => {
+    http.get(`/chat/conversations/user/${userId}`).then((res: any) => {
+      setConversations(res.data);
+    });
+  };
   return (
     <div className="flex h-[calc(100svh-62px)] w-full overflow-hidden bg-background">
       {/* Sidebar */}
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
-        onSelectConversation={setActiveConversationId}
+        userId={userId}
+        onSelectConversation={onSelectConversation}
+        onConversationCreated={onConversationCreated}
       />
 
       {/* Chat Window */}
-      <ChatWindow
+      {/* <ChatWindow
         conversation={activeConversation}
         messages={activeMessages}
         onSendMessage={handleSendMessage}
         onToggleInfo={() => setShowInfoPanel((p) => !p)}
         showInfo={showInfoPanel}
-      />
+      /> */}
 
       {/* Info Panel */}
-      {showInfoPanel && (
+      {/* {showInfoPanel && (
         <InfoPanel conversation={activeConversation} onClose={() => setShowInfoPanel(false)} />
-      )}
+      )} */}
     </div>
   );
 }
