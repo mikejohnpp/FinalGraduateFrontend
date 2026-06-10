@@ -87,10 +87,10 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
         />
         <InputGroupAddon align="inline-end">
           <Popover open={isEmojiOpen} onOpenChange={setIsEmojiOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-8 rounded-full">
-                <Smile data-icon className="text-primary" />
-              </Button>
+            <PopoverTrigger>
+              {/* <Button variant="ghost" size="icon" className="size-8 rounded-full"> */}
+              <Smile data-icon className="text-primary" />
+              {/* </Button> */}
             </PopoverTrigger>
             <PopoverContent
               side="top"
