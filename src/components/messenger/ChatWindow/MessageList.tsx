@@ -201,32 +201,59 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
               <div className="py-2 text-center text-xs text-muted-foreground">Đang tải thêm...</div>
             )}
 
-            {[...(chatInfo?.messages || [])].reverse().map((message: any) => (
-              <div
-                key={message.id}
-                className={`flex ${
-                  message.senderId === userId ? "justify-end" : "justify-start"
-                } gap-1 p-2`}
-              >
-                <div
-                  className={`flex w-fit max-w-[70%] flex-col gap-1 rounded-lg px-3 py-2 ${
-                    message.senderId === userId
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  <div>{message.content}</div>
+            {[...(chatInfo?.messages || [])]
+              .reverse()
+              .map((message: any, index: number, messages: any[]) => {
+                const isMe = message.user.id === userId;
 
+                // Vì đang reverse() nên tin nhắn tiếp theo trong mảng
+                // chính là tin nhắn phía dưới trên giao diện
+                const nextMessage = messages[index + 1];
+
+                // Chỉ hiện avatar cho người khác và chỉ ở cuối cụm
+                const showAvatar = !isMe && nextMessage?.user?.id !== message.user.id;
+
+                return (
                   <div
-                    className={`text-[10px] ${
-                      message.senderId === userId ? "text-blue-100" : "text-gray-500"
-                    }`}
+                    key={message.id}
+                    className={`flex items-end gap-1 p-2 ${isMe ? "justify-end" : "justify-start"}`}
                   >
-                    {dinhDangThoiGian(message.createdAt)}
+                    {/* Avatar của người khác */}
+                    {!isMe &&
+                      (showAvatar ? (
+                        message.user.avatar ? (
+                          <img
+                            src={message.user.avatar}
+                            alt={message.user.username}
+                            className="h-10 w-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-400 font-semibold text-white">
+                            {message.user.username?.charAt(0).toUpperCase()}
+                          </div>
+                        )
+                      ) : (
+                        // Giữ khoảng trống để các bubble thẳng hàng
+                        <div className="h-10 w-10" />
+                      ))}
+
+                    <div
+                      className={`flex w-fit max-w-[70%] flex-col gap-1 rounded-lg px-3 py-2 ${
+                        isMe ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                      }`}
+                    >
+                      {message.user.id !== userId && (
+                        <div className="text-[12px] opacity-30">{message.user.username}</div>
+                      )}
+                      <div>{message.content}</div>
+
+                      <div className={`text-[10px] ${isMe ? "text-blue-100" : "text-gray-500"}`}>
+                        {dinhDangThoiGian(message.createdAt)}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                );
+              })}
 
             {activeTypingUsers.length > 0 && (
               <div className="flex justify-start gap-1 p-2">
