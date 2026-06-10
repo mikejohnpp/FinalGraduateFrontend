@@ -7,7 +7,6 @@ import { connectSocket, disconnectSocket } from "./websocket/chatSocket";
 function App() {
   useEffect(() => {
     connectSocket();
-
     return () => {
       disconnectSocket();
     };

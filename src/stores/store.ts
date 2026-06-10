@@ -8,6 +8,7 @@ import friendReducer from "./friendSlice.ts";
 import { THUNK_EXTRA } from "./thunkExtra.ts";
 import socketSlice from "./socketSlice.ts";
 import chatSlice from "./chatSlice.ts";
+import { userOnlineSlice } from "./userOnlineSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     friend: friendReducer,
     socket: socketSlice.reducer,
     chat: chatSlice.reducer,
+    userOnline: userOnlineSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

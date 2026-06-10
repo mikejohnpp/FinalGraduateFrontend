@@ -1,0 +1,23 @@
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+
+export const initialState = {
+  onlineUsers: [] as number[],
+};
+
+export const userOnlineSlice = createSlice({
+  name: "userOnline",
+  initialState,
+  reducers: {
+    setOnlineUsers: (state, action: PayloadAction<number[]>) => {
+      state.onlineUsers = action.payload;
+    },
+    addOnlineUser: (state, action: PayloadAction<number>) => {
+      if (!state.onlineUsers.includes(action.payload)) {
+        state.onlineUsers.push(action.payload);
+      }
+    },
+    removeOnlineUser: (state, action: PayloadAction<number>) => {
+      state.onlineUsers = state.onlineUsers.filter((id) => id !== action.payload);
+    },
+  },
+});

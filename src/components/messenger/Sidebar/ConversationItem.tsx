@@ -2,6 +2,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import type { Conversation } from "../interface/Conversation";
 import { Users } from "lucide-react";
+import type { RootState } from "@/stores/store";
+import { useSelector } from "react-redux";
 
 interface ConversationItemProps {
   conversation: Conversation;
@@ -16,6 +18,11 @@ export default function ConversationItem({
   onClick,
   userId,
 }: ConversationItemProps) {
+  const userOnlines = useSelector((state: RootState) => state.userOnline.onlineUsers);
+  console.log("userOnlines", userOnlines);
+  const memberConversations = conversation.members.map((member) => member.id);
+  // true nếu một trong các thành viên của cuộc trò chuyện đang online
+  const isOnline = memberConversations.some((id) => userOnlines.includes(id));
   const isGroup = conversation.group || (conversation as any).isGroup;
   const otherMember = isGroup
     ? undefined
@@ -40,16 +47,25 @@ export default function ConversationItem({
         isActive && "bg-muted",
       )}
     >
-      {isGroup ? (
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border bg-muted text-muted-foreground">
-          <Users className="h-5 w-5" />
-        </div>
-      ) : (
-        <Avatar className="h-11 w-11">
-          {avatarUrl ? <AvatarImage src={avatarUrl} alt={title} /> : null}
-          <AvatarFallback className="text-xs font-semibold">{initials || "?"}</AvatarFallback>
-        </Avatar>
-      )}
+      <div className="relative">
+        {isGroup ? (
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border bg-muted text-muted-foreground">
+            <Users className="h-5 w-5" />
+          </div>
+        ) : (
+          <Avatar className="h-11 w-11">
+            {avatarUrl ? <AvatarImage src={avatarUrl} alt={title} /> : null}
+            <AvatarFallback className="text-xs font-semibold">{initials || "?"}</AvatarFallback>
+          </Avatar>
+        )}
+
+        <span
+          className={cn(
+            "absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-background",
+            isOnline ? "bg-green-500" : "bg-amber-700",
+          )}
+        />
+      </div>
 
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-foreground">{title}</p>
