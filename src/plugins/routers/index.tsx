@@ -1,5 +1,6 @@
 import Default from "@/views/layouts/Default";
 import MainLayout from "@/views/layouts/MainLayout";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import { createBrowserRouter } from "react-router-dom";
 import { friendRoutes, FRIENDS_PATH_CONSTRAINS as FRIENDS_PATH_CONSTRAINT } from "./friendRoutes";
 import { GROUP_PATH_CONSTRAINT, groupsRoutes } from "./groupRoutes";
@@ -24,14 +25,19 @@ const router = createBrowserRouter([
     children: [...authRoutes],
   },
   {
-    element: <MainLayout />,
+    element: <ProtectedRoute />,
     errorElement: <div>Đã có lỗi xảy ra</div>,
     children: [
-      ...homeRoutes,
-      ...messengerRoutes,
-      ...groupsRoutes,
-      ...profileRoutes,
-      ...friendRoutes,
+      {
+        element: <MainLayout />,
+        children: [
+          ...homeRoutes,
+          ...messengerRoutes,
+          ...groupsRoutes,
+          ...profileRoutes,
+          ...friendRoutes,
+        ],
+      },
     ],
   },
 ]);

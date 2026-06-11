@@ -3,20 +3,31 @@ import router from "./plugins/routers";
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { connectSocket, disconnectSocket } from "./websocket/chatSocket";
+import { CallProvider } from "@/hooks/useWebRTC";
+import CallModal from "@/views/messenger/partials/CallModal";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/stores/store";
 
 function App() {
+  const loginSuccess = useSelector((state: RootState) => state.user.loginSuccess);
+
   useEffect(() => {
-    connectSocket();
+    if (loginSuccess) {
+      connectSocket();
+    } else {
+      disconnectSocket();
+    }
     return () => {
       disconnectSocket();
     };
-  }, []);
+  }, [loginSuccess]);
 
   return (
-    <>
+    <CallProvider>
       <RouterProvider router={router} />
+      <CallModal />
       <Toaster position="top-right" richColors />
-    </>
+    </CallProvider>
   );
 }
 
