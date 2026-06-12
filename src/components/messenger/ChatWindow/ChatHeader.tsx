@@ -56,7 +56,7 @@ export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
               variant="ghost"
               size="icon"
               className="size-9 rounded-full text-primary"
-              onClick={() => startCall(otherMember.id, false)}
+              onClick={() => startCall(otherMember.id, chatInfo.conversationId, false)}
             >
               <Phone data-icon />
             </Button>
@@ -64,7 +64,7 @@ export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
               variant="ghost"
               size="icon"
               className="size-9 rounded-full text-primary"
-              onClick={() => startCall(otherMember.id, true)}
+              onClick={() => startCall(otherMember.id, chatInfo.conversationId, true)}
             >
               <Video data-icon />
             </Button>

@@ -24,6 +24,8 @@ export interface MessageChat {
   totalElements: number;
 }
 
+export type MessageType = "TEXT" | "VIDEO_CALL" | "AUDIO_CALL";
+
 export interface Message {
   id: number;
   conversationId?: number;
@@ -31,6 +33,8 @@ export interface Message {
   createdAt: string;
   senderId: number;
   isActive: boolean;
+  messageType?: MessageType;
+  callDuration?: number | null;
 }
 
 const initialState: ChatState = {

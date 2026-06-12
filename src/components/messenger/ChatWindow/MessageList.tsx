@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Phone, Video } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 
 import dinhDangThoiGian from "@/utils/DinhDangThoiGian";
 import { stompClient } from "@/websocket/stompClient";
 import chatSlice, { type MessageChat } from "@/stores/chatSlice";
 import chatService from "@/services/chatService";
+import { useWebRTC } from "@/hooks/useWebRTC";
 
 interface MessageListProps {
   chatInfo: MessageChat;
@@ -14,6 +15,7 @@ interface MessageListProps {
 
 export default function MessageList({ chatInfo, userId }: MessageListProps) {
   const dispatch = useDispatch();
+  const { startCall } = useWebRTC();
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -67,7 +69,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       `/topic/conversation/${conversationId}`,
       (message) => {
         const newMessage = JSON.parse(message.body);
-
         dispatch(chatSlice.actions.addMessage(newMessage));
       },
     );
@@ -75,7 +76,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [conversationId, connected, dispatch]);
+  }, [conversationId, connected, dispatch, userId]);
 
   /**
    * Reset khi đổi cuộc trò chuyện
@@ -239,13 +240,65 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
 
                     <div
                       className={`flex w-fit max-w-[70%] flex-col gap-1 rounded-lg px-3 py-2 ${
-                        isMe ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                        message.messageType === "VIDEO_CALL" || message.messageType === "AUDIO_CALL"
+                          ? !message.callDuration || message.callDuration === 0
+                            ? "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                            : "bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+                          : isMe
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-800"
                       }`}
                     >
                       {message.user.id !== userId && (
                         <div className="text-[12px] opacity-30">{message.user.username}</div>
                       )}
-                      <div>{message.content}</div>
+                      {message.messageType === "VIDEO_CALL" ||
+                      message.messageType === "AUDIO_CALL" ? (
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 text-sm">
+                            {!message.callDuration || message.callDuration === 0 ? (
+                              <span>📵 Cuộc gọi nhỡ</span>
+                            ) : message.messageType === "VIDEO_CALL" ? (
+                              <span>
+                                📹 Cuộc gọi video đã kết thúc ·{" "}
+                                {message.callDuration < 60
+                                  ? `${message.callDuration} giây`
+                                  : `${Math.floor(message.callDuration / 60)} phút`}
+                              </span>
+                            ) : (
+                              <span>
+                                📞 Cuộc gọi thoại đã kết thúc ·{" "}
+                                {message.callDuration < 60
+                                  ? `${message.callDuration} giây`
+                                  : `${Math.floor(message.callDuration / 60)} phút`}
+                              </span>
+                            )}
+                          </div>
+                          {!chatInfo.group &&
+                            (() => {
+                              const otherMember = chatInfo.members.find((m) => m.id !== userId);
+                              if (!otherMember) return null;
+                              const isVideo = message.messageType === "VIDEO_CALL";
+                              return (
+                                <button
+                                  onClick={() =>
+                                    startCall(otherMember.id, chatInfo.conversationId, isVideo)
+                                  }
+                                  className="flex items-center gap-1.5 self-start rounded-full bg-white/20 px-3 py-1 text-xs font-medium transition hover:bg-white/30"
+                                >
+                                  {isVideo ? (
+                                    <Video className="size-3" />
+                                  ) : (
+                                    <Phone className="size-3" />
+                                  )}
+                                  Gọi lại
+                                </button>
+                              );
+                            })()}
+                        </div>
+                      ) : (
+                        <div>{message.content}</div>
+                      )}
 
                       <div className={`text-[10px] ${isMe ? "text-blue-100" : "text-gray-500"}`}>
                         {dinhDangThoiGian(message.createdAt)}

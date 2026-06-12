@@ -16,7 +16,7 @@ interface CallContextType {
   remoteUserId: number | null;
   isAudioMuted: boolean;
   isVideoMuted: boolean;
-  startCall: (toUserId: number, isVideo?: boolean) => Promise<void>;
+  startCall: (toUserId: number, conversationId: number, isVideo?: boolean) => Promise<void>;
   acceptCall: () => Promise<void>;
   rejectCall: () => void;
   hangup: () => void;
@@ -38,6 +38,9 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const localStreamRef = useRef<MediaStream | null>(null);
   // Dùng ref để tránh stale closure trong callbacks của PeerConnection
   const remoteUserIdRef = useRef<number | null>(null);
+  const conversationIdRef = useRef<number | null>(null);
+  const callTypeRef = useRef<"AUDIO" | "VIDEO">("VIDEO");
+  const callStartTimeRef = useRef<number | null>(null);
 
   const ringtoneAudio = useRef<HTMLAudioElement | null>(null);
   const callingAudio = useRef<HTMLAudioElement | null>(null);
@@ -96,6 +99,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     remoteUserIdRef.current = null;
     localStreamRef.current = null;
     peerConnection.current = null;
+    conversationIdRef.current = null;
+    callStartTimeRef.current = null;
   }, []);
 
   // Timeout 60s nếu không bắt máy
@@ -105,8 +110,13 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     if (callState === "CALLING") {
       timeoutId = setTimeout(() => {
         toast.error("Người dùng không bắt máy.");
-        if (remoteUserIdRef.current) {
-          callService.sendSignal("HANGUP", { toUserId: remoteUserIdRef.current });
+        if (remoteUserIdRef.current && conversationIdRef.current) {
+          callService.sendSignal("HANGUP", {
+            toUserId: remoteUserIdRef.current,
+            conversationId: conversationIdRef.current,
+            callType: callTypeRef.current,
+            durationSeconds: 0,
+          });
         }
         cleanup();
       }, 60000);
@@ -146,9 +156,11 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // START a call
-  const startCall = async (toUserId: number, isVideo: boolean = true) => {
+  const startCall = async (toUserId: number, conversationId: number, isVideo: boolean = true) => {
     setRemoteUserId(toUserId);
     remoteUserIdRef.current = toUserId;
+    conversationIdRef.current = conversationId;
+    callTypeRef.current = isVideo ? "VIDEO" : "AUDIO";
     setCallState("CALLING");
 
     try {
@@ -169,6 +181,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         toUserId,
         sdpOffer: offer.sdp,
         callType: isVideo ? "VIDEO" : "AUDIO",
+        conversationId,
       });
     } catch (error) {
       console.error("Error accessing media devices.", error);
@@ -182,6 +195,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     if (!peerConnection.current || !currentRemoteId) return;
 
     setCallState("IN_CALL");
+    callStartTimeRef.current = Date.now();
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -210,7 +224,12 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const rejectCall = () => {
     const currentRemoteId = remoteUserIdRef.current;
     if (currentRemoteId) {
-      callService.sendSignal("REJECT", { toUserId: currentRemoteId });
+      callService.sendSignal("REJECT", {
+        toUserId: currentRemoteId,
+        conversationId: conversationIdRef.current,
+        callType: callTypeRef.current,
+        durationSeconds: 0,
+      });
     }
     cleanup();
   };
@@ -219,7 +238,15 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const hangup = () => {
     const currentRemoteId = remoteUserIdRef.current;
     if (currentRemoteId) {
-      callService.sendSignal("HANGUP", { toUserId: currentRemoteId });
+      const durationSeconds = callStartTimeRef.current
+        ? Math.floor((Date.now() - callStartTimeRef.current) / 1000)
+        : 0;
+      callService.sendSignal("HANGUP", {
+        toUserId: currentRemoteId,
+        conversationId: conversationIdRef.current,
+        callType: callTypeRef.current,
+        durationSeconds,
+      });
     }
     cleanup();
   };
@@ -259,6 +286,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           const callerId = payload.fromUserId as number;
           setRemoteUserId(callerId);
           remoteUserIdRef.current = callerId;
+          if (payload.conversationId) conversationIdRef.current = payload.conversationId as number;
+          if (payload.callType) callTypeRef.current = payload.callType as "AUDIO" | "VIDEO";
           setCallState("RINGING");
           // Khởi tạo PeerConnection với id của người gọi
           const pc = initPeerConnection(callerId);
@@ -274,6 +303,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
               new RTCSessionDescription({ type: "answer", sdp: payload.sdpAnswer }),
             );
             setCallState("IN_CALL");
+            callStartTimeRef.current = Date.now();
           }
           break;
 
