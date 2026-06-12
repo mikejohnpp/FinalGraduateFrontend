@@ -1,44 +1,62 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/messenger/Sidebar/Sidebar";
-import ChatWindow from "@/components/messenger/ChatWindow/ChatWindow";
-import InfoPanel from "@/components/messenger/InfoPanel/InfoPanel";
-import {
-  conversations as initialConversations,
-  messages as initialMessages,
-  CURRENT_USER_ID,
-} from "@/data/mock/messengerData";
-import type { Message } from "@/types/messenger";
+import http from "@/lib/http";
+import { useDispatch, useSelector } from "react-redux";
+import type { Conversation } from "./interface/Conversation";
+import chatSlice from "@/stores/chatSlice";
+import ChatWindow from "./ChatWindow/ChatWindow";
+import { stompClient } from "@/websocket/stompClient";
+import { sendMessage } from "@/websocket/chatSocket";
 
 export default function MessengerLayout() {
-  const [conversations] = useState(initialConversations);
-  const [messagesMap, setMessagesMap] = useState<Record<string, Message[]>>(initialMessages);
-  const [activeConversationId, setActiveConversationId] = useState("1");
-  const [showInfoPanel, setShowInfoPanel] = useState(true);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<any>(null);
+  const userId = useSelector((state: any) => state.user?.userId);
+  const conversationId = useSelector((state: any) => state.chat.conversationId);
+  const connected = useSelector((state: any) => state.socket.connected);
+  const chatInfo = useSelector((state: any) => state.chat.chatInfo);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    http
+      .get(`/chat/conversations/user/${userId}`)
+      .then((res: any) => {
+        setConversations(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch conversations", err);
+      });
+  }, []);
 
-  const activeConversation = conversations.find((c) => c.id === activeConversationId);
-  const activeMessages = messagesMap[activeConversationId] ?? [];
+  useEffect(() => {
+    if (!conversationId || !connected) return;
+    http
+      .get(`/chat/conversations/conversation/${conversationId}`)
+      .then((res: any) => {
+        console.log("Fetched conversation details:", res.data);
+        dispatch(chatSlice.actions.setChatList(res.data));
+      })
+      .catch((err) => {
+        console.error("Failed to fetch conversation details", err);
+      });
+  }, [conversationId, connected]);
 
-  const handleSendMessage = useCallback(
-    (content: string) => {
-      const newMessage: Message = {
-        id: `m-${Date.now()}`,
-        content,
-        senderId: CURRENT_USER_ID,
-        timestamp: new Date().toLocaleTimeString("vi-VN", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        type: "text",
-      };
-      setMessagesMap((prev) => ({
-        ...prev,
-        [activeConversationId]: [...(prev[activeConversationId] ?? []), newMessage],
-      }));
-    },
-    [activeConversationId],
-  );
+  const onSelectConversation = (id: any) => {
+    dispatch(chatSlice.actions.setConversationId(id));
+    setActiveConversationId(id);
+  };
 
-  if (!activeConversation) return null;
+  const onConversationCreated = () => {
+    http.get(`/chat/conversations/user/${userId}`).then((res: any) => {
+      setConversations(res.data);
+    });
+  };
+  const onSendMessage = (content: string) => {
+    if (content.trim() === "") return;
+    sendMessage({
+      conversationId,
+      content,
+    });
+  };
 
   return (
     <div className="flex h-[calc(100svh-62px)] w-full overflow-hidden bg-background">
@@ -46,22 +64,20 @@ export default function MessengerLayout() {
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
-        onSelectConversation={setActiveConversationId}
+        userId={userId}
+        onSelectConversation={onSelectConversation}
+        onConversationCreated={onConversationCreated}
       />
 
       {/* Chat Window */}
-      <ChatWindow
-        conversation={activeConversation}
-        messages={activeMessages}
-        onSendMessage={handleSendMessage}
-        onToggleInfo={() => setShowInfoPanel((p) => !p)}
-        showInfo={showInfoPanel}
-      />
+      {activeConversationId && chatInfo && (
+        <ChatWindow chatInfo={chatInfo} userId={userId} onSendMessage={onSendMessage} />
+      )}
 
       {/* Info Panel */}
-      {showInfoPanel && (
+      {/* {showInfoPanel && (
         <InfoPanel conversation={activeConversation} onClose={() => setShowInfoPanel(false)} />
-      )}
+      )} */}
     </div>
   );
 }

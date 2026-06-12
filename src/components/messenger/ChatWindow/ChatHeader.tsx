@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { MessageChat } from "@/stores/chatSlice";
 import { Phone, Video, Info, UserPlus } from "lucide-react";
 import AddMemberDialog from "./AddMemberDialog";
+import { useWebRTC } from "@/hooks/useWebRTC";
 
 interface ChatHeaderProps {
   chatInfo: MessageChat;
@@ -12,6 +13,7 @@ interface ChatHeaderProps {
 
 export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+  const { startCall } = useWebRTC();
 
   const otherMember = chatInfo.group
     ? undefined
@@ -48,12 +50,26 @@ export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
         </div>
       </div>
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
-          <Phone data-icon />
-        </Button>
-        <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
-          <Video data-icon />
-        </Button>
+        {chatInfo.group === false && otherMember && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9 rounded-full text-primary"
+              onClick={() => startCall(otherMember.id, chatInfo.conversationId, false)}
+            >
+              <Phone data-icon />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9 rounded-full text-primary"
+              onClick={() => startCall(otherMember.id, chatInfo.conversationId, true)}
+            >
+              <Video data-icon />
+            </Button>
+          </>
+        )}
         {chatInfo.group && (
           <Button
             variant="ghost"

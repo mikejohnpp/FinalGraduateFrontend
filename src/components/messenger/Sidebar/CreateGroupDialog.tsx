@@ -20,7 +20,12 @@ interface CreateGroupDialogProps {
   onSuccess?: () => void;
 }
 
-export default function CreateGroupDialog({ isOpen, onClose, userId, onSuccess }: CreateGroupDialogProps) {
+export default function CreateGroupDialog({
+  isOpen,
+  onClose,
+  userId,
+  onSuccess,
+}: CreateGroupDialogProps) {
   const [groupName, setGroupName] = useState("");
   const [friends, setFriends] = useState<any[]>([]);
   const [selectedFriends, setSelectedFriends] = useState<Set<number>>(new Set());
