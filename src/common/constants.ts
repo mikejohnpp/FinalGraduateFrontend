@@ -32,11 +32,13 @@ export const API = {
   },
 
   PROFILE: {
-    BASE: "users", // GET /users/{id}/profile
-    UPDATE: "users/profile", // PUT /users/profile?userId=
-    AVATAR: "users/profile/avatar", // POST multipart/form-data
-    COVER: "users/profile/cover", // POST multipart/form-data
+    BASE: "users",
+    UPDATE: "users/profile",
+    AVATAR: "users/profile/avatar",
+    COVER: "users/profile/cover",
   },
+
+  SEARCH: "users/search",
 };
 
 export const AUTH_TOKEN_NAME = "access_token";

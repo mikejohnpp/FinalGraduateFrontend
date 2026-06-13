@@ -22,14 +22,20 @@ function formatFriendSince(iso: string): string {
 
 export default function FriendCard({ friendship, onUnfriend, loadingId }: FriendCardProps) {
   const isLoading = loadingId === friendship.user.id;
-
+  friendship;
   return (
     <Card size="sm">
-      <img
-        src={friendship.user.avatar ?? undefined}
-        alt={friendship.user.name}
-        className="aspect-square w-full object-cover"
-      />
+      {friendship.user.avatar ? (
+        <img
+          src={friendship.user.avatar}
+          alt={friendship.user.name}
+          className="aspect-square w-full object-cover"
+        />
+      ) : (
+        <div className="grid aspect-square w-full place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground">
+          {friendship.user.name?.charAt(0) ?? ""}
+        </div>
+      )}
       <CardHeader>
         <CardTitle className="text-sm">{friendship.user.name}</CardTitle>
         <p className="text-xs text-muted-foreground">

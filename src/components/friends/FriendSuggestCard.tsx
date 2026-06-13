@@ -19,11 +19,17 @@ export default function FriendSuggestCard({
 
   return (
     <Card size="sm">
-      <img
-        src={suggestion.user.avatar ?? undefined}
-        alt={suggestion.user.name}
-        className="aspect-square w-full object-cover"
-      />
+      {suggestion.user.avatar ? (
+        <img
+          src={suggestion.user.avatar}
+          alt={suggestion.user.name}
+          className="aspect-square w-full object-cover"
+        />
+      ) : (
+        <div className="grid aspect-square w-full place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground">
+          {suggestion.user.name?.charAt(0) ?? ""}
+        </div>
+      )}
       <CardHeader>
         <CardTitle className="text-sm">{suggestion.user.name}</CardTitle>
         {suggestion.mutualFriendCount > 0 ? (
