@@ -19,11 +19,17 @@ export default function FriendRequestCard({
 
   return (
     <Card size="sm">
-      <img
-        src={request.sender.avatar ?? undefined}
-        alt={request.sender.name}
-        className="aspect-square w-full object-cover"
-      />
+      {request.sender.avatar ? (
+        <img
+          src={request.sender.avatar}
+          alt={request.sender.name}
+          className="aspect-square w-full object-cover"
+        />
+      ) : (
+        <div className="grid aspect-square w-full place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground">
+          {request.sender.name?.charAt(0) ?? ""}
+        </div>
+      )}
       <CardHeader>
         <CardTitle>{request.sender.name}</CardTitle>
         {request.mutualFriendCount > 0 ? (
