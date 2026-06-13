@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { ThumbsUp, MoreHorizontal } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ThumbsUp, MoreHorizontal, CornerDownRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,14 +25,75 @@ interface CommentItemProps {
   onReply?: (commentId: number, authorName: string) => void;
 }
 
+function TimeAgo({ dateStr }: { dateStr: string }) {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return <span>Vừa xong</span>;
+  if (diffMins < 60) return <span>{diffMins} phút</span>;
+  const diffHrs = Math.floor(diffMins / 60);
+  if (diffHrs < 24) return <span>{diffHrs} giờ</span>;
+  return <span>{date.toLocaleDateString("vi-VN")}</span>;
+}
+
+function ReplyBubble({
+  reply,
+  postId,
+  parentId,
+}: {
+  reply: IComment;
+  postId: number;
+  parentId: number;
+}) {
+  const { like, unlike } = useLikeComment(postId);
+
+  return (
+    <div className="flex gap-2">
+      <Avatar className="size-7 shrink-0">
+        <AvatarImage src={reply.author.avatar ?? ""} />
+        <AvatarFallback className="text-[10px] font-bold">
+          {reply.author.name.charAt(0)}
+        </AvatarFallback>
+      </Avatar>
+      <div className="flex flex-1 flex-col">
+        <div className="group relative inline-block max-w-full rounded-2xl bg-muted ring-1 ring-border/40 px-3 py-2">
+          <p className="text-[12px] font-semibold text-foreground">{reply.author.name}</p>
+          <p className="text-[13px] leading-snug text-foreground">{reply.content}</p>
+
+          {reply.likeCount > 0 && (
+            <div className="absolute -right-1 -bottom-2 flex items-center gap-0.5 rounded-full border border-border bg-card px-1.5 py-0.5 text-[11px] text-muted-foreground shadow-sm">
+              <ThumbsUp className="size-2.5 fill-primary text-primary" />
+              <span>{reply.likeCount}</span>
+            </div>
+          )}
+        </div>
+        <div className="mt-1.5 flex items-center gap-3 pl-1.5">
+          <span className="text-[11px] text-muted-foreground">
+            <TimeAgo dateStr={reply.createdAt} />
+          </span>
+          <button
+            onClick={() => (reply.liked ? unlike(reply.id, parentId) : like(reply.id, parentId))}
+            className={cn(
+              "text-[12px] font-semibold transition-colors hover:underline",
+              reply.liked ? "text-primary" : "text-muted-foreground",
+            )}
+          >
+            Thích
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ReplyList({ comment, postId }: { comment: IComment; postId: number }) {
   const { replies, loading, hasMore, loaded, load, loadMore } = useReplies(postId, comment.id);
   const { create } = useCreateComment(postId);
-  const { like, unlike } = useLikeComment(postId);
   const { userId } = useSelector((r: RootState) => r.user);
   const [replyText, setReplyText] = useState("");
 
-  const handleSendReply = async () => {
+  const handleSend = async () => {
     if (!replyText.trim()) return;
     await create(replyText.trim(), comment.id);
     setReplyText("");
@@ -43,76 +103,39 @@ function ReplyList({ comment, postId }: { comment: IComment; postId: number }) {
     return (
       <button
         onClick={load}
-        className="mt-1.5 flex items-center gap-2 text-[12px] font-semibold text-[#b0b3b8] transition-colors hover:text-[#e4e6eb]"
+        className="mt-1.5 flex items-center gap-1.5 text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground"
       >
-        <span className="h-px w-6 bg-[#b0b3b8]" />
-        {loading ? "Đang tải..." : `Xem tất cả ${comment.replyCount} phản hồi`}
+        <span className="h-px w-5 bg-border" />
+        {loading ? "Đang tải..." : `Xem ${comment.replyCount} phản hồi`}
       </button>
     );
   }
 
   return (
-    <div className="mt-2 flex flex-col gap-2 pl-2">
+    <div className="mt-2 flex flex-col gap-2 border-l-2 border-border pl-3">
       {replies.map((reply) => (
-        <div key={reply.id} className="flex gap-2">
-          <Avatar className="size-7 shrink-0">
-            <AvatarImage src={reply.author.avatar ?? ""} />
-            <AvatarFallback className="text-xs font-bold">
-              {reply.author.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex flex-1 flex-col">
-            <div className="inline-block max-w-full rounded-2xl bg-[#3a3b3c] px-3 py-2">
-              <p className="text-[13px] font-semibold text-[#e4e6eb]">{reply.author.name}</p>
-              <p className="text-[13.5px] leading-snug text-[#e4e6eb]">{reply.content}</p>
-            </div>
-            <div className="mt-1 flex items-center gap-3 pl-1">
-              <span className="text-[12px] text-[#b0b3b8]">
-                {new Date(reply.createdAt).toLocaleDateString("vi-VN")}
-              </span>
-              <button
-                onClick={() =>
-                  reply.liked ? unlike(reply.id, comment.id) : like(reply.id, comment.id)
-                }
-                className={cn(
-                  "text-[12px] font-semibold transition-colors hover:text-[#e4e6eb]",
-                  reply.liked ? "text-[#2d88ff]" : "text-[#b0b3b8]",
-                )}
-              >
-                Thích
-              </button>
-              {reply.likeCount > 0 && (
-                <div className="ml-auto flex items-center gap-1 text-[12px] text-[#b0b3b8]">
-                  <span>👍</span>
-                  <span>{reply.likeCount}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <ReplyBubble key={reply.id} reply={reply} postId={postId} parentId={comment.id} />
       ))}
 
       {hasMore && (
         <button
           onClick={loadMore}
           disabled={loading}
-          className="pl-9 text-left text-[12px] font-semibold text-[#b0b3b8] hover:text-[#e4e6eb]"
+          className="text-left text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground hover:underline"
         >
           {loading ? "Đang tải..." : "Xem thêm phản hồi"}
         </button>
       )}
 
       {userId && (
-        <div className="flex items-center gap-2 pt-1">
-          <div className="flex flex-1 items-center gap-2 rounded-full bg-[#3a3b3c] px-3 py-1.5">
-            <Input
+        <div className="flex items-center gap-2 pt-0.5">
+          <div className="flex flex-1 items-center gap-2 rounded-full border border-border bg-muted/60 px-3 py-1.5 transition-colors focus-within:border-ring focus-within:bg-background">
+            <input
               placeholder="Viết phản hồi..."
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleSendReply();
-              }}
-              className="flex-1 border-none bg-transparent p-0 text-[13px] text-[#e4e6eb] shadow-none placeholder:text-[#b0b3b8] focus-visible:ring-0"
+              onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              className="flex-1 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
             />
           </div>
         </div>
@@ -143,15 +166,15 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
       setIsEditing(false);
       return;
     }
-    const result = await edit(comment.id, editText);
-    if (result) setIsEditing(false);
+    const ok = await edit(comment.id, editText);
+    if (ok) setIsEditing(false);
   };
 
   const isOwner = userId === comment.author.id;
 
   return (
-    <div className="flex gap-2">
-      <Avatar className="size-8 shrink-0">
+    <div className="flex gap-2.5 py-1">
+      <Avatar className="size-9 shrink-0">
         <AvatarImage src={comment.author.avatar ?? ""} />
         <AvatarFallback className="text-xs font-bold">
           {comment.author.name.charAt(0)}
@@ -159,80 +182,91 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
       </Avatar>
 
       <div className="flex flex-1 flex-col">
-        <div className="group relative inline-block max-w-full rounded-2xl bg-[#3a3b3c] px-3 py-2">
-          <p className="text-[13px] font-semibold text-[#e4e6eb]">{comment.author.name}</p>
+        <div className="group relative inline-block max-w-full rounded-2xl bg-muted ring-1 ring-border/40 px-3.5 py-2.5">
+          <p className="mb-0.5 text-[13px] font-semibold text-foreground">{comment.author.name}</p>
 
           {isEditing ? (
-            <div className="flex items-center gap-2 pt-1">
-              <Input
+            <div className="flex flex-col gap-2">
+              <textarea
                 autoFocus
+                rows={2}
                 value={editText}
                 onChange={(e) => setEditText(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") handleEdit();
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleEdit();
+                  }
                   if (e.key === "Escape") {
                     setIsEditing(false);
                     setEditText(comment.content);
                   }
                 }}
-                className="border-none bg-transparent p-0 text-[13.5px] text-[#e4e6eb] shadow-none focus-visible:ring-0"
+                className="w-full resize-none bg-transparent text-[13.5px] leading-relaxed text-foreground outline-none"
               />
-              <button
-                onClick={handleEdit}
-                className="text-[12px] font-semibold text-[#2d88ff] hover:underline"
-              >
-                Lưu
-              </button>
-              <button
-                onClick={() => {
-                  setIsEditing(false);
-                  setEditText(comment.content);
-                }}
-                className="text-[12px] font-semibold text-[#b0b3b8] hover:underline"
-              >
-                Huỷ
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleEdit}
+                  className="rounded-lg bg-primary px-2.5 py-1 text-[12px] font-semibold text-primary-foreground hover:opacity-90"
+                >
+                  Lưu
+                </button>
+                <button
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditText(comment.content);
+                  }}
+                  className="rounded-lg px-2.5 py-1 text-[12px] font-semibold text-muted-foreground hover:bg-accent"
+                >
+                  Huỷ
+                </button>
+              </div>
             </div>
           ) : (
-            <p className="text-[13.5px] leading-snug text-[#e4e6eb]">{comment.content}</p>
+            <p className="text-[13.5px] leading-snug text-foreground">{comment.content}</p>
           )}
 
+          {/* Like count pill */}
+          {comment.likeCount > 0 && !isEditing && (
+            <div className="absolute -right-1 -bottom-2.5 flex items-center gap-0.5 rounded-full border border-border bg-card px-1.5 py-0.5 text-[11px] text-muted-foreground shadow-sm">
+              <ThumbsUp className="size-2.5 fill-primary text-primary" />
+              <span>{comment.likeCount}</span>
+            </div>
+          )}
+
+          {/* Owner actions dropdown */}
           {isOwner && !isEditing && (
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
-                  <button className="absolute top-1/2 -right-8 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-[#b0b3b8] opacity-0 transition-opacity group-hover:opacity-100 hover:bg-[#4a4b4c]">
+                  <button className="absolute top-1.5 -right-9 flex size-7 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-all group-hover:opacity-100 hover:bg-accent hover:text-foreground">
                     <MoreHorizontal className="size-4" />
                   </button>
                 }
               />
-              <DropdownMenuContent align="end" className="border-[#4a4b4c] bg-[#3a3b3c]">
-                <DropdownMenuItem
-                  onClick={() => setIsEditing(true)}
-                  className="text-[#e4e6eb] focus:bg-[#4a4b4c] focus:text-[#e4e6eb]"
-                >
-                  Chỉnh sửa
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="min-w-[140px]">
+                <DropdownMenuItem onClick={() => setIsEditing(true)}>Chỉnh sửa</DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => remove(comment.id, comment.parentId)}
-                  className="text-red-400 focus:bg-[#4a4b4c] focus:text-red-400"
+                  className="text-destructive focus:text-destructive"
                 >
-                  Xóa
+                  Xóa bình luận
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
         </div>
 
-        <div className="mt-1 flex items-center gap-3 pl-1">
-          <span className="text-[12px] text-[#b0b3b8]">
-            {new Date(comment.createdAt).toLocaleDateString("vi-VN")}
+        {/* Meta row */}
+        <div className="mt-1.5 flex items-center gap-3 pl-1.5">
+          <span className="text-[11px] text-muted-foreground">
+            <TimeAgo dateStr={comment.createdAt} />
           </span>
           <button
             onClick={handleLike}
             className={cn(
-              "text-[12px] font-semibold transition-colors hover:text-[#e4e6eb]",
-              comment.liked ? "text-[#2d88ff]" : "text-[#b0b3b8]",
+              "text-[12px] font-semibold transition-colors hover:underline",
+              comment.liked ? "text-primary" : "text-muted-foreground",
             )}
           >
             Thích
@@ -243,30 +277,26 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
                 setShowReplies(true);
                 onReply?.(comment.id, comment.author.name);
               }}
-              className="text-[12px] font-semibold text-[#b0b3b8] transition-colors hover:text-[#e4e6eb]"
+              className="flex items-center gap-1 text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground hover:underline"
             >
+              <CornerDownRight className="size-3" />
               Trả lời
             </button>
           )}
-          {comment.likeCount > 0 && (
-            <div className="ml-auto flex items-center gap-1 text-[12px] text-[#b0b3b8]">
-              <ThumbsUp className="size-3 fill-[#2d88ff] text-[#2d88ff]" />
-              <span>{comment.likeCount}</span>
-            </div>
-          )}
         </div>
 
+        {/* Replies */}
         {comment.parentId === null && (comment.replyCount > 0 || showReplies) && (
-          <div className="mt-1">
+          <div className="mt-1.5 pl-1">
             {showReplies ? (
               <ReplyList comment={comment} postId={postId} />
             ) : (
               <button
                 onClick={() => setShowReplies(true)}
-                className="flex items-center gap-2 text-[12px] font-semibold text-[#b0b3b8] transition-colors hover:text-[#e4e6eb]"
+                className="flex items-center gap-1.5 text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground"
               >
-                <span className="h-px w-6 bg-[#b0b3b8]" />
-                Xem tất cả {comment.replyCount} phản hồi
+                <span className="h-px w-5 bg-border" />
+                Xem {comment.replyCount} phản hồi
               </button>
             )}
           </div>

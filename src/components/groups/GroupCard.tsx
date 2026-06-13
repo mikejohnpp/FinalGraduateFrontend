@@ -16,8 +16,12 @@ interface GroupCardProps {
 export default function GroupCard({ group, onDismiss, onJoin, className }: GroupCardProps) {
   return (
     <Card className={cn("relative flex h-full flex-col overflow-hidden", className)}>
-      <div className="relative aspect-[16/9]">
-        <img src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"} alt={group.name} className="size-full object-cover" />
+      <div className="relative aspect-video">
+        <img
+          src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"}
+          alt={group.name}
+          className="size-full object-cover"
+        />
         {onDismiss && (
           <Button
             variant="ghost"
