@@ -39,6 +39,11 @@ export const API = {
   },
 
   SEARCH: "users/search",
+
+  ADMIN: {
+    USERS: "users/admin/users",
+    GROUPS: "users/admin/groups",
+  },
 };
 
 export const AUTH_TOKEN_NAME = "access_token";

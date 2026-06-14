@@ -2,13 +2,14 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useProfile, useUserPosts } from "@/hooks/useProfile";
 import OverlaySpinner from "@/components/OverlaySpinner";
+import type { IPost } from "@/types/interfaces/post/IPost";
 
 import ProfileCover from "./partials/ProfileCover";
 import ProfileTabs from "./partials/ProfileTabs";
 import ProfileAbout from "./partials/ProfileAbout";
 import ProfileFriends from "./partials/ProfileFriends";
 import ProfilePhotos from "./partials/ProfilePhotos";
-import ProfileCreatePost from "./partials/ProfileCreatePost";
+import CreatePostCard from "@/components/home/CreatePostCard";
 import ProfilePostFeed from "./partials/ProfilePostFeed";
 
 export default function Profile() {
@@ -17,6 +18,11 @@ export default function Profile() {
 
   const { profile, isOwner, loading, error } = useProfile(userId);
   const { posts, loading: postsLoading } = useUserPosts(userId);
+  const [extraPosts, setExtraPosts] = useState<IPost[]>([]);
+
+  const handlePostCreated = (post: IPost) => {
+    setExtraPosts((prev) => [post, ...prev]);
+  };
 
   if (loading) return <OverlaySpinner show text="Đang tải trang cá nhân..." />;
   if (error || !profile) {
@@ -41,8 +47,8 @@ export default function Profile() {
               <ProfileFriends profile={profile} />
             </div>
             <div className="flex flex-col">
-              {isOwner && <ProfileCreatePost profile={profile} isOwner={isOwner} />}
-              <ProfilePostFeed posts={posts} loading={postsLoading} />
+              {isOwner && <CreatePostCard onPostCreated={handlePostCreated} />}
+              <ProfilePostFeed posts={[...extraPosts, ...posts]} loading={postsLoading} />
             </div>
           </div>
         )}

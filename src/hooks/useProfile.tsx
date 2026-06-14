@@ -192,7 +192,8 @@ export function useUserPosts(userId: number | string | undefined) {
       setError(null);
       try {
         const result = await postService.getList<IPost>(API.POST.BASE, undefined, { userId: id });
-        setPosts(result ?? []);
+        const filtered = (result ?? []).filter((p) => p.author?.id === id);
+        setPosts(filtered);
       } catch {
         setError("Lỗi khi tải bài viết");
       } finally {

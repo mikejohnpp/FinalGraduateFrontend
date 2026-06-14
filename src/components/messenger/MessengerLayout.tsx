@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import Sidebar from "@/components/messenger/Sidebar/Sidebar";
 import http from "@/lib/http";
 import { useDispatch, useSelector } from "react-redux";
 import type { Conversation } from "./interface/Conversation";
 import chatSlice from "@/stores/chatSlice";
 import ChatWindow from "./ChatWindow/ChatWindow";
-import { stompClient } from "@/websocket/stompClient";
 import { sendMessage } from "@/websocket/chatSocket";
+import chatService from "@/services/chatService";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -16,23 +17,56 @@ export default function MessengerLayout() {
   const connected = useSelector((state: any) => state.socket.connected);
   const chatInfo = useSelector((state: any) => state.chat.chatInfo);
   const dispatch = useDispatch();
-  useEffect(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const fetchConversations = (): Promise<Conversation[]> =>
     http
       .get(`/chat/conversations/user/${userId}`)
       .then((res: any) => {
         setConversations(res.data);
+        return res.data as Conversation[];
       })
       .catch((err) => {
         console.error("Failed to fetch conversations", err);
+        return [] as Conversation[];
       });
-  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    fetchConversations();
+  }, [userId]);
+
+  useEffect(() => {
+    const targetUserId = searchParams.get("userId");
+    if (!targetUserId || !userId) return;
+
+    const open = async () => {
+      try {
+        const res = await chatService.createDirectConversation(Number(targetUserId), userId);
+        const conversation = res?.data;
+        if (!conversation) return;
+
+        setSearchParams({}, { replace: true });
+
+        const list = await fetchConversations();
+        const exists = list.find((c) => c.id === conversation.id);
+        if (!exists) {
+          setConversations((prev) => [conversation, ...prev]);
+        }
+        onSelectConversation(conversation.id);
+      } catch (err) {
+        console.error("Failed to open direct conversation", err);
+      }
+    };
+
+    open();
+  }, [userId]);
 
   useEffect(() => {
     if (!conversationId || !connected) return;
     http
       .get(`/chat/conversations/conversation/${conversationId}`)
       .then((res: any) => {
-        console.log("Fetched conversation details:", res.data);
         dispatch(chatSlice.actions.setChatList(res.data));
       })
       .catch((err) => {
@@ -46,21 +80,16 @@ export default function MessengerLayout() {
   };
 
   const onConversationCreated = () => {
-    http.get(`/chat/conversations/user/${userId}`).then((res: any) => {
-      setConversations(res.data);
-    });
+    fetchConversations();
   };
+
   const onSendMessage = (content: string) => {
     if (content.trim() === "") return;
-    sendMessage({
-      conversationId,
-      content,
-    });
+    sendMessage({ conversationId, content });
   };
 
   return (
     <div className="flex h-[calc(100svh-62px)] w-full overflow-hidden bg-background">
-      {/* Sidebar */}
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
@@ -69,15 +98,9 @@ export default function MessengerLayout() {
         onConversationCreated={onConversationCreated}
       />
 
-      {/* Chat Window */}
       {activeConversationId && chatInfo && (
         <ChatWindow chatInfo={chatInfo} userId={userId} onSendMessage={onSendMessage} />
       )}
-
-      {/* Info Panel */}
-      {/* {showInfoPanel && (
-        <InfoPanel conversation={activeConversation} onClose={() => setShowInfoPanel(false)} />
-      )} */}
     </div>
   );
 }

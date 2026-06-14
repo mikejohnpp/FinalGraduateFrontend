@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IFriendSuggestion } from "@/types/interfaces/friend/IFriendSuggestion";
@@ -16,6 +17,8 @@ export default function FriendSuggestCard({
   loadingId,
 }: FriendSuggestCardProps) {
   const isLoading = loadingId === suggestion.user.id;
+  const navigate = useNavigate();
+  const goToProfile = () => navigate(`/profile/${suggestion.user.id}`);
 
   return (
     <Card size="sm">
@@ -23,15 +26,21 @@ export default function FriendSuggestCard({
         <img
           src={suggestion.user.avatar}
           alt={suggestion.user.name}
-          className="aspect-square w-full object-cover"
+          className="aspect-square w-full cursor-pointer object-cover"
+          onClick={goToProfile}
         />
       ) : (
-        <div className="grid aspect-square w-full place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground">
+        <div
+          className="grid aspect-square w-full cursor-pointer place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground"
+          onClick={goToProfile}
+        >
           {suggestion.user.name?.charAt(0) ?? ""}
         </div>
       )}
       <CardHeader>
-        <CardTitle className="text-sm">{suggestion.user.name}</CardTitle>
+        <CardTitle className="cursor-pointer text-sm hover:underline" onClick={goToProfile}>
+          {suggestion.user.name}
+        </CardTitle>
         {suggestion.mutualFriendCount > 0 ? (
           <p className="text-xs text-muted-foreground">{suggestion.mutualFriendCount} bạn chung</p>
         ) : null}

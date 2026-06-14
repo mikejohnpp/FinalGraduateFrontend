@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HeartIcon,
   MessageCircleIcon,
@@ -32,6 +33,7 @@ export default function PostCard({ post }: { post: IPost }) {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const { userId } = useSelector((state: RootState) => state.user);
   const { like, unlike, loadingId } = useLikePost();
+  const navigate = useNavigate();
 
   const handleLikeClick = async () => {
     if (!userId || loadingId === post.id) return;
@@ -49,6 +51,10 @@ export default function PostCard({ post }: { post: IPost }) {
   const authorAvatar =
     post.author?.avatar || `https://i.pravatar.cc/100?u=${authorId || "fallback"}`;
 
+  const handleNavigateToProfile = () => {
+    if (authorId) navigate(`/profile/${authorId}`);
+  };
+
   return (
     <>
       <Card className="mb-4">
@@ -60,13 +66,16 @@ export default function PostCard({ post }: { post: IPost }) {
                   src={post.group.avatar || `https://picsum.photos/seed/${groupId}/100/100`}
                 />
                 <AvatarFallback>{groupName?.charAt(0) || "G"}</AvatarFallback>
-                <Avatar className="absolute -right-1 -bottom-1 size-5 border-2 border-background">
+                <Avatar
+                  className="absolute -right-1 -bottom-1 size-5 cursor-pointer border-2 border-background"
+                  onClick={handleNavigateToProfile}
+                >
                   <AvatarImage src={authorAvatar} />
                   <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
                 </Avatar>
               </Avatar>
             ) : (
-              <Avatar className="size-10">
+              <Avatar className="size-10 cursor-pointer" onClick={handleNavigateToProfile}>
                 <AvatarImage src={authorAvatar} />
                 <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
               </Avatar>
@@ -77,7 +86,12 @@ export default function PostCard({ post }: { post: IPost }) {
                 {post.group ? (
                   <p className="font-semibold">{groupName}</p>
                 ) : (
-                  <p className="font-semibold">{authorName}</p>
+                  <p
+                    className="cursor-pointer font-semibold hover:underline"
+                    onClick={handleNavigateToProfile}
+                  >
+                    {authorName}
+                  </p>
                 )}
               </div>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
