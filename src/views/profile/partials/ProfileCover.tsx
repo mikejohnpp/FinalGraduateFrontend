@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus, Pencil, ChevronDown, Camera, Upload } from "lucide-react";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { useUploadCover } from "@/hooks/useProfile";
 import ProfileEditPanel from "./ProfileEditPanel";
@@ -23,6 +24,7 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { upload: uploadCover, loading: coverLoading } = useUploadCover();
+  const navigate = useNavigate();
 
   const coverSrc = coverPreview ?? resolveUploadUrl(profile.coverPhoto);
   const avatarSrc = resolveUploadUrl(profile.avatar) ?? undefined;
@@ -121,7 +123,7 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
                 <Plus data-icon="inline-start" />
                 Thêm bạn bè
               </Button>
-              <Button variant="secondary">Nhắn tin</Button>
+              <Button variant="secondary" onClick={() => navigate(`/messenger?userId=${profile.id}`)}>Nhắn tin</Button>
             </>
           )}
 

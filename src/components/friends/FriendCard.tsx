@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IFriendship } from "@/types/interfaces/friend/IFriendship";
@@ -22,6 +23,8 @@ function formatFriendSince(iso: string): string {
 
 export default function FriendCard({ friendship, onUnfriend, loadingId }: FriendCardProps) {
   const isLoading = loadingId === friendship.user.id;
+  const navigate = useNavigate();
+  const goToProfile = () => navigate(`/profile/${friendship.user.id}`);
   friendship;
   return (
     <Card size="sm">
@@ -29,15 +32,21 @@ export default function FriendCard({ friendship, onUnfriend, loadingId }: Friend
         <img
           src={friendship.user.avatar}
           alt={friendship.user.name}
-          className="aspect-square w-full object-cover"
+          className="aspect-square w-full cursor-pointer object-cover"
+          onClick={goToProfile}
         />
       ) : (
-        <div className="grid aspect-square w-full place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground">
+        <div
+          className="grid aspect-square w-full cursor-pointer place-items-center rounded-none bg-muted text-2xl font-semibold text-muted-foreground"
+          onClick={goToProfile}
+        >
           {friendship.user.name?.charAt(0) ?? ""}
         </div>
       )}
       <CardHeader>
-        <CardTitle className="text-sm">{friendship.user.name}</CardTitle>
+        <CardTitle className="cursor-pointer text-sm hover:underline" onClick={goToProfile}>
+          {friendship.user.name}
+        </CardTitle>
         <p className="text-xs text-muted-foreground">
           Bạn bè từ {formatFriendSince(friendship.friendSince)}
         </p>
