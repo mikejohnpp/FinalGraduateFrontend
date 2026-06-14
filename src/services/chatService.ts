@@ -4,6 +4,14 @@ import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
 import type { Conversation } from "@/components/messenger/interface/Conversation";
 
 export class ChatService extends BaseService {
+  async createDirectConversation(userOppenentId: number, userCurrentId: number): Promise<ApiResultGeneric<Conversation> | undefined> {
+    try {
+      return await http.post<ApiResultGeneric<Conversation>>(`chat/conversations`, { userOppenentId, userCurrentId });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
   async createGroupConversation(name: string, memberIds: number[], userCurrentId: number): Promise<ApiResultGeneric<Conversation> | undefined> {
     try {
       const data = { name, memberIds, userCurrentId };
