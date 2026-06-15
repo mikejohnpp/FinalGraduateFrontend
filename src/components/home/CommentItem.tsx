@@ -18,6 +18,7 @@ import {
 } from "@/hooks/useComment";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
+import SentimentIndicator from "./SentimentIndicator";
 
 interface CommentItemProps {
   comment: IComment;
@@ -72,6 +73,7 @@ function ReplyBubble({
           <span className="text-[11px] text-muted-foreground">
             <TimeAgo dateStr={reply.createdAt} />
           </span>
+          <SentimentIndicator data={reply} />
           <button
             onClick={() => (reply.liked ? unlike(reply.id, parentId) : like(reply.id, parentId))}
             className={cn(
@@ -268,6 +270,7 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
           <span className="text-[11px] text-muted-foreground">
             <TimeAgo dateStr={comment.createdAt} />
           </span>
+          <SentimentIndicator data={comment} />
           <button
             onClick={handleLike}
             className={cn(

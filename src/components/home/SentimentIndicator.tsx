@@ -1,11 +1,15 @@
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { InfoIcon, SmileIcon, FrownIcon, MehIcon } from "lucide-react";
-import type { IPost } from "@/types/interfaces/post/IPost";
-import type { IPostDetails } from "@/types/interfaces/post/IPostDetails";
 
-export default function PostSentimentIndicator({ post }: { post: IPost | IPostDetails }) {
-  if (post.cancelReason) {
+interface SentimentData {
+  sentiment: string | null;
+  confidence: number | null;
+  cancelReason: string | null;
+}
+
+export default function SentimentIndicator({ data }: { data: SentimentData }) {
+  if (data.cancelReason) {
     return (
       <TooltipProvider>
         <Tooltip delay={0}>
@@ -13,14 +17,14 @@ export default function PostSentimentIndicator({ post }: { post: IPost | IPostDe
             <InfoIcon className="size-4 text-muted-foreground" />
           </TooltipTrigger>
           <TooltipContent>
-            <p>Không thể phân tích: {post.cancelReason}</p>
+            <p>Không thể phân tích: {data.cancelReason}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
     );
   }
 
-  if (post.sentiment === null) {
+  if (data.sentiment === null) {
     return null;
   }
 
@@ -30,12 +34,12 @@ export default function PostSentimentIndicator({ post }: { post: IPost | IPostDe
     neutral: { label: "Trung lập", colorClass: "bg-gray-500/10 text-gray-600 dark:text-gray-400 hover:bg-gray-500/20 border-gray-200 dark:border-gray-800", Icon: MehIcon },
   };
 
-  const sentimentKey = post.sentiment.toLowerCase();
+  const sentimentKey = data.sentiment.toLowerCase();
   const config = sentimentConfig[sentimentKey];
 
   if (!config) return null;
 
-  const confPercent = post.confidence ? Math.round(post.confidence * 100) : 0;
+  const confPercent = data.confidence ? Math.round(data.confidence * 100) : 0;
 
   return (
     <TooltipProvider>

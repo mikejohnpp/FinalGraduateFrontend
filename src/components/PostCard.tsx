@@ -25,7 +25,7 @@ import type { RootState } from "@/stores/store";
 import { useLikePost } from "@/hooks/usePost";
 import CommentModal from "./home/CommentModal";
 import ShareModal from "./home/ShareModal";
-import PostSentimentIndicator from "./home/PostSentimentIndicator";
+import SentimentIndicator from "./home/SentimentIndicator";
 
 export default function PostCard({ post }: { post: IPost }) {
   const liked = post.hasLiked ?? false;
@@ -110,7 +110,7 @@ export default function PostCard({ post }: { post: IPost }) {
                 )}
                 <span>{new Date(post.createdAt).toLocaleString("vi-VN")}</span>
                 <span>·</span>
-                <PostSentimentIndicator post={post} />
+                <SentimentIndicator data={post} />
               </div>
             </div>
           </div>
