@@ -278,6 +278,7 @@ export default function CommentModal({
                     handleSend();
                   }
                 }}
+                maxLength={40}
                 className="max-h-[120px] flex-1 resize-none bg-transparent text-[13.5px] leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
               />
               <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
@@ -304,17 +305,20 @@ export default function CommentModal({
             </Button>
           </div>
 
-          <p className="mt-1.5 text-[11px] text-muted-foreground">
-            Nhấn{" "}
-            <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono text-[10px]">
-              Enter
-            </kbd>{" "}
-            để gửi,{" "}
-            <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono text-[10px]">
-              Shift+Enter
-            </kbd>{" "}
-            xuống dòng
-          </p>
+          <div className="mt-1.5 flex items-center justify-between px-1">
+            <p className="text-[11px] text-muted-foreground">
+              Nhấn{" "}
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono text-[10px]">
+                Enter
+              </kbd>{" "}
+              để gửi,{" "}
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5 font-mono text-[10px]">
+                Shift+Enter
+              </kbd>{" "}
+              xuống dòng
+            </p>
+            <span className="text-[11px] text-muted-foreground">{commentText.length}/40</span>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
