@@ -106,7 +106,11 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   disabled={loading}
+                  maxLength={40}
                 />
+                <div className="text-right text-xs text-muted-foreground">
+                  {content.length}/40
+                </div>
 
                 {error && <div className="text-sm text-destructive">{error}</div>}
               </div>

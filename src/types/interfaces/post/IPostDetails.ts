@@ -8,4 +8,7 @@ export interface IPostDetails extends IBase {
   content: string;
   likeCount: number;
   hasLiked?: boolean;
+  sentiment: string | null;
+  confidence: number | null;
+  cancelReason: string | null;
 }

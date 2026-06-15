@@ -10,4 +10,7 @@ export interface IComment {
   replyCount: number; // Chỉ > 0 nếu là comment gốc
   liked: boolean; // User hiện tại đã like chưa
   createdAt: string;
+  sentiment: string | null;
+  confidence: number | null;
+  cancelReason: string | null;
 }

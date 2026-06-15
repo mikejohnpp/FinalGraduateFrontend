@@ -18,6 +18,7 @@ import {
 } from "@/hooks/useComment";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
+import SentimentIndicator from "./SentimentIndicator";
 
 interface CommentItemProps {
   comment: IComment;
@@ -72,6 +73,7 @@ function ReplyBubble({
           <span className="text-[11px] text-muted-foreground">
             <TimeAgo dateStr={reply.createdAt} />
           </span>
+          <SentimentIndicator data={reply} />
           <button
             onClick={() => (reply.liked ? unlike(reply.id, parentId) : like(reply.id, parentId))}
             className={cn(
@@ -135,8 +137,10 @@ function ReplyList({ comment, postId }: { comment: IComment; postId: number }) {
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              maxLength={40}
               className="flex-1 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
             />
+            <span className="text-[10px] text-muted-foreground shrink-0">{replyText.length}/40</span>
           </div>
         </div>
       )}
@@ -202,8 +206,12 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
                     setEditText(comment.content);
                   }
                 }}
+                maxLength={40}
                 className="w-full resize-none bg-transparent text-[13.5px] leading-relaxed text-foreground outline-none"
               />
+              <div className="text-right text-[10px] text-muted-foreground mb-1">
+                {editText.length}/40
+              </div>
               <div className="flex gap-2">
                 <button
                   onClick={handleEdit}
@@ -262,6 +270,7 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
           <span className="text-[11px] text-muted-foreground">
             <TimeAgo dateStr={comment.createdAt} />
           </span>
+          <SentimentIndicator data={comment} />
           <button
             onClick={handleLike}
             className={cn(

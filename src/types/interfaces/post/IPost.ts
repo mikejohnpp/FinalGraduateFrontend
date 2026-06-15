@@ -15,4 +15,7 @@ export interface IPost extends IBase {
     name: string;
     avatar: string | null;
   };
+  sentiment: string | null;
+  confidence: number | null;
+  cancelReason: string | null;
 }
