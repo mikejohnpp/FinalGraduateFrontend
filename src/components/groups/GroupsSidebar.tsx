@@ -15,6 +15,9 @@ export default function GroupsSidebar() {
   const navigate = useNavigate();
   const { joinedGroups } = useGroupsData();
 
+  const managedGroups = joinedGroups.filter((g) => g.role === "ADMIN" || g.role === "MODERATOR");
+  const otherJoinedGroups = joinedGroups.filter((g) => g.role !== "ADMIN" && g.role !== "MODERATOR");
+
   const navItems = [
     { name: "Bảng feed của bạn", path: PATH_CONSTRAINT.GROUPS, icon: LayoutList },
     { name: "Khám phá", path: PATH_CONSTRAINT.GROUPS_DISCOVER, icon: Compass },
@@ -87,6 +90,39 @@ export default function GroupsSidebar() {
 
           <Separator className="my-2" />
 
+          {managedGroups.length > 0 && (
+            <>
+              <div className="flex flex-col gap-2">
+                <div className="mb-1 flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">Nhóm do bạn quản lý</h3>
+                </div>
+
+                <div className="mt-1 flex flex-col gap-1">
+                  {managedGroups.slice(0, 8).map((group) => (
+                    <Button
+                      key={group.id}
+                      variant="ghost"
+                      className="h-auto w-full justify-start gap-3 rounded-lg px-2 py-2 hover:bg-muted"
+                      onClick={() => navigate(`/groups/${group.id}/admin/overview`)}
+                    >
+                      <Avatar className="size-10 rounded-lg">
+                        <AvatarImage src={resolveUploadUrl(group.coverPhoto) || ""} className="object-cover" />
+                        <AvatarFallback className="rounded-lg">{group.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1 text-left">
+                        <p className="truncate font-semibold">{group.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {group.role === "ADMIN" ? "Quản trị viên" : "Người kiểm duyệt"}
+                        </p>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <Separator className="my-2" />
+            </>
+          )}
+
           <div className="flex flex-col gap-2">
             <div className="mb-1 flex items-center justify-between">
               <h3 className="text-lg font-semibold">Nhóm bạn đã tham gia</h3>
@@ -101,7 +137,7 @@ export default function GroupsSidebar() {
             </div>
 
             <div className="mt-1 flex flex-col gap-1">
-              {joinedGroups.slice(0, 8).map((group) => (
+              {otherJoinedGroups.slice(0, 8).map((group) => (
                 <Button
                   key={group.id}
                   variant="ghost"

@@ -103,13 +103,18 @@ export function useGroupActions() {
     if (!userId) return false;
     setLoading(true);
     try {
-      const success = await groupService.create(
+      const data = await groupService.createAndGetData<{ status: 'PENDING' | 'APPROVED' }>(
         `${API.GROUP.BASE}/${group.id}/join?userId=${userId}`,
         null,
       );
-      if (success) {
-        dispatch(groupActions.addJoinedGroup({ ...group, isJoined: true, role: "MEMBER" }));
-        toast.success("Đã tham gia nhóm");
+      if (data) {
+        if (data.status === 'APPROVED') {
+          dispatch(groupActions.addJoinedGroup({ ...group, isJoined: true, role: "MEMBER" }));
+          toast.success("Đã tham gia nhóm");
+        } else if (data.status === 'PENDING') {
+          dispatch(groupActions.updateGroup({ id: group.id, isPending: true }));
+          toast.success("Đã gửi yêu cầu tham gia nhóm");
+        }
         return true;
       }
     } catch (e: any) {

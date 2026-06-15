@@ -41,6 +41,14 @@ export const groupSlice = createSlice({
     removeJoinedGroup: (state, action: PayloadAction<number>) => {
       state.joinedGroups = state.joinedGroups.filter((g) => g.id !== action.payload);
     },
+    updateGroup: (state, action: PayloadAction<{ id: number; isPending?: boolean; isJoined?: boolean }>) => {
+      const { id, ...updates } = action.payload;
+      const suggested = state.suggestedGroups.find(g => g.id === id);
+      if (suggested) Object.assign(suggested, updates);
+      
+      const joined = state.joinedGroups.find(g => g.id === id);
+      if (joined) Object.assign(joined, updates);
+    },
     setGroupFeed: (state, action: PayloadAction<CursorPageResponse<IPost>>) => {
       state.groupFeed.items = action.payload.data ?? [];
       state.groupFeed.nextCursor = action.payload.nextCursor ?? null;

@@ -34,3 +34,32 @@ export function formatShortTime(input: string): string {
     return `${d}/${m}/${y}`;
   }
 }
+
+export function timeAgo(isoString: string): string {
+  const date = new Date(isoString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  let interval = Math.floor(seconds / 31536000);
+  if (interval > 1) return interval + " năm trước";
+  interval = Math.floor(seconds / 2592000);
+  if (interval > 1) return interval + " tháng trước";
+  interval = Math.floor(seconds / 86400);
+  if (interval >= 1) {
+    if (interval < 7) return interval + " ngày trước";
+    return formatShortTime(isoString);
+  }
+  interval = Math.floor(seconds / 3600);
+  if (interval >= 1) return interval + " giờ trước";
+  interval = Math.floor(seconds / 60);
+  if (interval >= 1) return interval + " phút trước";
+  return "Vừa xong";
+}
+
+export function formatYear(isoString: string): string {
+  const date = new Date(isoString);
+  if (isNaN(date.getTime())) return "";
+  const m = date.getMonth() + 1;
+  const y = date.getFullYear();
+  return `Tháng ${m}, ${y}`;
+}
