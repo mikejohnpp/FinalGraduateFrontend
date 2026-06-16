@@ -44,6 +44,7 @@ export default function GroupOverview() {
       value: stats.pendingPosts,
       path: "pending-posts",
       color: "text-muted-foreground",
+      isStatus: false,
     },
     {
       label: "Yêu cầu làm thành viên",
@@ -51,6 +52,7 @@ export default function GroupOverview() {
       value: stats.memberRequests,
       path: "member-requests",
       color: "text-muted-foreground",
+      isStatus: false,
     },
   ];
 

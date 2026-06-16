@@ -43,7 +43,12 @@ export const API = {
   ADMIN: {
     USERS: "users/admin/users",
     GROUPS: "users/admin/groups",
+    SENTIMENT_OVERVIEW: "users/admin/sentiment/overview",
+    SENTIMENT_ITEMS: "users/admin/sentiment/items",
+    REPORT_OVERVIEW: "users/admin/reports/overview",
+    REPORT_EXPORT: "users/admin/reports/export",
   },
+
 
   GROUP_ADMIN: {
     INFO: "users/groups", // Sẽ append /admin/info
