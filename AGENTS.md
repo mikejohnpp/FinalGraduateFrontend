@@ -77,15 +77,15 @@
 
 ```ts
 export const API = {
-  REFRESH: "api/auth/refresh-token",
-  LOGIN: "api/auth/login",
-  LOGOUT: "api/auth/logout",
-  REGISTER: "api/auth/register",
-  ACTIVE: "api/auth/active",
+  REFRESH: "auth/refresh-token",
+  LOGIN: "auth/login",
+  LOGOUT: "auth/logout",
+  REGISTER: "auth/register",
+  ACTIVE: "auth/active",
   POST: {
-    BASE: "users/posts",          // CRUD, like/unlike
+    BASE: "users/posts", // CRUD, like/unlike
     SUGGESTED: "users/posts/suggested", // Infinite scroll feed
-    SEARCH: "users/posts/search",       // Standard pagination
+    SEARCH: "users/posts/search", // Standard pagination
   },
   COMMENT: {
     PATH: "comments",
@@ -96,9 +96,9 @@ export const API = {
     USERS: "users/admin/users",
     GROUPS: "users/admin/groups",
     SENTIMENT_OVERVIEW: "users/admin/sentiment/overview", // Overview 3 nhãn (post + comment)
-    SENTIMENT_ITEMS: "users/admin/sentiment/items",       // Drill-down list (paginated)
-    REPORT_OVERVIEW: "users/admin/reports/overview",      // System dashboard stats
-    REPORT_EXPORT: "users/admin/reports/export",          // CSV blob download
+    SENTIMENT_ITEMS: "users/admin/sentiment/items", // Drill-down list (paginated)
+    REPORT_OVERVIEW: "users/admin/reports/overview", // System dashboard stats
+    REPORT_EXPORT: "users/admin/reports/export", // CSV blob download
   },
 };
 ```

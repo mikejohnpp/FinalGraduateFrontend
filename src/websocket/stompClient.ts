@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import socketSlice from "@/stores/socketSlice";
 import { store } from "@/stores/store";
-import { AUTH_TOKEN_NAME } from "@/common/constants";
+import { API, AUTH_TOKEN_NAME } from "@/common/constants";
 import userOnlineService from "@/services/userOnlineService";
 import { userOnlineSlice } from "@/stores/userOnlineSlice";
 
@@ -64,7 +64,7 @@ export const stompClient = new Client({
 });
 
 async function refreshToken(): Promise<any> {
-  const response = await fetch(`http://localhost:9093/auth/refresh-token`, {
+  const response = await fetch(`${import.meta.env.VITE_SERVER_API}/${API.REFRESH}`, {
     method: "POST",
     credentials: "include",
   });
