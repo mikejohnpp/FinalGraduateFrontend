@@ -1,7 +1,7 @@
 import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
-import { Users, UsersRound, Settings, LogOut, ArrowLeft } from "lucide-react";
+import { Users, UsersRound, Settings, ArrowLeft, PieChart, FileBarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/useUser";
 import OverlaySpinner from "@/components/OverlaySpinner";
@@ -66,6 +66,26 @@ export default function AdminLayout() {
             >
               <UsersRound className="h-4 w-4" />
               Quản lý nhóm
+            </NavLink>
+            <NavLink
+              to="/admin/sentiment"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${isActive ? "bg-muted text-primary" : "text-muted-foreground"
+                }`
+              }
+            >
+              <PieChart className="h-4 w-4" />
+              Thống kê cảm xúc
+            </NavLink>
+            <NavLink
+              to="/admin/reports"
+              className={({ isActive }) =>
+                `flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary ${isActive ? "bg-muted text-primary" : "text-muted-foreground"
+                }`
+              }
+            >
+              <FileBarChart className="h-4 w-4" />
+              Báo cáo hệ thống
             </NavLink>
           </nav>
         </div>

@@ -6,6 +6,7 @@ export interface IGroup {
   privacy: "public" | "private";
   memberCount: number;
   isJoined: boolean;
+  isPending?: boolean;
   role: "ADMIN" | "MODERATOR" | "MEMBER" | null;
   mutualFriendCount: number;
 }

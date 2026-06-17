@@ -59,9 +59,15 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
         )}
 
         <div className="mt-auto pt-3">
-          <Button variant="outline" className="w-full bg-secondary/50" size="sm" onClick={onJoin}>
-            Tham gia nhóm
-          </Button>
+          {group.isPending ? (
+            <Button variant="outline" className="w-full bg-secondary/50" size="sm" disabled>
+              Đang chờ duyệt
+            </Button>
+          ) : (
+            <Button variant="outline" className="w-full bg-secondary/50" size="sm" onClick={onJoin}>
+              Tham gia nhóm
+            </Button>
+          )}
         </div>
       </div>
     </Card>

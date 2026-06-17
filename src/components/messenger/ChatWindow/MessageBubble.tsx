@@ -82,31 +82,9 @@ export default function MessageBubble({
           </div>
         )}
 
-        {/* Reactions */}
-        {message.reactions && message.reactions.length > 0 && (
-          <div
-            className={cn(
-              "-mt-1.5 flex items-center gap-0.5 px-1",
-              isMine ? "flex-row-reverse" : "flex-row",
-            )}
-          >
-            {message.reactions.map((reaction, idx) => (
-              <span
-                key={idx}
-                className="flex items-center gap-0.5 rounded-full border border-border bg-secondary px-1.5 py-0.5 text-xs shadow-sm"
-              >
-                <span>{reaction.emoji}</span>
-                {reaction.count > 1 && (
-                  <span className="text-muted-foreground">{reaction.count}</span>
-                )}
-              </span>
-            ))}
-          </div>
-        )}
-
         {/* Timestamp on hover */}
         <span className="px-1 text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-          {message.timestamp}
+          {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
     </div>

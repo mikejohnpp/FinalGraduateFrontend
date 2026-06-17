@@ -12,7 +12,7 @@ export default function SentimentIndicator({ data }: { data: SentimentData }) {
   if (data.cancelReason) {
     return (
       <TooltipProvider>
-        <Tooltip delay={0}>
+        <Tooltip>
           <TooltipTrigger className="cursor-help flex items-center text-muted-foreground">
             <InfoIcon className="size-4 text-muted-foreground" />
           </TooltipTrigger>
@@ -43,7 +43,7 @@ export default function SentimentIndicator({ data }: { data: SentimentData }) {
 
   return (
     <TooltipProvider>
-      <Tooltip delay={0}>
+      <Tooltip>
         <TooltipTrigger className="cursor-help">
           <Badge variant="outline" className={`h-5 text-[10px] px-1.5 gap-1 border ${config.colorClass}`}>
             <config.Icon className="size-3" />
