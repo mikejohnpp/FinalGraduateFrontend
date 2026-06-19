@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   HeartIcon,
@@ -10,7 +10,7 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   DropdownMenu,
@@ -27,8 +27,15 @@ import CommentModal from "./home/CommentModal";
 import ShareModal from "./home/ShareModal";
 
 export default function PostCard({ post }: { post: IPost }) {
-  const liked = post.hasLiked ?? false;
-  const likesCount = post.likeCount;
+  const [liked, setLiked] = useState(post.hasLiked ?? false);
+  const [likesCount, setLikesCount] = useState(post.likeCount ?? 0);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLiked(post.hasLiked ?? false);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLikesCount(post.likeCount ?? 0);
+  }, [post.hasLiked, post.likeCount]);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const { userId } = useSelector((state: RootState) => state.user);
@@ -37,10 +44,19 @@ export default function PostCard({ post }: { post: IPost }) {
 
   const handleLikeClick = async () => {
     if (!userId || loadingId === post.id) return;
-    if (liked) {
-      await unlike(post.id, userId);
-    } else {
-      await like(post.id, userId);
+    
+    const wasLiked = liked;
+    setLiked(!wasLiked);
+    setLikesCount(prev => prev + (wasLiked ? -1 : 1));
+
+    const success = wasLiked
+      ? await unlike(post.id, userId)
+      : await like(post.id, userId);
+
+    if (!success) {
+      // Revert if API fails
+      setLiked(wasLiked);
+      setLikesCount(prev => prev + (wasLiked ? 1 : -1));
     }
   };
 

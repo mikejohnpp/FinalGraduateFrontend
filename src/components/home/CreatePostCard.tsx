@@ -44,12 +44,16 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
     });
 
     if (result) {
-      toast.success("Bài viết đã được đăng thành công");
+      if (result.status === "PENDING") {
+        toast.success("Bài viết của bạn đã được gửi và đang chờ phê duyệt");
+      } else {
+        toast.success("Bài viết đã được đăng thành công");
+        if (onPostCreated) {
+          onPostCreated({ ...result, commentCount: 0 } as any);
+        }
+      }
       setContent("");
       setIsOpen(false);
-      if (onPostCreated) {
-        onPostCreated({ ...result, commentCount: 0 } as any);
-      }
     }
   };
 
