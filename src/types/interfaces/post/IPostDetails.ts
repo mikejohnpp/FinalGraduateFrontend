@@ -11,4 +11,5 @@ export interface IPostDetails extends IBase {
   sentiment: string | null;
   confidence: number | null;
   cancelReason: string | null;
+  status: string | null;
 }

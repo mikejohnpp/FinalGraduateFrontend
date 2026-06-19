@@ -179,7 +179,11 @@ export default function GroupDetail() {
 
           {!postsLoading && posts.length === 0 && (
             <div className="py-8 text-center">
-              <p className="text-muted-foreground">Chưa có bài viết nào trong nhóm này.</p>
+              <p className="text-muted-foreground">
+                {group.privacy === "private" && !group.isJoined
+                  ? "Đây là nhóm kín. Bạn cần tham gia để xem bài viết."
+                  : "Chưa có bài viết nào trong nhóm này."}
+              </p>
             </div>
           )}
         </div>

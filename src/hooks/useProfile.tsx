@@ -18,10 +18,17 @@ import { resolveUploadUrl } from "@/utils/uploadHelper";
 export function useProfile(userId: number | string | undefined) {
   const dispatch = useDispatch<AppDispatch>();
   const currentUserId = useSelector((r: RootState) => r.user.userId);
+  const reduxProfile = useSelector((r: RootState) => r.user.profile);
   const [profile, setProfile] = useState<UserProfileDTO | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOwner && reduxProfile) {
+      setProfile(reduxProfile);
+    }
+  }, [isOwner, reduxProfile]);
 
   useEffect(() => {
     if (!userId) return;

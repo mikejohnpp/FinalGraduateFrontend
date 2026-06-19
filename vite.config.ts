@@ -8,15 +8,23 @@ export default defineConfig({
   server: {
     port: 3000,
     // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:8080',
+    //   '/auth': {
+    //     target: 'http://100.120.5.8:30940',
     //     changeOrigin: true,
-    //     headers: {
-    //       Origin: 'http://localhost:8080'
-    //     }
     //   },
-    //   '/users': { target: 'http://localhost:8080', changeOrigin: true, headers: { Origin: 'http://localhost:8080' } },
-    // }
+    //   '/users': {
+    //     target: 'http://100.120.5.8:30940',
+    //     changeOrigin: true,
+    //   },
+    //   '/chat': {
+    //     target: 'http://100.120.5.8:30940',
+    //     changeOrigin: true,
+    //   },
+    //   '/app-socket': {
+    //     target: 'http://100.120.5.8:30940',
+    //     changeOrigin: true,
+    //   },
+    // },
   },
   plugins: [react(), tailwindcss()],
   resolve: {

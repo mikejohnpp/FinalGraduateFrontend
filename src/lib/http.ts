@@ -114,12 +114,9 @@ export class Http {
 
     // Not permission
     if (status === 403) {
-      const currentPath = window.location.pathname;
-      localStorage.setItem("PATH", currentPath);
-      toast.error("Bạn không có quyền truy cập!");
-      RemoveToken();
-      RedirectLoginAndResetParam();
-      return;
+      // Just toast and reject, do not logout user for a resource forbidden error
+      toast.error("Bạn không có quyền truy cập tài nguyên này!");
+      return Promise.reject(error);
     }
 
     // const _data = error.response?.data as ApiResult;
