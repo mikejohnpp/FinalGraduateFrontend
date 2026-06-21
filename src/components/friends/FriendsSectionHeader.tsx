@@ -6,7 +6,7 @@ type FriendsSectionHeaderProps = {
 
 export default function FriendsSectionHeader({
   title,
-  actionLabel = "Xem tất cả",
+  actionLabel = "",
   onAction,
 }: FriendsSectionHeaderProps) {
   const showAction = Boolean(onAction && actionLabel);

@@ -16,7 +16,9 @@ export default function GroupsSidebar() {
   const { joinedGroups } = useGroupsData();
 
   const managedGroups = joinedGroups.filter((g) => g.role === "ADMIN" || g.role === "MODERATOR");
-  const otherJoinedGroups = joinedGroups.filter((g) => g.role !== "ADMIN" && g.role !== "MODERATOR");
+  const otherJoinedGroups = joinedGroups.filter(
+    (g) => g.role !== "ADMIN" && g.role !== "MODERATOR",
+  );
 
   const navItems = [
     { name: "Bảng feed của bạn", path: PATH_CONSTRAINT.GROUPS, icon: LayoutList },
@@ -30,24 +32,6 @@ export default function GroupsSidebar() {
         <div className="flex flex-col gap-3 p-3 pb-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Nhóm</h2>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 rounded-full bg-muted hover:bg-muted/80"
-            >
-              <Settings data-icon="inline" />
-            </Button>
-          </div>
-
-          <div className="relative">
-            <Search
-              data-icon="inline"
-              className="absolute top-2.5 left-2.5 text-muted-foreground"
-            />
-            <Input
-              placeholder="Tìm kiếm nhóm"
-              className="rounded-full border-transparent bg-muted pl-9 focus-visible:bg-background"
-            />
           </div>
 
           <div className="flex flex-col gap-1">
@@ -106,8 +90,13 @@ export default function GroupsSidebar() {
                       onClick={() => navigate(`/groups/${group.id}/admin/overview`)}
                     >
                       <Avatar className="size-10 rounded-lg">
-                        <AvatarImage src={resolveUploadUrl(group.coverPhoto) || ""} className="object-cover" />
-                        <AvatarFallback className="rounded-lg">{group.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage
+                          src={resolveUploadUrl(group.coverPhoto) || ""}
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="rounded-lg">
+                          {group.name.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1 text-left">
                         <p className="truncate font-semibold">{group.name}</p>
@@ -145,7 +134,10 @@ export default function GroupsSidebar() {
                   onClick={() => navigate(`/groups/${group.id}`)}
                 >
                   <Avatar className="size-10 rounded-lg">
-                    <AvatarImage src={resolveUploadUrl(group.coverPhoto) || ""} className="object-cover" />
+                    <AvatarImage
+                      src={resolveUploadUrl(group.coverPhoto) || ""}
+                      className="object-cover"
+                    />
                     <AvatarFallback className="rounded-lg">{group.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1 text-left">

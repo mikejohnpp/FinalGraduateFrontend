@@ -16,7 +16,7 @@ const mockFeedPosts: IPost[] = [
     author: {
       id: 1,
       name: "Nguyễn Văn An",
-      avatar: "https://i.pravatar.cc/150?img=11",
+      avatar: undefined,
       nickName: null,
     },
     isGroupPosted: true,
@@ -30,7 +30,7 @@ const mockFeedPosts: IPost[] = [
     group: {
       id: 1,
       name: "Nhóm test",
-      avatar: "https://i.pravatar.cc/150?img=10",
+      avatar: undefined,
     },
     sentiment: "POSITIVE",
     confidence: 0.85,
@@ -41,7 +41,7 @@ const mockFeedPosts: IPost[] = [
     author: {
       id: 2,
       name: "Trần Thị Bích",
-      avatar: "https://i.pravatar.cc/150?img=47",
+      avatar: undefined,
       nickName: null,
     },
     isGroupPosted: true,
@@ -54,7 +54,7 @@ const mockFeedPosts: IPost[] = [
     group: {
       id: 1,
       name: "Nhóm test",
-      avatar: "https://i.pravatar.cc/150?img=10",
+      avatar: undefined,
     },
     sentiment: "NEUTRAL",
     confidence: 0.6,

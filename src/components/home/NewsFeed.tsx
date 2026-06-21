@@ -29,7 +29,6 @@ export default function NewsFeed() {
   return (
     <div className="mx-auto flex w-full max-w-[760px] flex-col gap-4 px-4 py-4">
       <CreatePostCard />
-      <StoriesBar />
 
       {/* Initial Loading State */}
       {loading && posts.length === 0 ? (

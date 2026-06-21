@@ -45,9 +45,11 @@ export default function ProfileFriends({ profile }: ProfileFriendsProps) {
           <CardTitle className="cursor-pointer text-xl font-bold hover:underline">Bạn bè</CardTitle>
           <p className="text-sm text-muted-foreground">{profile.friendCount} người bạn</p>
         </div>
+        {/*
         <Button variant="link" className="h-auto p-0 font-normal text-primary">
           Xem tất cả bạn bè
         </Button>
+        */}
       </CardHeader>
       <CardContent>
         {loading ? (

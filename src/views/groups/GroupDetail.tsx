@@ -87,42 +87,20 @@ export default function GroupDetail() {
                   </p>
                 </div>
               </div>
-
-              <div className="flex gap-3">
-                <Eye className="mt-0.5 h-6 w-6 opacity-70" />
-                <div>
-                  <p className="text-[15px] font-semibold">Hiển thị</p>
-                  <p className="mt-0.5 text-[13px] text-muted-foreground">
-                    Ai cũng có thể tìm nhóm này.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <History className="mt-0.5 h-6 w-6 opacity-70" />
-                <div>
-                  <p className="text-[15px] font-semibold">Lịch sử</p>
-                  <p className="mt-0.5 text-[13px] text-muted-foreground">Nhóm được tạo gần đây.</p>
-                </div>
-              </div>
             </div>
           </Card>
 
           <Card className="flex flex-col border-0 p-4 shadow-sm">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="text-[17px] font-bold">Thành viên</h3>
-              <p className="cursor-pointer rounded p-1.5 text-sm text-muted-foreground hover:bg-muted">
-                Xem tất cả
-              </p>
             </div>
-            <div className="mb-4 flex items-center gap-2 text-sm">
+            <div className="mb-2 flex items-center gap-2 text-sm">
               <Users className="h-5 w-5 text-muted-foreground" />
               <span>{group.memberCount.toLocaleString("vi-VN")} người</span>
             </div>
-            <div className="mb-2 flex -space-x-1.5 p-1">
+            <div className="mb-0 flex -space-x-1.5 p-1">
               {members.slice(0, 12).map((m, i) => (
                 <Avatar key={m.userId} className="h-8 w-8 border-2 border-background">
-                  <AvatarImage src={m.avatar || `https://i.pravatar.cc/100?img=${i + 30}`} />
                   <AvatarFallback>{m.name.charAt(0)}</AvatarFallback>
                 </Avatar>
               ))}
@@ -135,7 +113,7 @@ export default function GroupDetail() {
               .map((admin) => (
                 <div key={admin.userId} className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={admin.avatar || `https://i.pravatar.cc/100?img=12`} />
+                    <AvatarImage src={admin.avatar || undefined} />
                   </Avatar>
                   <div>
                     <p className="text-[15px] font-semibold">{admin.name}</p>
