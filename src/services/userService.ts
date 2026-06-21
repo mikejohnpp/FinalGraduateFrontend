@@ -26,7 +26,9 @@ export class UserService extends BaseService {
 
   async logout(): Promise<ApiResultGeneric<undefined> | undefined> {
     try {
-      const response = await http.post<ApiResultGeneric<undefined>>(`/${API.LOGOUT}`);
+      const response = await http.post<ApiResultGeneric<undefined>>(`/${API.LOGOUT}`, {}, {
+        withCredentials: true,
+      });
       return response;
     } catch (e) {
       return Promise.reject(e);
