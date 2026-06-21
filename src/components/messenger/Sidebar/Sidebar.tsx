@@ -45,12 +45,6 @@ export default function Sidebar({
           >
             <Users data-icon />
           </Button>
-          <Button variant="ghost" size="icon" className="size-9 rounded-full">
-            <MoreHorizontal data-icon />
-          </Button>
-          <Button variant="ghost" size="icon" className="size-9 rounded-full">
-            <SquarePen data-icon />
-          </Button>
         </div>
       </div>
 

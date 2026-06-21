@@ -38,24 +38,6 @@ export default function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps
             >
               Bạn bè
             </TabsTrigger>
-            <TabsTrigger
-              value="photos"
-              className="h-full rounded-none border-b-4 border-transparent px-4 font-semibold data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-            >
-              Ảnh
-            </TabsTrigger>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex h-full items-center px-4 font-semibold text-muted-foreground transition-colors hover:bg-muted/50">
-                Xem thêm
-                <ChevronDown className="ml-1 size-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem>Video</DropdownMenuItem>
-                <DropdownMenuItem>Check-in</DropdownMenuItem>
-                <DropdownMenuItem>Thể thao</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </TabsList>
         </Tabs>
       </div>

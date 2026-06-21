@@ -45,8 +45,7 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
               {/* Fake avatars for mutual friends */}
               {Array.from({ length: Math.min(group.mutualFriendCount, 3) }).map((_, i) => (
                 <Avatar key={i} className="size-5 border-2 border-background">
-                  <AvatarImage src={`https://i.pravatar.cc/100?img=${i + 10}`} />
-                  <AvatarFallback />
+                  <AvatarFallback className="bg-primary/10 text-[10px] text-primary">B</AvatarFallback>
                 </Avatar>
               ))}
             </div>

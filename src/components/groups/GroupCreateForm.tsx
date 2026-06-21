@@ -59,7 +59,6 @@ export default function GroupCreateForm({
           className="h-auto w-full justify-start gap-3 px-2 py-2 hover:bg-muted"
         >
           <Avatar className="size-10">
-            <AvatarImage src="https://i.pravatar.cc/100?u=me" />
             <AvatarFallback>Me</AvatarFallback>
           </Avatar>
           <div className="flex-1 text-left">

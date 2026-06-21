@@ -112,9 +112,7 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
                   disabled={loading}
                   maxLength={40}
                 />
-                <div className="text-right text-xs text-muted-foreground">
-                  {content.length}/40
-                </div>
+                <div className="text-right text-xs text-muted-foreground">{content.length}/40</div>
 
                 {error && <div className="text-sm text-destructive">{error}</div>}
               </div>
@@ -131,32 +129,6 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-around">
-          <button
-            type="button"
-            className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-          >
-            <VideoIcon className="size-5 text-red-500" />
-            <span>Video trực tiếp</span>
-          </button>
-          <button
-            type="button"
-            className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-          >
-            <ImageIcon className="size-5 text-emerald-500" />
-            <span>Ảnh/video</span>
-          </button>
-          <button
-            type="button"
-            className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-          >
-            <SmileIcon className="size-5 text-amber-500" />
-            <span>Cảm xúc</span>
-          </button>
         </div>
       </CardContent>
     </Card>

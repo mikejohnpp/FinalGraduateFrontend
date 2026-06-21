@@ -450,8 +450,4 @@ export const contacts: Contact[] = [
 export const shortcuts: Shortcut[] = [
   { id: "s-1", label: "Bạn bè", icon: "Users", to: "/friends" },
   { id: "s-2", label: "Nhóm", icon: "UsersRound", to: "/groups" },
-  { id: "s-3", label: "Watch", icon: "Video" },
-  { id: "s-4", label: "Đã lưu", icon: "Bookmark" },
-  { id: "s-5", label: "Sự kiện", icon: "Calendar" },
-  { id: "s-6", label: "Kỷ niệm", icon: "Clock" },
 ];

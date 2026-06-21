@@ -122,7 +122,6 @@ export default function GroupCreatePreview({
           <div className="flex flex-col gap-4">
             <Card className="flex items-center gap-2 border-0 p-3 shadow-sm">
               <Avatar className="size-10">
-                <AvatarImage src="https://i.pravatar.cc/100?u=me" />
                 <AvatarFallback>Me</AvatarFallback>
               </Avatar>
               <div className="flex h-10 flex-1 cursor-not-allowed items-center rounded-full bg-muted px-4 text-muted-foreground">

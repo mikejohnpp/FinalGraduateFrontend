@@ -43,11 +43,14 @@ export default function Profile() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_3fr]">
             <div className="flex flex-col gap-4">
               <ProfileAbout profile={profile} isOwner={isOwner} />
-              <ProfilePhotos />
               <ProfileFriends profile={profile} />
             </div>
             <div className="flex flex-col">
-              {isOwner && <CreatePostCard onPostCreated={handlePostCreated} />}
+              {isOwner && (
+                <div className="pt-0 pb-4">
+                  <CreatePostCard onPostCreated={handlePostCreated} />
+                </div>
+              )}
               <ProfilePostFeed posts={[...extraPosts, ...posts]} loading={postsLoading} />
             </div>
           </div>

@@ -18,11 +18,6 @@ export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
         {profile.bio && (
           <div className="text-center">
             <p className="text-sm">{profile.bio}</p>
-            {isOwner && (
-              <Button variant="secondary" className="mt-3 h-8 w-full">
-                Chỉnh sửa tiểu sử
-              </Button>
-            )}
           </div>
         )}
 
@@ -66,12 +61,6 @@ export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
             <span>Có {profile.friendCount} người theo dõi</span>
           </div>
         </div>
-
-        {isOwner && (
-          <Button variant="secondary" className="w-full">
-            Chỉnh sửa chi tiết
-          </Button>
-        )}
       </CardContent>
     </Card>
   );

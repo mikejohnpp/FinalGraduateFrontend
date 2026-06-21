@@ -58,20 +58,6 @@ export default function LeftSidebar() {
           );
         })}
       </div>
-
-      <Separator className="my-1" />
-
-      <div className="flex flex-wrap gap-x-2 gap-y-1 px-3 text-xs text-muted-foreground">
-        <span>Quyền riêng tư</span>
-        <span>·</span>
-        <span>Điều khoản</span>
-        <span>·</span>
-        <span>Quảng cáo</span>
-        <span>·</span>
-        <span>Cookie</span>
-        <span>·</span>
-        <span>Xem thêm</span>
-      </div>
     </aside>
   );
 }
