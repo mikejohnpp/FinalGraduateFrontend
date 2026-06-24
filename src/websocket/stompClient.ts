@@ -6,8 +6,7 @@ import userOnlineService from "@/services/userOnlineService";
 import { userOnlineSlice } from "@/stores/userOnlineSlice";
 
 export const stompClient = new Client({
-  brokerURL: "ws://localhost:9091/app_socket",
-
+  brokerURL: import.meta.env.VITE_WEBSOCKET_SERVER,
   reconnectDelay: 5000,
 
   beforeConnect: async () => {

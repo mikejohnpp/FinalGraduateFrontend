@@ -1,11 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useGroupInfo } from "@/hooks/useGroupAdmin";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Lock, EyeOff, Info } from "lucide-react";
 import CreatePostCard from "@/components/home/CreatePostCard";
 import PostCard from "@/components/PostCard";
 import type { IPost } from "@/types/interfaces/post/IPost";
@@ -16,7 +10,7 @@ const mockFeedPosts: IPost[] = [
     author: {
       id: 1,
       name: "Nguyễn Văn An",
-      avatar: undefined,
+      avatar: null,
       nickName: null,
     },
     isGroupPosted: true,
@@ -30,7 +24,7 @@ const mockFeedPosts: IPost[] = [
     group: {
       id: 1,
       name: "Nhóm test",
-      avatar: undefined,
+      avatar: null,
     },
     sentiment: "POSITIVE",
     confidence: 0.85,
@@ -41,7 +35,7 @@ const mockFeedPosts: IPost[] = [
     author: {
       id: 2,
       name: "Trần Thị Bích",
-      avatar: undefined,
+      avatar: null,
       nickName: null,
     },
     isGroupPosted: true,
@@ -54,7 +48,7 @@ const mockFeedPosts: IPost[] = [
     group: {
       id: 1,
       name: "Nhóm test",
-      avatar: undefined,
+      avatar: null,
     },
     sentiment: "NEUTRAL",
     confidence: 0.6,

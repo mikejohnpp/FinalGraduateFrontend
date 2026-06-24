@@ -9,19 +9,19 @@ export default defineConfig({
     port: 3000,
     // proxy: {
     //   '/auth': {
-    //     target: 'http://100.120.5.8:30940',
+    //     target: 'https://api.vieface.io.vn',
     //     changeOrigin: true,
     //   },
     //   '/users': {
-    //     target: 'http://100.120.5.8:30940',
+    //     target: 'https://api.vieface.io.vn',
     //     changeOrigin: true,
     //   },
     //   '/chat': {
-    //     target: 'http://100.120.5.8:30940',
+    //     target: 'https://api.vieface.io.vn',
     //     changeOrigin: true,
     //   },
     //   '/app-socket': {
-    //     target: 'http://100.120.5.8:30940',
+    //     target: 'https://api.vieface.io.vn',
     //     changeOrigin: true,
     //   },
     // },
