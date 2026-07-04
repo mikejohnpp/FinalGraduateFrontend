@@ -10,4 +10,7 @@ export interface IProfileUpdate {
   gender?: string; // max 20 ký tự
   pronouns?: string; // max 50 ký tự
   language?: string; // max 50 ký tự
+  avatar?: string; // max 1000 ký tự — link ảnh đại diện (Supabase URL)
+  coverPhoto?: string; // max 1000 ký tự — link ảnh bìa (Supabase URL)
 }
+

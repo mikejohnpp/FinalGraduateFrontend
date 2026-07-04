@@ -21,6 +21,7 @@ const mockFeedPosts: IPost[] = [
     likeCount: 42,
     hasLiked: true,
     authorRole: "Quản trị viên",
+    media: [],
     group: {
       id: 1,
       name: "Nhóm test",
@@ -45,6 +46,7 @@ const mockFeedPosts: IPost[] = [
       "Hỏi mọi người một chút: có ai biết tool nào để quản lý bản dịch game hiệu quả không? Mình đang tìm cái gì đó có thể handle được context và glossary cùng lúc.",
     likeCount: 15,
     hasLiked: false,
+    media: [],
     group: {
       id: 1,
       name: "Nhóm test",

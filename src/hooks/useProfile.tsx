@@ -9,7 +9,8 @@ import { userActions } from "@/stores/userSlice";
 import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
 import type { IProfileUpdate } from "@/types/interfaces/user/IProfileUpdate";
 import type { IPost } from "@/types/interfaces/post/IPost";
-import { resolveUploadUrl } from "@/utils/uploadHelper";
+import { uploadImageToSupabase } from "@/utils/mediaUpload";
+
 
 /**
  * Fetch profile của một user và tính isOwner.
@@ -103,8 +104,8 @@ export function useUpdateProfile() {
 }
 
 /**
- * Upload ảnh đại diện mới.
- * Trả về URL đầy đủ đã được resolve sau khi upload thành công.
+ * Upload ảnh đại diện mới lên Supabase → lấy URL → PUT /users/profile.
+ * Trả về URL công khai sau khi cập nhật thành công.
  */
 export function useUploadAvatar() {
   const dispatch = useDispatch<AppDispatch>();
@@ -118,16 +119,16 @@ export function useUploadAvatar() {
       setLoading(true);
       setError(null);
       try {
-        const res = await userService.uploadAvatar(userId, file);
+        const url = await uploadImageToSupabase(file);
+        const res = await userService.updateProfile(userId, { avatar: url });
         if (res?.data) {
-          const url = resolveUploadUrl(res.data);
-          dispatch(userActions.updateProfile({ avatar: url }));
+          dispatch(userActions.setProfile(res.data));
           toast.success("Cập nhật ảnh đại diện thành công!");
-          return url;
+          return res.data.avatar ?? url;
         }
         return null;
-      } catch {
-        const msg = "Upload ảnh đại diện thất bại";
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Upload ảnh đại diện thất bại";
         setError(msg);
         toast.error(msg);
         return null;
@@ -142,8 +143,8 @@ export function useUploadAvatar() {
 }
 
 /**
- * Upload ảnh bìa mới.
- * Trả về URL đầy đủ đã được resolve sau khi upload thành công.
+ * Upload ảnh bìa mới lên Supabase → lấy URL → PUT /users/profile.
+ * Trả về URL công khai sau khi cập nhật thành công.
  */
 export function useUploadCover() {
   const dispatch = useDispatch<AppDispatch>();
@@ -157,16 +158,16 @@ export function useUploadCover() {
       setLoading(true);
       setError(null);
       try {
-        const res = await userService.uploadCover(userId, file);
+        const url = await uploadImageToSupabase(file);
+        const res = await userService.updateProfile(userId, { coverPhoto: url });
         if (res?.data) {
-          const url = resolveUploadUrl(res.data);
-          dispatch(userActions.updateProfile({ coverPhoto: url }));
+          dispatch(userActions.setProfile(res.data));
           toast.success("Cập nhật ảnh bìa thành công!");
-          return url;
+          return res.data.coverPhoto ?? url;
         }
         return null;
-      } catch {
-        const msg = "Upload ảnh bìa thất bại";
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Upload ảnh bìa thất bại";
         setError(msg);
         toast.error(msg);
         return null;
@@ -179,6 +180,7 @@ export function useUploadCover() {
 
   return { upload, loading, error };
 }
+
 
 /**
  * Lấy danh sách bài viết của một user cụ thể.

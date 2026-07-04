@@ -27,6 +27,24 @@
 - Drawer: `vaul`.
 - Headless primitives: `@base-ui/react`.
 
+## Media (ảnh/video/audio/file cho Post & Comment)
+
+- **Storage**: Supabase Storage. Client singleton ở `src/plugins/supabase/index.ts` (`supabase`, `MEDIA_BUCKET`). Cấu hình qua env `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY`, `VITE_SUPABASE_MEDIA_BUCKET` (mặc định `media`).
+- **Flow**: FE tự upload file lên Supabase → lấy public URL → gửi mảng `media` trong body khi tạo/sửa post & comment. BE chỉ lưu link.
+- **Types** — `src/types/interfaces/media/IMedia.ts`:
+  - `MediaType` = `"IMAGE" | "VIDEO" | "AUDIO" | "FILE"`.
+  - `MediaInput` (request): `{ url, mediaType?, position? }`.
+  - `MediaItem` (response): `{ id, url, mediaType, position }` (đã sort theo `position`, luôn là `[]` nếu rỗng).
+  - `IPost`, `IPostDetails`, `IComment` đều có `media: MediaItem[]`.
+  - `IPostCreate`/`IPostUpdate`, `ICommentCreate`/`ICommentUpdate` đều có `media?: MediaInput[] | null`.
+- **Quy tắc khi SỬA** (post & comment): `null`/bỏ field = giữ nguyên; `[]` = xoá hết; có phần tử = thay thế toàn bộ. Hooks chỉ set `body.media` khi khác `undefined`/`null`.
+- **Util** — `src/utils/mediaUpload.ts`: `uploadMediaFile`, `uploadMediaFiles` (gán `position` theo thứ tự), `inferMediaType` (suy từ MIME), `MAX_MEDIA_SIZE_MB` (25MB), `MEDIA_ACCEPT`.
+- **Hook** — `src/hooks/useMediaUpload.tsx`: quản lý draft (chọn/preview/xoá objectURL), `upload()` đẩy lên Supabase trả `MediaInput[]` (hoặc `[]` khi không có, `null` khi lỗi).
+- **Components** — `src/components/media/`:
+  - `MediaPicker.tsx` — chọn/preview/xoá media trước khi submit (`variant`: `button` | `dropzone`). Không tự upload.
+  - `MediaGallery.tsx` — render `media[]` từ response theo `mediaType` (grid ảnh, `<video>`, `<audio>`, link file). `size`: `post` | `comment`.
+- **Đã tích hợp**: `CreatePostCard`, `PostCard`, `CommentModal`, `CommentItem` (comment + reply). Post/comment hợp lệ khi có nội dung **hoặc** có media.
+
 ## HTTP / API Layer
 
 ### Http class — `src/lib/http.ts`
@@ -319,12 +337,14 @@ This project follows a strict three-layer convention:
 
 - Vite env vars declared in `.env`. All must be prefixed `VITE_`.
 
-| Variable                                                   | Purpose                                             |
-| ---------------------------------------------------------- | --------------------------------------------------- |
-| `VITE_SERVER_API`                                          | Backend base URL (default: `http://localhost:8080`) |
-| `VITE_SUPABASE_URL` / `VITE_SUPABASE_KEY`                  | Supabase (optional)                                 |
-| `VITE_LINK_PREVIEW_API_KEY` / `VITE_LINK_PREVIEW_ENDPOINT` | Link preview API                                    |
-| `VITE_FIREBASE_*`                                          | Firebase config (auth/storage)                      |
+| Variable                                  | Purpose                                             |
+| ----------------------------------------- | --------------------------------------------------- |
+| `VITE_SERVER_API`                         | Backend base URL (default: `http://localhost:8080`) |
+| `VITE_SUPABASE_URL` / `VITE_SUPABASE_KEY` | Supabase Storage (upload media post/comment)        |
+| `VITE_SUPABASE_MEDIA_BUCKET`              | Tên bucket lưu media (mặc định `media`)             |
+
+| `VITE_LINK_PREVIEW_API_KEY` / `VITE_LINK_PREVIEW_ENDPOINT` | Link preview API |
+| `VITE_FIREBASE_*` | Firebase config (auth/storage) |
 
 - Firebase config in `src/plugins/firebase/`.
 - Vite proxy for `/api` and `/users` is defined but **commented out**; direct requests go to `VITE_SERVER_API`.

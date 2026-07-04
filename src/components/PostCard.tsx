@@ -26,6 +26,10 @@ import { useLikePost } from "@/hooks/usePost";
 import CommentModal from "./home/CommentModal";
 import ShareModal from "./home/ShareModal";
 import SentimentIndicator from "./home/SentimentIndicator";
+import MediaGallery from "./media/MediaGallery";
+import MediaLightbox from "./media/MediaLightbox";
+
+
 
 export default function PostCard({ post }: { post: IPost }) {
   const [liked, setLiked] = useState(post.hasLiked ?? false);
@@ -39,6 +43,11 @@ export default function PostCard({ post }: { post: IPost }) {
   }, [post.hasLiked, post.likeCount]);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<{ open: boolean; index: number }>({
+    open: false,
+    index: 0,
+  });
+
   const { userId } = useSelector((state: RootState) => state.user);
   const { like, unlike, loadingId } = useLikePost();
   const navigate = useNavigate();
@@ -60,8 +69,8 @@ export default function PostCard({ post }: { post: IPost }) {
   };
 
   const groupName = post.group?.name;
-  const groupId = post.group?.id;
   const authorName = post.author?.name || "Người dùng";
+
   const authorId = post.author?.id;
   const authorAvatar = post.author?.avatar || undefined;
 
@@ -130,9 +139,19 @@ export default function PostCard({ post }: { post: IPost }) {
         </CardHeader>
 
         <CardContent className="p-0 pb-0">
-          <p className="mb-3 px-4 whitespace-pre-wrap">{post.content}</p>
+          {post.content && <p className="mb-3 px-4 whitespace-pre-wrap">{post.content}</p>}
+
+          {post.media?.length > 0 && (
+            <MediaGallery
+              media={post.media}
+              className="mb-3 px-4"
+              onOpenLightbox={(index) => setLightbox({ open: true, index })}
+            />
+          )}
+
 
           {/* Reaction Bar */}
+
           <div className="mt-2 flex items-center justify-between px-4 py-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <div className="flex size-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -204,6 +223,17 @@ export default function PostCard({ post }: { post: IPost }) {
       />
 
       <ShareModal open={shareModalOpen} onClose={() => setShareModalOpen(false)} />
+
+      {lightbox.open && (
+        <MediaLightbox
+          post={post}
+          media={post.media}
+          startIndex={lightbox.index}
+          open={lightbox.open}
+          onClose={() => setLightbox((s) => ({ ...s, open: false }))}
+        />
+      )}
     </>
   );
 }
+

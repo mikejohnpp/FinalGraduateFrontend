@@ -7,7 +7,9 @@ import { API } from "@/common/constants";
 import type { IComment } from "@/types/interfaces/comment/IComment";
 import type { ICommentCreate, ICommentUpdate } from "@/types/interfaces/comment/ICommentCreate";
 import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
+import type { MediaInput } from "@/types/interfaces/media/IMedia";
 import { toast } from "sonner";
+
 
 // URL builders — template literals từ constants, không dùng hàm trong constants
 const commentUrl = (postId: number) => `${API.POST.BASE}/${postId}/${API.COMMENT.PATH}`;
@@ -128,8 +130,13 @@ export function useCreateComment(postId: number) {
   const [error, setError] = useState<string | null>(null);
 
   const create = useCallback(
-    async (content: string, parentId?: number | null): Promise<IComment | null> => {
-      if (!content.trim()) {
+    async (
+      content: string,
+      parentId?: number | null,
+      media?: MediaInput[] | null,
+    ): Promise<IComment | null> => {
+      const hasMedia = !!media && media.length > 0;
+      if (!content.trim() && !hasMedia) {
         setError("Nội dung bình luận không được để trống");
         return null;
       }
@@ -137,7 +144,13 @@ export function useCreateComment(postId: number) {
       setError(null);
       setLoading(true);
       try {
-        const body: ICommentCreate = { userId, content: content.trim(), parentId };
+        const body: ICommentCreate = {
+          userId,
+          content: content.trim(),
+          parentId,
+          ...(hasMedia ? { media } : {}),
+        };
+
         const result = await commentService.createAndGetData<IComment>(commentUrl(postId), body);
         if (result) {
           if (parentId) {
@@ -173,7 +186,11 @@ export function useEditComment(postId: number) {
   const [error, setError] = useState<string | null>(null);
 
   const edit = useCallback(
-    async (commentId: number, content: string): Promise<IComment | null> => {
+    async (
+      commentId: number,
+      content: string,
+      media?: MediaInput[] | null,
+    ): Promise<IComment | null> => {
       if (!content.trim()) {
         setError("Nội dung không được để trống");
         return null;
@@ -182,7 +199,11 @@ export function useEditComment(postId: number) {
       setError(null);
       setLoading(true);
       try {
+        // Quy tắc media: undefined/null = giữ nguyên (không gửi field),
+        // [] = xoá hết, có phần tử = thay thế toàn bộ.
         const body: ICommentUpdate = { content: content.trim() };
+        if (media !== undefined && media !== null) body.media = media;
+
         // userId là query param theo API spec — append vào URL
         const result = await commentService.updateAndGetData<IComment>(
           `${commentSingleUrl(postId, commentId)}?userId=${userId}`,

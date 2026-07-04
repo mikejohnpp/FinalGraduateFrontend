@@ -1,4 +1,5 @@
 import type { IAuthor } from "@/types/interfaces/user/IAuthor";
+import type { MediaItem } from "@/types/interfaces/media/IMedia";
 
 export interface IComment {
   id: number;
@@ -6,6 +7,7 @@ export interface IComment {
   postId: number;
   parentId: number | null; // null = comment gốc, có ID = reply
   content: string;
+  media: MediaItem[];
   likeCount: number;
   replyCount: number; // Chỉ > 0 nếu là comment gốc
   liked: boolean; // User hiện tại đã like chưa

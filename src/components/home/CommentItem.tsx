@@ -19,6 +19,8 @@ import {
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
 import SentimentIndicator from "./SentimentIndicator";
+import MediaGallery from "@/components/media/MediaGallery";
+
 
 interface CommentItemProps {
   comment: IComment;
@@ -60,9 +62,15 @@ function ReplyBubble({
       <div className="flex flex-1 flex-col">
         <div className="group relative inline-block max-w-full rounded-2xl bg-muted ring-1 ring-border/40 px-3 py-2">
           <p className="text-[12px] font-semibold text-foreground">{reply.author.name}</p>
-          <p className="text-[13px] leading-snug text-foreground">{reply.content}</p>
+          {reply.content && (
+            <p className="text-[13px] leading-snug text-foreground">{reply.content}</p>
+          )}
+          {reply.media?.length > 0 && (
+            <MediaGallery media={reply.media} size="comment" className="mt-1.5" />
+          )}
 
           {reply.likeCount > 0 && (
+
             <div className="absolute -right-1 -bottom-2 flex items-center gap-0.5 rounded-full border border-border bg-card px-1.5 py-0.5 text-[11px] text-muted-foreground shadow-sm">
               <ThumbsUp className="size-2.5 fill-primary text-primary" />
               <span>{reply.likeCount}</span>
@@ -231,10 +239,18 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
               </div>
             </div>
           ) : (
-            <p className="text-[13.5px] leading-snug text-foreground">{comment.content}</p>
+            <>
+              {comment.content && (
+                <p className="text-[13.5px] leading-snug text-foreground">{comment.content}</p>
+              )}
+              {comment.media?.length > 0 && (
+                <MediaGallery media={comment.media} size="comment" className="mt-1.5" />
+              )}
+            </>
           )}
 
           {/* Like count pill */}
+
           {comment.likeCount > 0 && !isEditing && (
             <div className="absolute -right-1 -bottom-2.5 flex items-center gap-0.5 rounded-full border border-border bg-card px-1.5 py-0.5 text-[11px] text-muted-foreground shadow-sm">
               <ThumbsUp className="size-2.5 fill-primary text-primary" />

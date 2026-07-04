@@ -67,10 +67,12 @@ export function useCreatePost() {
 
   const create = async (data: IPostCreate): Promise<IPostDetails | null> => {
     setError(null);
-    if (!data.content.trim()) {
+    const hasMedia = !!data.media && data.media.length > 0;
+    if (!data.content.trim() && !hasMedia) {
       setError("Nội dung bài viết không được để trống");
       return null;
     }
+
     setLoading(true);
     try {
       const result = await postService.createAndGetData<IPostDetails>(API.POST.BASE, data);
