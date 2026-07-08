@@ -139,6 +139,41 @@ class GroupService extends BaseService {
       throw error;
     }
   }
+
+  // Cập nhật ảnh đại diện nhóm (chỉ ADMIN) — BE chỉ lưu link
+  async updateGroupAvatar(groupId: number, userId: number, avatar: string): Promise<IGroup | null> {
+    try {
+      const response = await http.put<ApiResultGeneric<IGroup>>(
+        `${API.GROUP.BASE}/${groupId}/avatar`,
+        { avatar },
+        { params: { userId } },
+      );
+      return response.data ?? null;
+    } catch (error) {
+      console.error("Error updating group avatar", error);
+      throw error;
+    }
+  }
+
+  // Cập nhật ảnh bìa nhóm (chỉ ADMIN) — BE chỉ lưu link
+  async updateGroupCover(
+    groupId: number,
+    userId: number,
+    coverPhoto: string,
+  ): Promise<IGroup | null> {
+    try {
+      const response = await http.put<ApiResultGeneric<IGroup>>(
+        `${API.GROUP.BASE}/${groupId}/cover`,
+        { coverPhoto },
+        { params: { userId } },
+      );
+      return response.data ?? null;
+    } catch (error) {
+      console.error("Error updating group cover", error);
+      throw error;
+    }
+  }
 }
+
 
 export default new GroupService();

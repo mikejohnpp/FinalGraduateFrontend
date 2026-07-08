@@ -1,40 +1,60 @@
 import { NavLink } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { mockGroup, mockGroupStats } from "@/data/mock/groupAdminMock";
-import { 
-  Home, 
-  BarChart2, 
-  Users, 
-  FileText, 
-  ChevronDown, 
-  ChevronUp, 
-  Lock 
+import { resolveUploadUrl } from "@/utils/uploadHelper";
+import { useGroupInfo } from "@/hooks/useGroupAdmin";
+import {
+  Home,
+  BarChart2,
+  Users,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  Lock,
 } from "lucide-react";
 import { useState } from "react";
 
 export default function GroupAdminSidebar({ groupId }: { groupId: string | number }) {
   const [isOpen, setIsOpen] = useState(true);
+  const { group, loading } = useGroupInfo(groupId);
+
+  const avatarSrc = resolveUploadUrl(group?.avatarUrl) ?? undefined;
+  const isPrivate = group?.privacy === "PRIVATE";
 
   return (
     <div className="w-72 border-r bg-background flex flex-col h-full sticky top-0 overflow-y-auto hidden md:flex">
       {/* Group Header */}
       <div className="px-3 py-4 border-b">
-        <div className="flex items-center gap-3">
-          <Avatar className="size-12 rounded-lg">
-            <AvatarImage src={mockGroup.avatarUrl} alt={mockGroup.name} />
-            <AvatarFallback className="rounded-lg">{mockGroup.name.slice(0, 2)}</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col">
-            <p className="font-semibold truncate">{mockGroup.name}</p>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              {mockGroup.privacy === "PRIVATE" ? <Lock className="size-3" /> : null}
-              <span>Nhóm {mockGroup.privacy === "PRIVATE" ? "Riêng tư" : "Công khai"} · {mockGroup.memberCount} thành viên</span>
-            </p>
+        {loading || !group ? (
+          <div className="flex items-center gap-3">
+            <Skeleton className="size-12 rounded-lg" />
+            <div className="flex flex-1 flex-col gap-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-full" />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Avatar className="size-12 rounded-lg">
+              <AvatarImage src={avatarSrc} alt={group.name} className="object-cover" />
+              <AvatarFallback className="rounded-lg">
+                {group.name.slice(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex min-w-0 flex-col">
+              <p className="font-semibold truncate">{group.name}</p>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                {isPrivate ? <Lock className="size-3 shrink-0" /> : null}
+                <span className="truncate">
+                  Nhóm {isPrivate ? "Riêng tư" : "Công khai"} ·{" "}
+                  {group.memberCount.toLocaleString("vi-VN")} thành viên
+                </span>
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Nav section */}

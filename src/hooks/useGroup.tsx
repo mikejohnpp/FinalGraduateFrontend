@@ -8,7 +8,9 @@ import type { IGroup } from "@/types/interfaces/group/IGroup";
 import type { IGroupMember } from "@/types/interfaces/group/IGroupMember";
 import type { IPost } from "@/types/interfaces/post/IPost";
 import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
+import { uploadImageToSupabase } from "@/utils/mediaUpload";
 import { toast } from "sonner";
+
 
 export function useGroupsData() {
   const dispatch = useDispatch<AppDispatch>();
@@ -286,3 +288,49 @@ export function useSingleGroupPosts(groupId: number) {
     prependPost,
   };
 }
+
+/**
+ * Cập nhật ảnh đại diện / ảnh bìa của nhóm (chỉ ADMIN).
+ * Upload ảnh lên Supabase → lấy URL → PUT tới BE (BE chỉ lưu link).
+ * Trả về IGroup đã cập nhật để caller render lại mà không cần fetch lại.
+ */
+export function useGroupImage() {
+  const { userId } = useSelector((r: RootState) => r.user);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+
+  const uploadAvatar = async (groupId: number, file: File): Promise<IGroup | null> => {
+    if (!userId) return null;
+    setUploadingAvatar(true);
+    try {
+      const url = await uploadImageToSupabase(file);
+      const group = await groupService.updateGroupAvatar(groupId, userId, url);
+      if (group) toast.success("Cập nhật ảnh đại diện nhóm thành công!");
+      return group;
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message || e?.message || "Cập nhật ảnh đại diện thất bại");
+      return null;
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const uploadCover = async (groupId: number, file: File): Promise<IGroup | null> => {
+    if (!userId) return null;
+    setUploadingCover(true);
+    try {
+      const url = await uploadImageToSupabase(file);
+      const group = await groupService.updateGroupCover(groupId, userId, url);
+      if (group) toast.success("Cập nhật ảnh bìa nhóm thành công!");
+      return group;
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message || e?.message || "Cập nhật ảnh bìa thất bại");
+      return null;
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
+  return { uploadAvatar, uploadCover, uploadingAvatar, uploadingCover };
+}
+

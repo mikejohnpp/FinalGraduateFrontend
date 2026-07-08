@@ -54,7 +54,9 @@ export default function AdminLayout() {
                 }`
               }
             >
-              <Users className="h-4 w-4" />
+              <span className="flex size-7 items-center justify-center rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                <Users className="h-4 w-4" />
+              </span>
               Quản lý người dùng
             </NavLink>
             <NavLink
@@ -64,7 +66,9 @@ export default function AdminLayout() {
                 }`
               }
             >
-              <UsersRound className="h-4 w-4" />
+              <span className="flex size-7 items-center justify-center rounded-lg bg-violet-500/15 text-violet-600 dark:text-violet-400">
+                <UsersRound className="h-4 w-4" />
+              </span>
               Quản lý nhóm
             </NavLink>
             <NavLink
@@ -74,7 +78,9 @@ export default function AdminLayout() {
                 }`
               }
             >
-              <PieChart className="h-4 w-4" />
+              <span className="flex size-7 items-center justify-center rounded-lg bg-teal-500/15 text-teal-600 dark:text-teal-400">
+                <PieChart className="h-4 w-4" />
+              </span>
               Thống kê cảm xúc
             </NavLink>
             <NavLink
@@ -84,9 +90,12 @@ export default function AdminLayout() {
                 }`
               }
             >
-              <FileBarChart className="h-4 w-4" />
+              <span className="flex size-7 items-center justify-center rounded-lg bg-orange-500/15 text-orange-600 dark:text-orange-400">
+                <FileBarChart className="h-4 w-4" />
+              </span>
               Báo cáo hệ thống
             </NavLink>
+
           </nav>
         </div>
         <div className="mt-auto p-4">

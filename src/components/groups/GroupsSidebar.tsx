@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Settings, Search, LayoutList, Compass, Users, Plus } from "lucide-react";
+import { LayoutList, Compass, Users, Plus } from "lucide-react";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGroupsData } from "@/hooks/useGroup";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
@@ -21,10 +21,26 @@ export default function GroupsSidebar() {
   );
 
   const navItems = [
-    { name: "Bảng feed của bạn", path: PATH_CONSTRAINT.GROUPS, icon: LayoutList },
-    { name: "Khám phá", path: PATH_CONSTRAINT.GROUPS_DISCOVER, icon: Compass },
-    { name: "Nhóm của bạn", path: PATH_CONSTRAINT.GROUPS_MINE, icon: Users },
+    {
+      name: "Bảng feed của bạn",
+      path: PATH_CONSTRAINT.GROUPS,
+      icon: LayoutList,
+      color: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
+    },
+    {
+      name: "Khám phá",
+      path: PATH_CONSTRAINT.GROUPS_DISCOVER,
+      icon: Compass,
+      color: "bg-teal-500/15 text-teal-600 dark:text-teal-400",
+    },
+    {
+      name: "Nhóm của bạn",
+      path: PATH_CONSTRAINT.GROUPS_MINE,
+      icon: Users,
+      color: "bg-violet-500/15 text-violet-600 dark:text-violet-400",
+    },
   ];
+
 
   return (
     <aside className="hidden w-70 shrink-0 flex-col border-r bg-background md:flex">
@@ -53,11 +69,12 @@ export default function GroupsSidebar() {
                   <div
                     className={cn(
                       "flex items-center justify-center rounded-full p-1.5",
-                      isActive ? "bg-primary text-primary-foreground" : "bg-muted text-foreground",
+                      isActive ? "bg-primary text-primary-foreground" : item.color,
                     )}
                   >
                     <Icon data-icon="inline" />
                   </div>
+
                   <span>{item.name}</span>
                 </Button>
               );

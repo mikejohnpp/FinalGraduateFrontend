@@ -13,10 +13,46 @@ import { uploadImageToSupabase } from "@/utils/mediaUpload";
 
 
 /**
+ * Lấy profile của người dùng hiện tại (đang đăng nhập).
+ * Đọc từ Redux store; nếu chưa có thì fetch và lưu vào store.
+ */
+export function useCurrentProfile() {
+  const dispatch = useDispatch<AppDispatch>();
+  const userId = useSelector((r: RootState) => r.user.userId);
+  const profile = useSelector((r: RootState) => r.user.profile);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!userId || profile) return;
+    let cancelled = false;
+    const fetch = async () => {
+      setLoading(true);
+      try {
+        const res = await userService.getProfile(userId);
+        if (!cancelled && res?.data) {
+          dispatch(userActions.setProfile(res.data));
+        }
+      } catch {
+        // im lặng — form vẫn dùng được với fallback
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    fetch();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, profile, dispatch]);
+
+  return { profile, userId, loading };
+}
+
+/**
  * Fetch profile của một user và tính isOwner.
  * Lưu profile vào Redux store (userActions.setProfile) nếu là chính mình.
  */
 export function useProfile(userId: number | string | undefined) {
+
   const dispatch = useDispatch<AppDispatch>();
   const currentUserId = useSelector((r: RootState) => r.user.userId);
   const reduxProfile = useSelector((r: RootState) => r.user.profile);
