@@ -45,14 +45,18 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
     }, 2000);
   };
 
-  const handleSend = () => {
-    if (message.trim()) {
-      onSendMessage(message.trim());
-      setMessage("");
-      setIsEmojiOpen(false);
-      setIsTyping(false);
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+  const handleSend = (contentOverride?: string) => {
+    const content = (contentOverride ?? message).trim();
+
+    if (!content) {
+      return;
     }
+
+    onSendMessage(content);
+    setMessage("");
+    setIsEmojiOpen(false);
+    setIsTyping(false);
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -116,12 +120,17 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
           variant="ghost"
           size="icon"
           className="size-9 rounded-full text-primary"
-          onClick={handleSend}
+          onClick={() => handleSend()}
         >
           <SendHorizonal className="size-5" />
         </Button>
       ) : (
-        <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-9 rounded-full text-primary"
+          onClick={() => handleSend("👍")}
+        >
           <ThumbsUp className="size-5" />
         </Button>
       )}

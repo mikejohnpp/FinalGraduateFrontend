@@ -32,9 +32,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
 
   const activeTypingUsers = typingUsers.filter((id: number) => id !== userId);
 
-  /**
-   * Scroll xuống cuối
-   */
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
     const container = containerRef.current;
 
@@ -48,9 +45,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     setShowScrollButton(false);
   };
 
-  /**
-   * Kiểm tra có đang ở gần cuối không
-   */
   const isNearBottom = () => {
     const container = containerRef.current;
 
@@ -78,9 +72,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     };
   }, [conversationId, connected, dispatch, userId]);
 
-  /**
-   * Reset khi đổi cuộc trò chuyện
-   */
   useEffect(() => {
     isInitialLoadRef.current = true;
     previousMessageCountRef.current = 0;
