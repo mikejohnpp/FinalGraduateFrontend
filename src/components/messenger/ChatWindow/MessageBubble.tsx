@@ -32,9 +32,8 @@ export default function MessageBubble({
     <div
       className={cn("group flex items-end gap-2 px-4", isMine ? "flex-row-reverse" : "flex-row")}
     >
-      {/* Avatar placeholder for alignment */}
       {!isMine && (
-        <div className="size-7 flex-shrink-0">
+        <div className="size-7 shrink-0">
           {showAvatar && senderAvatar && (
             <img src={senderAvatar} alt={senderName} className="size-7 rounded-full object-cover" />
           )}
@@ -82,9 +81,11 @@ export default function MessageBubble({
           </div>
         )}
 
-        {/* Timestamp on hover */}
         <span className="px-1 text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-          {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {new Date(message.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </span>
       </div>
     </div>

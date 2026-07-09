@@ -207,11 +207,8 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
               .map((message: any, index: number, messages: any[]) => {
                 const isMe = message.user.id === userId;
 
-                // Vì đang reverse() nên tin nhắn tiếp theo trong mảng
-                // chính là tin nhắn phía dưới trên giao diện
                 const nextMessage = messages[index + 1];
 
-                // Chỉ hiện avatar cho người khác và chỉ ở cuối cụm
                 const showAvatar = !isMe && nextMessage?.user?.id !== message.user.id;
 
                 return (
@@ -219,7 +216,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
                     key={message.id}
                     className={`flex items-end gap-1 p-2 ${isMe ? "justify-end" : "justify-start"}`}
                   >
-                    {/* Avatar của người khác */}
                     {!isMe &&
                       (showAvatar ? (
                         message.user.avatar ? (
@@ -234,7 +230,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
                           </div>
                         )
                       ) : (
-                        // Giữ khoảng trống để các bubble thẳng hàng
                         <div className="h-10 w-10" />
                       ))}
 
@@ -297,7 +292,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
                             })()}
                         </div>
                       ) : (
-                        <div>{message.content}</div>
+                        <div className="break-words whitespace-pre-wrap">{message.content}</div>
                       )}
 
                       <div className={`text-[10px] ${isMe ? "text-blue-100" : "text-gray-500"}`}>
@@ -326,7 +321,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       {showScrollButton && (
         <button
           onClick={() => scrollToBottom()}
-          className="absolute right-4 bottom-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg transition hover:bg-blue-600"
+          className="absolute right-4 bottom-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-lg transition hover:bg-amber-300"
         >
           <ChevronDown size={20} />
         </button>
