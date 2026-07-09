@@ -77,31 +77,33 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
         </Button>
       </div>
 
-      <InputGroup className="flex-1">
-        <InputGroupInput
-          placeholder="Aa"
-          value={message}
-          onChange={(e) => handleChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="rounded-full border-none bg-secondary"
-        />
-        <InputGroupAddon align="inline-end">
-          <Popover open={isEmojiOpen} onOpenChange={setIsEmojiOpen}>
-            <PopoverTrigger>
-              {/* <Button variant="ghost" size="icon" className="size-8 rounded-full"> */}
-              <Smile data-icon className="text-primary" />
-              {/* </Button> */}
-            </PopoverTrigger>
-            <PopoverContent
-              side="top"
-              align="end"
-              className="w-auto border-none bg-transparent p-0 shadow-none"
-            >
-              <EmojiPicker onEmojiClick={handleEmojiClick} />
-            </PopoverContent>
-          </Popover>
-        </InputGroupAddon>
-      </InputGroup>
+      <div className="flex flex-1 items-center gap-2">
+        <InputGroup className="flex-1">
+          <InputGroupInput
+            placeholder="Aa"
+            value={message}
+            onChange={(e) => handleChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="rounded-full border-none bg-secondary"
+          />
+        </InputGroup>
+
+        <Popover open={isEmojiOpen} onOpenChange={setIsEmojiOpen}>
+          <PopoverTrigger asChild>
+            <button type="button">
+              <Smile className="text-primary" />
+            </button>
+          </PopoverTrigger>
+
+          <PopoverContent
+            side="top"
+            align="end"
+            className="w-auto border-none bg-transparent p-0 shadow-none"
+          >
+            <EmojiPicker onEmojiClick={handleEmojiClick} />
+          </PopoverContent>
+        </Popover>
+      </div>
 
       {message.trim() ? (
         <Button
