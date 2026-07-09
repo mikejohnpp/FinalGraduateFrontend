@@ -5,19 +5,28 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Separator } from "@/components/ui/separator";
 import { timeAgo } from "@/utils/stringHelper";
 import { MessageSquare, MoreHorizontal, Share2, ThumbsUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { IGroupAdminPost } from "@/types/interfaces/group/IGroupAdminPost";
 
 export default function GroupPostCard({ post }: { post: IGroupAdminPost }) {
+  const navigate = useNavigate();
+
+  const goToProfile = () => {
+    if (post.authorId) navigate(`/profile/${post.authorId}`);
+  };
+
   return (
     <Card className="mb-4 shadow-sm">
       <CardHeader className="flex flex-row items-start p-4 space-y-0">
         <div className="flex items-center gap-3 flex-1">
-          <Avatar className="size-10">
+          <Avatar className="size-10 cursor-pointer" onClick={goToProfile}>
             <AvatarImage src={post.authorAvatarUrl} alt={post.authorName} />
             <AvatarFallback>{post.authorName.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-semibold">{post.authorName}</span>
+            <span className="font-semibold cursor-pointer hover:underline" onClick={goToProfile}>
+              {post.authorName}
+            </span>
             <span className="text-xs text-muted-foreground">{timeAgo(post.createdAt)}</span>
           </div>
         </div>

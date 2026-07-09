@@ -31,7 +31,7 @@ export default function SentimentIndicator({ data }: { data: SentimentData }) {
   const sentimentConfig: Record<string, { label: string, colorClass: string, Icon: any }> = {
     positive: { label: "Tích cực", colorClass: "bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 border-green-200 dark:border-green-800", Icon: SmileIcon },
     negative: { label: "Tiêu cực", colorClass: "bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 border-red-200 dark:border-red-800", Icon: FrownIcon },
-    neutral: { label: "Trung lập", colorClass: "bg-gray-500/10 text-gray-600 dark:text-gray-400 hover:bg-gray-500/20 border-gray-200 dark:border-gray-800", Icon: MehIcon },
+    neutral: { label: "Trung lập", colorClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/20 border-yellow-200 dark:border-yellow-800", Icon: MehIcon },
   };
 
   const sentimentKey = data.sentiment.toLowerCase();

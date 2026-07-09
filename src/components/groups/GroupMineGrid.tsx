@@ -1,7 +1,5 @@
 import type { IGroup } from "@/types/interfaces/group/IGroup";
-import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import GroupCard from "./GroupCard";
 
 interface GroupMineGridProps {
   groups: IGroup[];
@@ -21,6 +20,28 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
 
   const managedGroups = groups.filter((g) => g.role === "ADMIN" || g.role === "MODERATOR");
   const otherJoinedGroups = groups.filter((g) => g.role !== "ADMIN" && g.role !== "MODERATOR");
+
+  const renderMenu = () => (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="secondary"
+            size="icon"
+            className="size-8 shrink-0 rounded-lg bg-muted/50 text-muted-foreground"
+          >
+            <MoreHorizontal data-icon="inline" />
+          </Button>
+        }
+      />
+      <DropdownMenuContent align="end" className="w-[200px]">
+        <DropdownMenuItem>Tắt thông báo</DropdownMenuItem>
+        <DropdownMenuItem>Đánh dấu là đã đọc</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-red-500">Rời nhóm</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-4 p-4 md:p-6">
@@ -33,19 +54,13 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 mb-4">
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {managedGroups.map((group) => (
-              <Card key={group.id} className="flex items-center gap-3 p-3">
-                <img
-                  src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"}
-                  alt={group.name}
-                  className="size-[72px] shrink-0 rounded-lg object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{group.name}</p>
-                  <p className="mb-2 truncate text-sm text-muted-foreground">
-                    {group.role === "ADMIN" ? "Quản trị viên" : "Người kiểm duyệt"}
-                  </p>
+              <GroupCard
+                key={group.id}
+                group={group}
+                subtitle={group.role === "ADMIN" ? "Quản trị viên" : "Người kiểm duyệt"}
+                footer={
                   <div className="flex gap-2">
                     <Button
                       size="sm"
@@ -55,28 +70,10 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
                     >
                       Quản lý
                     </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            className="size-8 shrink-0 rounded-lg bg-muted/50 text-muted-foreground"
-                          >
-                            <MoreHorizontal data-icon="inline" />
-                          </Button>
-                        }
-                      />
-                      <DropdownMenuContent align="end" className="w-[200px]">
-                        <DropdownMenuItem>Tắt thông báo</DropdownMenuItem>
-                        <DropdownMenuItem>Đánh dấu là đã đọc</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-500">Rời nhóm</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {renderMenu()}
                   </div>
-                </div>
-              </Card>
+                }
+              />
             ))}
           </div>
         </>
@@ -91,21 +88,12 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {otherJoinedGroups.map((group) => (
-              <Card key={group.id} className="flex items-center gap-3 p-3">
-                <img
-                  src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"}
-                  alt={group.name}
-                  className="size-[72px] shrink-0 rounded-lg object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{group.name}</p>
-                  {group.memberCount && (
-                    <p className="mb-2 truncate text-sm text-muted-foreground">
-                      {group.memberCount.toLocaleString("vi-VN")} thành viên
-                    </p>
-                  )}
+              <GroupCard
+                key={group.id}
+                group={group}
+                footer={
                   <div className="flex gap-2">
                     <Button
                       size="sm"
@@ -115,28 +103,10 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
                     >
                       Xem nhóm
                     </Button>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger
-                        render={
-                          <Button
-                            variant="secondary"
-                            size="icon"
-                            className="size-8 shrink-0 rounded-lg bg-muted/50 text-muted-foreground"
-                          >
-                            <MoreHorizontal data-icon="inline" />
-                          </Button>
-                        }
-                      />
-                      <DropdownMenuContent align="end" className="w-[200px]">
-                        <DropdownMenuItem>Tắt thông báo</DropdownMenuItem>
-                        <DropdownMenuItem>Đánh dấu là đã đọc</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-500">Rời nhóm</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {renderMenu()}
                   </div>
-                </div>
-              </Card>
+                }
+              />
             ))}
           </div>
         </>

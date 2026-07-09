@@ -16,7 +16,9 @@ import { useComments, useCreateComment } from "@/hooks/useComment";
 import { useLikePost } from "@/hooks/usePost";
 import { useMediaUpload } from "@/hooks/useMediaUpload";
 import MediaPicker from "@/components/media/MediaPicker";
+import { countWords, limitWords } from "@/utils/stringHelper";
 import CommentItem from "./CommentItem";
+
 
 function ActionButton({
   icon,
@@ -70,12 +72,14 @@ export default function PostCommentPanel({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const liked = post.hasLiked ?? false;
 
-  const MAX_COMMENT_LEN = 40;
+  const MAX_COMMENT_WORDS = 40;
+  const wordCount = countWords(commentText);
 
   const handleEmojiClick = (emoji: EmojiClickData) => {
-    setCommentText((prev) => (prev + emoji.emoji).slice(0, MAX_COMMENT_LEN));
+    setCommentText((prev) => limitWords(prev + emoji.emoji, MAX_COMMENT_WORDS));
     setTimeout(() => inputRef.current?.focus(), 0);
   };
+
 
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -289,7 +293,7 @@ export default function PostCommentPanel({
               placeholder={replyingTo ? `Trả lời ${replyingTo.name}...` : "Viết bình luận..."}
               value={commentText}
               onChange={(e) => {
-                setCommentText(e.target.value);
+                setCommentText(limitWords(e.target.value, MAX_COMMENT_WORDS));
                 e.target.style.height = "auto";
                 e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
               }}
@@ -299,8 +303,8 @@ export default function PostCommentPanel({
                   handleSend();
                 }
               }}
-              maxLength={40}
               className="max-h-[120px] flex-1 resize-none bg-transparent text-[13.5px] leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
+
             />
             <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
               <MediaPicker
@@ -357,7 +361,8 @@ export default function PostCommentPanel({
             </kbd>{" "}
             xuống dòng
           </p>
-          <span className="text-[11px] text-muted-foreground">{commentText.length}/40</span>
+          <span className="text-[11px] text-muted-foreground">{wordCount}/{MAX_COMMENT_WORDS} từ</span>
+
         </div>
       </div>
     </>

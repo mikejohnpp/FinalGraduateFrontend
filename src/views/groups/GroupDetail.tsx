@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 import {
   useGroupDetail,
   useGroupMembers,
@@ -23,6 +24,8 @@ const MAX_AVATAR_PREVIEW = 10;
 export default function GroupDetail() {
   const { groupId: groupIdStr } = useParams();
   const groupId = Number(groupIdStr);
+  const navigate = useNavigate();
+
 
   const [activeTab, setActiveTab] = useState<"about" | "members">("about");
 
@@ -125,11 +128,16 @@ export default function GroupDetail() {
               </div>
               <div className="mb-0 flex items-center -space-x-1.5 p-1">
                 {previewMembers.map((m) => (
-                  <Avatar key={m.userId} className="h-8 w-8 border-2 border-background">
+                  <Avatar
+                    key={m.userId}
+                    className="h-8 w-8 cursor-pointer border-2 border-background"
+                    onClick={() => navigate(`/profile/${m.userId}`)}
+                  >
                     <AvatarImage src={resolveUploadUrl(m.avatar) ?? undefined} alt={m.name} />
                     <AvatarFallback>{m.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 ))}
+
                 {remainingCount > 0 && (
                   <button
                     type="button"
@@ -147,17 +155,22 @@ export default function GroupDetail() {
                 .filter((m) => m.role === "ADMIN")
                 .slice(0, 1)
                 .map((admin) => (
-                  <div key={admin.userId} className="flex items-center gap-3">
+                  <div
+                    key={admin.userId}
+                    className="flex cursor-pointer items-center gap-3 rounded-lg p-1 transition-colors hover:bg-accent/50"
+                    onClick={() => navigate(`/profile/${admin.userId}`)}
+                  >
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={resolveUploadUrl(admin.avatar) ?? undefined} alt={admin.name} />
                       <AvatarFallback>{admin.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="text-[15px] font-semibold">{admin.name}</p>
+                      <p className="text-[15px] font-semibold hover:underline">{admin.name}</p>
                       <p className="text-[13px] text-muted-foreground">Quản trị viên</p>
                     </div>
                   </div>
                 ))}
+
             </Card>
           </div>
 

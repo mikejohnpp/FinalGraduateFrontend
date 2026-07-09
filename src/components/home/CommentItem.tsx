@@ -20,6 +20,10 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
 import SentimentIndicator from "./SentimentIndicator";
 import MediaGallery from "@/components/media/MediaGallery";
+import { countWords, limitWords } from "@/utils/stringHelper";
+
+const MAX_COMMENT_WORDS = 40;
+
 
 
 interface CommentItemProps {
@@ -143,12 +147,14 @@ function ReplyList({ comment, postId }: { comment: IComment; postId: number }) {
             <input
               placeholder="Viết phản hồi..."
               value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
+              onChange={(e) => setReplyText(limitWords(e.target.value, MAX_COMMENT_WORDS))}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              maxLength={40}
               className="flex-1 bg-transparent text-[13px] text-foreground outline-none placeholder:text-muted-foreground"
             />
-            <span className="text-[10px] text-muted-foreground shrink-0">{replyText.length}/40</span>
+            <span className="text-[10px] text-muted-foreground shrink-0">
+              {countWords(replyText)}/{MAX_COMMENT_WORDS} từ
+            </span>
+
           </div>
         </div>
       )}
@@ -203,7 +209,7 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
                 autoFocus
                 rows={2}
                 value={editText}
-                onChange={(e) => setEditText(e.target.value)}
+                onChange={(e) => setEditText(limitWords(e.target.value, MAX_COMMENT_WORDS))}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -214,12 +220,12 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
                     setEditText(comment.content);
                   }
                 }}
-                maxLength={40}
                 className="w-full resize-none bg-transparent text-[13.5px] leading-relaxed text-foreground outline-none"
               />
               <div className="text-right text-[10px] text-muted-foreground mb-1">
-                {editText.length}/40
+                {countWords(editText)}/{MAX_COMMENT_WORDS} từ
               </div>
+
               <div className="flex gap-2">
                 <button
                   onClick={handleEdit}

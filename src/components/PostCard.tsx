@@ -3,21 +3,13 @@ import { useNavigate } from "react-router-dom";
 import {
   HeartIcon,
   MessageCircleIcon,
-  Share2Icon,
   ThumbsUpIcon,
-  MoreHorizontal,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { IPost } from "@/types/interfaces/post/IPost";
 import { useSelector } from "react-redux";
@@ -78,20 +70,44 @@ export default function PostCard({ post }: { post: IPost }) {
     if (authorId) navigate(`/profile/${authorId}`);
   };
 
+  const handleNavigateToGroup = () => {
+    if (post.group?.id) navigate(`/groups/${post.group.id}`);
+  };
+
+  // Nếu bài viết có ảnh/video xem được thì mở trang xem ảnh + bình luận (lightbox),
+  // ngược lại thì mở modal bình luận thông thường.
+  const hasViewableMedia =
+    post.media?.some((m) => m.mediaType === "IMAGE" || m.mediaType === "VIDEO") ?? false;
+
+  const handleOpenComments = () => {
+    if (hasViewableMedia) {
+      setLightbox({ open: true, index: 0 });
+    } else {
+      setCommentModalOpen(true);
+    }
+  };
+
+
   return (
     <>
       <Card className="mb-4">
         <CardHeader className="flex flex-row items-start justify-between px-4 pt-0 pb-2">
           <div className="flex gap-2">
             {post.group ? (
-              <Avatar className="relative size-10 overflow-visible border">
+              <Avatar
+                className="relative size-10 cursor-pointer overflow-visible border"
+                onClick={handleNavigateToGroup}
+              >
                 <AvatarImage
                   src={post.group.avatar || undefined}
                 />
                 <AvatarFallback>{groupName?.charAt(0) || "G"}</AvatarFallback>
                 <Avatar
                   className="absolute -right-1 -bottom-1 size-5 cursor-pointer border-2 border-background"
-                  onClick={handleNavigateToProfile}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNavigateToProfile();
+                  }}
                 >
                   <AvatarImage src={authorAvatar} />
                   <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
@@ -107,7 +123,12 @@ export default function PostCard({ post }: { post: IPost }) {
             <div>
               <div className="flex flex-wrap items-center gap-1">
                 {post.group ? (
-                  <p className="font-semibold">{groupName}</p>
+                  <p
+                    className="cursor-pointer font-semibold hover:underline"
+                    onClick={handleNavigateToGroup}
+                  >
+                    {groupName}
+                  </p>
                 ) : (
                   <p
                     className="cursor-pointer font-semibold hover:underline"
@@ -120,7 +141,12 @@ export default function PostCard({ post }: { post: IPost }) {
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 {post.group && (
                   <>
-                    <span className="font-medium text-foreground">{authorName}</span>
+                    <span
+                      className="cursor-pointer font-medium text-foreground hover:underline"
+                      onClick={handleNavigateToProfile}
+                    >
+                      {authorName}
+                    </span>
                     {post.authorRole && (
                       <>
                         <span>·</span>
@@ -162,10 +188,11 @@ export default function PostCard({ post }: { post: IPost }) {
             <div className="flex gap-3">
               <span
                 className="cursor-pointer hover:underline"
-                onClick={() => setCommentModalOpen(true)}
+                onClick={handleOpenComments}
               >
                 {post.commentCount} bình luận
               </span>
+
               {/*
               <span
                 className="cursor-pointer hover:underline"
@@ -199,10 +226,11 @@ export default function PostCard({ post }: { post: IPost }) {
             <Button
               variant="ghost"
               className="flex-1 rounded-sm text-muted-foreground"
-              onClick={() => setCommentModalOpen(true)}
+              onClick={handleOpenComments}
             >
               <MessageCircleIcon data-icon="inline-start" /> Bình luận
             </Button>
+
             {/*
             <Button
               variant="ghost"

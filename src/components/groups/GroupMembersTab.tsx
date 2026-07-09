@@ -2,8 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
 import type { IGroupMember } from "@/types/interfaces/group/IGroupMember";
+
 
 interface GroupMembersTabProps {
   members: IGroupMember[];
@@ -23,7 +25,9 @@ const ROLE_ORDER: Record<IGroupMember["role"], number> = {
 };
 
 export default function GroupMembersTab({ members, memberCount }: GroupMembersTabProps) {
+  const navigate = useNavigate();
   const sorted = [...members].sort((a, b) => ROLE_ORDER[a.role] - ROLE_ORDER[b.role]);
+
 
   return (
     <Card className="border-0 p-4 shadow-sm md:p-6">
@@ -41,8 +45,10 @@ export default function GroupMembersTab({ members, memberCount }: GroupMembersTa
           {sorted.map((m) => (
             <div
               key={m.userId}
-              className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent/50"
+              className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent/50"
+              onClick={() => navigate(`/profile/${m.userId}`)}
             >
+
               <Avatar className="h-11 w-11">
                 <AvatarImage src={resolveUploadUrl(m.avatar) ?? undefined} alt={m.name} />
                 <AvatarFallback>{m.name.charAt(0)}</AvatarFallback>

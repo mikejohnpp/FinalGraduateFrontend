@@ -5,8 +5,11 @@ import type { RootState } from "@/stores/store";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { shortcuts } from "@/data/mock/home";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
+import { useGroupsData } from "@/hooks/useGroup";
+import { PATH_CONSTRAINT } from "@/plugins/routers";
 
 const iconMap: Record<string, React.ElementType> = {
   Users,
@@ -33,6 +36,14 @@ export default function LeftSidebar() {
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
   const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
   const avatarSrc = resolveUploadUrl(profile?.avatar) ?? undefined;
+
+  const { joinedGroups } = useGroupsData();
+  const managedGroups = joinedGroups.filter(
+    (g) => g.role === "ADMIN" || g.role === "MODERATOR",
+  );
+  const otherJoinedGroups = joinedGroups.filter(
+    (g) => g.role !== "ADMIN" && g.role !== "MODERATOR",
+  );
 
   return (
     <aside className="hidden w-[300px] shrink-0 flex-col gap-2 overflow-y-auto py-4 pr-2 pl-4 xl:flex">
@@ -74,6 +85,88 @@ export default function LeftSidebar() {
         })}
 
       </div>
+
+      {(managedGroups.length > 0 || otherJoinedGroups.length > 0) && (
+        <>
+          <Separator className="my-1" />
+
+          {managedGroups.length > 0 && (
+            <div className="flex flex-col gap-1">
+              <span className="px-3 text-xs font-semibold text-muted-foreground">
+                Nhóm do bạn quản lý
+              </span>
+              {managedGroups.slice(0, 6).map((group) => (
+                <button
+                  key={group.id}
+                  type="button"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                  onClick={() => navigate(`/groups/${group.id}/admin/overview`)}
+                >
+                  <Avatar className="size-9 rounded-lg">
+                    <AvatarImage
+                      src={resolveUploadUrl(group.coverPhoto) || ""}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="rounded-lg">
+                      {group.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1 text-left">
+                    <p className="truncate font-semibold">{group.name}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {group.role === "ADMIN" ? "Quản trị viên" : "Người kiểm duyệt"}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {otherJoinedGroups.length > 0 && (
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center justify-between px-3">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  Nhóm bạn đã tham gia
+                </span>
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="h-auto p-0 text-xs font-normal"
+                  onClick={() => navigate(PATH_CONSTRAINT.GROUPS_MINE)}
+                >
+                  Xem tất cả
+                </Button>
+              </div>
+              {otherJoinedGroups.slice(0, 6).map((group) => (
+                <button
+                  key={group.id}
+                  type="button"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-muted"
+                  onClick={() => navigate(`/groups/${group.id}`)}
+                >
+                  <Avatar className="size-9 rounded-lg">
+                    <AvatarImage
+                      src={resolveUploadUrl(group.coverPhoto) || ""}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="rounded-lg">
+                      {group.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1 text-left">
+                    <p className="truncate font-semibold">{group.name}</p>
+                    {group.memberCount && (
+                      <p className="truncate text-xs text-muted-foreground">
+                        {group.memberCount.toLocaleString("vi-VN")} thành viên
+                      </p>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </aside>
   );
 }

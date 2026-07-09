@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
 import { useGroupMemberRequests } from "@/hooks/useGroupAdmin";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -7,10 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Search, ChevronDown, UserX, SlidersHorizontal, X } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatYear } from "@/utils/stringHelper";
+
 
 export default function GroupMemberRequests() {
   const { groupId } = useParams<{ groupId: string }>();
+  const navigate = useNavigate();
+
   const {
     members,
     loading,
@@ -128,12 +132,21 @@ export default function GroupMemberRequests() {
             <Card key={member.id} className="p-4 shadow-sm hover:border-border transition-colors">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex items-center gap-3 flex-1">
-                  <Avatar className="size-12">
+                  <Avatar
+                    className="size-12 cursor-pointer"
+                    onClick={() => navigate(`/profile/${member.userId}`)}
+                  >
                     <AvatarImage src={member.avatarUrl} alt={member.username} />
                     <AvatarFallback>{member.username.slice(0, 2)}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <span className="font-semibold">{member.username}</span>
+                    <span
+                      className="font-semibold cursor-pointer hover:underline"
+                      onClick={() => navigate(`/profile/${member.userId}`)}
+                    >
+                      {member.username}
+                    </span>
+
                     <span className="text-xs text-muted-foreground">
                       Đã tham gia nền tảng từ {member.joinedPlatformAt ? formatYear(member.joinedPlatformAt) : "Không rõ"}
                     </span>

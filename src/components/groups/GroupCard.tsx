@@ -2,27 +2,56 @@ import type { IGroup } from "@/types/interfaces/group/IGroup";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface GroupCardProps {
   group: IGroup;
   onDismiss?: () => void;
   onJoin?: () => void;
   className?: string;
+  /** Custom footer content. When provided, replaces the default "Tham gia nhóm" button. */
+  footer?: ReactNode;
+  /** Custom subtitle below the group name (defaults to member count). */
+  subtitle?: ReactNode;
 }
 
-export default function GroupCard({ group, onDismiss, onJoin, className }: GroupCardProps) {
+export default function GroupCard({
+  group,
+  onDismiss,
+  onJoin,
+  className,
+  footer,
+  subtitle,
+}: GroupCardProps) {
+  const navigate = useNavigate();
+  const coverUrl = resolveUploadUrl(group.coverPhoto);
+  const initial = group.name?.trim().charAt(0).toUpperCase() || "?";
+
+  const goToGroup = () => navigate(`/groups/${group.id}`);
+
+
   return (
     <Card className={cn("relative flex h-full flex-col overflow-hidden", className)}>
-      <div className="relative aspect-video">
-        <img
-          src={resolveUploadUrl(group.coverPhoto) || "https://placehold.co/600x400/png"}
-          alt={group.name}
-          className="size-full object-cover"
-        />
+      <div
+        className="relative aspect-video cursor-pointer"
+        onClick={goToGroup}
+        role="link"
+        aria-label={group.name}
+      >
+        {coverUrl ? (
+          <img src={coverUrl} alt={group.name} className="size-full object-cover" />
+        ) : (
+          <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+            <span className="text-5xl font-bold text-primary/70">{initial}</span>
+          </div>
+        )}
         {onDismiss && (
+
           <Button
             variant="ghost"
             size="icon"
@@ -34,10 +63,20 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
-        <p className="line-clamp-2 text-sm leading-tight font-semibold">{group.name}</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {group.memberCount.toLocaleString("vi-VN")} thành viên
+        <p
+          className="line-clamp-2 cursor-pointer text-sm leading-tight font-semibold hover:underline"
+          onClick={goToGroup}
+        >
+          {group.name}
         </p>
+        {subtitle !== undefined ? (
+          <p className="mt-1 text-xs text-muted-foreground">{subtitle}</p>
+        ) : (
+          <p className="mt-1 text-xs text-muted-foreground">
+            {group.memberCount.toLocaleString("vi-VN")} thành viên
+          </p>
+        )}
+
 
         {group.mutualFriendCount && group.mutualFriendCount > 0 ? (
           <div className="mt-2 flex items-center gap-2">
@@ -58,7 +97,9 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
         )}
 
         <div className="mt-auto pt-3">
-          {group.isPending ? (
+          {footer !== undefined ? (
+            footer
+          ) : group.isPending ? (
             <Button variant="outline" className="w-full bg-secondary/50" size="sm" disabled>
               Đang chờ duyệt
             </Button>
@@ -68,6 +109,7 @@ export default function GroupCard({ group, onDismiss, onJoin, className }: Group
             </Button>
           )}
         </div>
+
       </div>
     </Card>
   );

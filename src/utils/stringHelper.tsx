@@ -2,6 +2,32 @@ export function generateId(prefix: string = "id"): string {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 }
 
+/** Đếm số từ trong chuỗi (tách theo khoảng trắng, bỏ qua chuỗi rỗng). */
+export function countWords(text: string): number {
+  const trimmed = text.trim();
+  if (!trimmed) return 0;
+  return trimmed.split(/\s+/).length;
+}
+
+/**
+ * Giới hạn chuỗi tối đa `maxWords` từ.
+ * Giữ lại khoảng trắng đang gõ dở ở cuối để người dùng vẫn gõ tiếp được.
+ */
+export function limitWords(text: string, maxWords: number): string {
+  const words = text.split(/(\s+)/); // giữ lại delimiter khoảng trắng
+  let wordCount = 0;
+  let result = "";
+  for (const token of words) {
+    if (token.trim()) {
+      if (wordCount >= maxWords) break;
+      wordCount++;
+    }
+    result += token;
+  }
+  return result;
+}
+
+
 export const safeDecodeURIComponent = (str: string) => {
   try {
     if (!str || str.trim().length === 0) return "";

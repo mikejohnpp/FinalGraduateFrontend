@@ -14,6 +14,8 @@ import { useMediaUpload } from "@/hooks/useMediaUpload";
 import MediaPicker from "@/components/media/MediaPicker";
 import type { RootState } from "@/stores/store";
 import type { IPost } from "@/types/interfaces/post/IPost";
+import { countWords, limitWords } from "@/utils/stringHelper";
+
 
 
 import {
@@ -31,7 +33,8 @@ interface CreatePostCardProps {
   onPostCreated?: (post: IPost) => void;
 }
 
-const MAX_POST_LEN = 40;
+const MAX_POST_WORDS = 40;
+
 
 export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCardProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,12 +50,18 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
   const initial = displayName.charAt(0).toUpperCase();
 
   const busy = loading || uploading;
+  const wordCount = countWords(content);
   const canSubmit = (content.trim().length > 0 || drafts.length > 0) && !busy;
 
+  const handleContentChange = (value: string) => {
+    setContent(limitWords(value, MAX_POST_WORDS));
+  };
+
   const handleEmojiClick = (emoji: EmojiClickData) => {
-    setContent((prev) => (prev + emoji.emoji).slice(0, MAX_POST_LEN));
+    setContent((prev) => limitWords(prev + emoji.emoji, MAX_POST_WORDS));
     setTimeout(() => textareaRef.current?.focus(), 0);
   };
+
 
 
   const handleCreatePost = async () => {
@@ -138,10 +147,10 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
                   placeholder={`${displayName} ơi, bạn đang nghĩ gì thế?`}
                   className="min-h-[150px] w-full resize-none border-none bg-transparent p-0 text-lg outline-none placeholder:text-muted-foreground focus:ring-0 focus:outline-none"
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={(e) => handleContentChange(e.target.value)}
                   disabled={busy}
-                  maxLength={40}
                 />
+
                 <div className="flex items-center justify-between">
                   <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
                     <PopoverTrigger
@@ -159,7 +168,8 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
                       <EmojiPickerReact onEmojiClick={handleEmojiClick} />
                     </PopoverContent>
                   </Popover>
-                  <span className="text-xs text-muted-foreground">{content.length}/40</span>
+                  <span className="text-xs text-muted-foreground">{wordCount}/{MAX_POST_WORDS} từ</span>
+
                 </div>
 
 

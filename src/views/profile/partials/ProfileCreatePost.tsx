@@ -28,7 +28,7 @@ export default function ProfileCreatePost({ profile, isOwner }: ProfileCreatePos
           >
             {isOwner
               ? `Bạn đang nghĩ gì thế?`
-              : `Viết gì đó cho ${profile.nickName ?? profile.userName}...`}
+              : `Viết gì đó cho ${profile.nickName || profile.userName}...`}
           </Button>
         </div>
 
