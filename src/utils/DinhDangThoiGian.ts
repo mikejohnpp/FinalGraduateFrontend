@@ -1,5 +1,5 @@
 function dinhDangThoiGian(thoigian: string) {
-  const fixedTime = thoigian.slice(0, 23);
+  const fixedTime = thoigian.replace(/\.(\d{3})\d+Z$/, ".$1Z");
 
   const date = new Date(fixedTime);
 

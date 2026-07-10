@@ -90,20 +90,10 @@ export default function MessengerLayout() {
     let newMessage: Message = {
       conversationId: conversationId,
       content: content,
-      createdAt: new Date().toISOString(),
       user: { id: userId, username: "", avatarUrl: "" },
       tempId: tempId,
       messageType: messageType,
     };
-    let newMessageSend: MessageSend = {
-      conversationId: conversationId,
-      content: content,
-      createdAt: new Date().toISOString(),
-      senderId: userId,
-      tempId: tempId,
-      messageType: messageType,
-    };
-    // dispatch(chatSlice.actions.addMessage(newMessage));
     sendMessage(newMessage);
   };
 
