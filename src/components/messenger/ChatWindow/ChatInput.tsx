@@ -51,7 +51,6 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
     if (!content) {
       return;
     }
-
     onSendMessage(content);
     setMessage("");
     setIsEmojiOpen(false);

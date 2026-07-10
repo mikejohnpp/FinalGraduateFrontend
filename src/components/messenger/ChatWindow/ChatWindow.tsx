@@ -10,7 +10,6 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ chatInfo, userId, onSendMessage }: ChatWindowProps) {
-  console.log("ChatWindow: Rendering with chatInfo:", chatInfo);
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <ChatHeader chatInfo={chatInfo} userId={userId} />

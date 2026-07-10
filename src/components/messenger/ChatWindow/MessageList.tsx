@@ -53,9 +53,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     return container.scrollHeight - container.scrollTop - container.clientHeight < 100;
   };
 
-  /**
-   * Subscribe websocket
-   */
   useEffect(() => {
     if (!connected || !conversationId) return;
 
@@ -63,6 +60,14 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       `/topic/conversation/${conversationId}`,
       (message) => {
         const newMessage = JSON.parse(message.body);
+        console.log("Received new message:", newMessage);
+        if (newMessage.messageType === "TEXT") {
+          if (newMessage.user.id === userId) {
+            dispatch(chatSlice.actions.updateMessage(newMessage));
+            return;
+          }
+        }
+
         dispatch(chatSlice.actions.addMessage(newMessage));
       },
     );
@@ -204,7 +209,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
 
                 return (
                   <div
-                    key={message.id}
+                    key={message.id || -1}
                     className={`flex items-end gap-1 p-2 ${isMe ? "justify-end" : "justify-start"}`}
                   >
                     {!isMe &&
