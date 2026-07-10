@@ -19,7 +19,6 @@ export default function ConversationItem({
   userId,
 }: ConversationItemProps) {
   const userOnlines = useSelector((state: RootState) => state.userOnline.onlineUsers);
-  console.log("userOnlines", userOnlines);
   const memberConversations = conversation.members.map((member) => member.id);
   // true nếu một trong các thành viên của cuộc trò chuyện đang online
   const isOnline = memberConversations.some((id) => userOnlines.includes(id));

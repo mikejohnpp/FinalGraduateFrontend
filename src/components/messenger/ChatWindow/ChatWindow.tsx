@@ -6,11 +6,10 @@ import type { MessageChat } from "@/stores/chatSlice";
 interface ChatWindowProps {
   chatInfo: MessageChat;
   userId: number;
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, messageType?: any) => void;
 }
 
 export default function ChatWindow({ chatInfo, userId, onSendMessage }: ChatWindowProps) {
-  console.log("ChatWindow: Rendering with chatInfo:", chatInfo);
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       <ChatHeader chatInfo={chatInfo} userId={userId} />

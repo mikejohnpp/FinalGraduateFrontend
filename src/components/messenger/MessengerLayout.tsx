@@ -4,10 +4,11 @@ import Sidebar from "@/components/messenger/Sidebar/Sidebar";
 import http from "@/lib/http";
 import { useDispatch, useSelector } from "react-redux";
 import type { Conversation } from "./interface/Conversation";
-import chatSlice from "@/stores/chatSlice";
+import chatSlice, { type Message, type MessageSend } from "@/stores/chatSlice";
 import ChatWindow from "./ChatWindow/ChatWindow";
 import { sendMessage } from "@/websocket/chatSocket";
 import chatService from "@/services/chatService";
+import type { MessageType } from "@/stores/chatSlice";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -83,9 +84,27 @@ export default function MessengerLayout() {
     fetchConversations();
   };
 
-  const onSendMessage = (content: string) => {
+  const onSendMessage = (content: string, messageType: MessageType = "TEXT") => {
     if (content.trim() === "") return;
-    sendMessage({ conversationId, content });
+    const tempId = crypto.randomUUID();
+    let newMessage: Message = {
+      conversationId: conversationId,
+      content: content,
+      createdAt: new Date().toISOString(),
+      user: { id: userId, username: "", avatarUrl: "" },
+      tempId: tempId,
+      messageType: messageType,
+    };
+    let newMessageSend: MessageSend = {
+      conversationId: conversationId,
+      content: content,
+      createdAt: new Date().toISOString(),
+      senderId: userId,
+      tempId: tempId,
+      messageType: messageType,
+    };
+    // dispatch(chatSlice.actions.addMessage(newMessage));
+    sendMessage(newMessage);
   };
 
   return (

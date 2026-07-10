@@ -12,7 +12,6 @@ export const stompClient = new Client({
   beforeConnect: async () => {
     const data = await refreshToken();
     const listUserOnline = await userOnlineService.getList<number>(`chat/conversations/online`);
-    console.log(data);
     store.dispatch(userOnlineSlice.actions.setOnlineUsers(listUserOnline));
     if (data.code === 200 && data.success === true) {
       let token = data.data.token;

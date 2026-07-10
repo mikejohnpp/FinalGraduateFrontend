@@ -13,11 +13,11 @@ export const disconnectSocket = () => {
   }
 };
 
-export const subscribeConversation = (conversationId: number, callback: (message: any) => void) => {
-  return stompClient.subscribe(`/topic/conversation/${conversationId}`, (message: any) => {
-    callback(JSON.parse(message.body));
-  });
-};
+// export const subscribeConversation = (conversationId: number, callback: (message: any) => void) => {
+//   return stompClient.subscribe(`/topic/conversation/${conversationId}`, (message: any) => {
+//     callback(JSON.parse(message.body));
+//   });
+// };
 
 export const sendMessage = (message: any) => {
   stompClient.publish({

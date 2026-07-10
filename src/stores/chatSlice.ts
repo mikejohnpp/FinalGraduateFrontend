@@ -3,13 +3,13 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 export interface ChatState {
   conversationId: number | null;
   chatInfo: MessageChat | null;
-  typingUsers: number[];
+  typingUsers: UserResponse[];
 }
 
 export interface UserResponse {
   id: number;
-  username: string;
-  avatarUrl: string;
+  username?: string;
+  avatarUrl?: string;
 }
 
 export interface MessageChat {
@@ -24,17 +24,27 @@ export interface MessageChat {
   totalElements: number;
 }
 
-export type MessageType = "TEXT" | "VIDEO_CALL" | "AUDIO_CALL";
+export type MessageType = "TEXT" | "VIDEO_CALL" | "AUDIO_CALL" | "IMAGE" | "FILE";
 
 export interface Message {
-  id: number;
+  id?: number;
+  conversationId?: number;
+  content: string;
+  createdAt: string;
+  user: UserResponse;
+  isActive?: boolean;
+  messageType?: MessageType;
+  callDuration?: number | null;
+  tempId?: string;
+}
+
+export interface MessageSend {
   conversationId?: number;
   content: string;
   createdAt: string;
   senderId: number;
-  isActive: boolean;
+  tempId?: string;
   messageType?: MessageType;
-  callDuration?: number | null;
 }
 
 const initialState: ChatState = {
@@ -65,6 +75,18 @@ const chatSlice = createSlice({
       state.chatInfo.messages.unshift(action.payload);
     },
 
+    updateMessage: (state, action: PayloadAction<Message>) => {
+      if (!state.chatInfo) return;
+
+      const index = state.chatInfo.messages.findIndex(
+        (msg) => msg.tempId === action.payload.tempId,
+      );
+
+      if (index !== -1) {
+        state.chatInfo.messages[index] = action.payload;
+      }
+    },
+
     prependMessages: (
       state,
       action: PayloadAction<{ messages: Message[]; currentPage: number }>,
@@ -83,16 +105,17 @@ const chatSlice = createSlice({
       const { userId, isTyping } = action.payload;
       console.log("Redux setTyping:", userId, isTyping);
       if (isTyping) {
-        if (!state.typingUsers.includes(userId)) {
-          state.typingUsers.push(userId);
+        const user = state.typingUsers.find((u) => u.id === userId);
+        if (!user) {
+          state.typingUsers.push({ id: userId, username: "", avatarUrl: "" });
         }
       } else {
-        state.typingUsers = state.typingUsers.filter((id) => id !== userId);
+        state.typingUsers = state.typingUsers.filter((u) => u.id !== userId);
       }
     },
     clearTyping: (state) => {
       state.typingUsers = [];
-    }
+    },
   },
 });
 
