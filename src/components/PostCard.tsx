@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  HeartIcon,
-  MessageCircleIcon,
-  ThumbsUpIcon,
-} from "lucide-react";
+import { HeartIcon, MessageCircleIcon, ThumbsUpIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,16 +17,13 @@ import SentimentIndicator from "./home/SentimentIndicator";
 import MediaGallery from "./media/MediaGallery";
 import MediaLightbox from "./media/MediaLightbox";
 
-
-
 export default function PostCard({ post }: { post: IPost }) {
   const [liked, setLiked] = useState(post.hasLiked ?? false);
   const [likesCount, setLikesCount] = useState(post.likeCount ?? 0);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLiked(post.hasLiked ?? false);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setLikesCount(post.likeCount ?? 0);
   }, [post.hasLiked, post.likeCount]);
   const [commentModalOpen, setCommentModalOpen] = useState(false);
@@ -87,7 +80,6 @@ export default function PostCard({ post }: { post: IPost }) {
     }
   };
 
-
   return (
     <>
       <Card className="mb-4">
@@ -98,9 +90,7 @@ export default function PostCard({ post }: { post: IPost }) {
                 className="relative size-10 cursor-pointer overflow-visible border"
                 onClick={handleNavigateToGroup}
               >
-                <AvatarImage
-                  src={post.group.avatar || undefined}
-                />
+                <AvatarImage src={post.group.avatar || undefined} />
                 <AvatarFallback>{groupName?.charAt(0) || "G"}</AvatarFallback>
                 <Avatar
                   className="absolute -right-1 -bottom-1 size-5 cursor-pointer border-2 border-background"
@@ -175,7 +165,6 @@ export default function PostCard({ post }: { post: IPost }) {
             />
           )}
 
-
           {/* Reaction Bar */}
 
           <div className="mt-2 flex items-center justify-between px-4 py-2 text-sm text-muted-foreground">
@@ -186,10 +175,7 @@ export default function PostCard({ post }: { post: IPost }) {
               <span>{likesCount}</span>
             </div>
             <div className="flex gap-3">
-              <span
-                className="cursor-pointer hover:underline"
-                onClick={handleOpenComments}
-              >
+              <span className="cursor-pointer hover:underline" onClick={handleOpenComments}>
                 {post.commentCount} bình luận
               </span>
 
@@ -264,4 +250,3 @@ export default function PostCard({ post }: { post: IPost }) {
     </>
   );
 }
-

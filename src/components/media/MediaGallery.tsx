@@ -5,17 +5,10 @@ import type { MediaItem } from "@/types/interfaces/media/IMedia";
 interface MediaGalleryProps {
   media: MediaItem[] | undefined | null;
   className?: string;
-  /** Kích thước hiển thị: "post" (lớn) hoặc "comment" (nhỏ gọn). */
   size?: "post" | "comment";
-  /**
-   * Nếu truyền, click vào ảnh/video sẽ gọi callback (mở lightbox) thay vì mở URL tab mới.
-   * `index` là vị trí của item trong danh sách ảnh+video xem được (theo thứ tự render).
-   */
   onOpenLightbox?: (index: number) => void;
 }
 
-
-/** Lấy tên file từ URL để hiển thị cho FILE/AUDIO. */
 function fileNameFromUrl(url: string): string {
   try {
     const pathname = new URL(url).pathname;
@@ -36,7 +29,6 @@ function ImageTile({
   item: MediaItem;
   rounded?: boolean;
   onClick?: () => void;
-  /** Nếu > 0, phủ lớp mờ + hiển thị "+N" (dùng cho ô cuối khi còn ảnh ẩn). */
   overlayCount?: number;
   className?: string;
 }) {
@@ -81,7 +73,6 @@ function ImageTile({
     </a>
   );
 }
-
 
 /**
  * Bố cục ảnh kiểu Facebook (mosaic) tuỳ số lượng ảnh:
@@ -128,13 +119,13 @@ function ImageMosaic({
   // 3 ảnh: 1 lớn trái + 2 dọc phải.
   if (count === 3) {
     return (
-      <div className={cn("grid grid-cols-2 gap-1.5", isComment ? "h-72" : "h-96")}>
-        <div className="overflow-hidden rounded-lg">
+      <div className={cn("grid grid-cols-2 gap-1.5")}>
+        <div className="h-full rounded-lg">
           <ImageTile item={images[0]} rounded onClick={clickOf(images[0])} />
         </div>
         <div className="grid grid-rows-2 gap-1.5">
           {images.slice(1, 3).map((item) => (
-            <div key={item.id} className="overflow-hidden rounded-lg">
+            <div key={item.id} className="h-full rounded-lg">
               <ImageTile item={item} rounded onClick={clickOf(item)} />
             </div>
           ))}
@@ -189,7 +180,6 @@ function ImageMosaic({
   );
 }
 
-
 /**
  * Render danh sách media (đã sort theo position) theo từng loại.
  * - IMAGE: bố cục mosaic kiểu Facebook (xem ImageMosaic).
@@ -218,13 +208,10 @@ export default function MediaGallery({
   const clickOf = (item: MediaItem) =>
     onOpenLightbox ? () => onOpenLightbox(viewIndexOf(item)) : undefined;
 
-
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       {/* Ảnh — bố cục mosaic kiểu Facebook */}
-      {images.length > 0 && (
-        <ImageMosaic images={images} isComment={isComment} clickOf={clickOf} />
-      )}
+      {images.length > 0 && <ImageMosaic images={images} isComment={isComment} clickOf={clickOf} />}
 
       {/* Video */}
       {videos.map((item) =>
@@ -233,10 +220,7 @@ export default function MediaGallery({
             <video
               src={item.url}
               controls
-              className={cn(
-                "w-full rounded-lg bg-black",
-                isComment ? "max-h-72" : "max-h-[500px]",
-              )}
+              className={cn("w-full rounded-lg bg-black", isComment ? "max-h-72" : "max-h-[500px]")}
             />
             {/* Lớp phủ để mở lightbox khi click (không che vùng điều khiển dưới cùng) */}
             <button
@@ -255,7 +239,6 @@ export default function MediaGallery({
           />
         ),
       )}
-
 
       {/* Audio */}
       {audios.map((item) => (
