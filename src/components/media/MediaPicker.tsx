@@ -15,7 +15,7 @@ interface MediaPickerProps {
 }
 
 /** Preview một draft media theo loại. */
-function DraftPreview({ draft, onRemove }: { draft: DraftMedia; onRemove: (id: string) => void }) {
+export function DraftPreview({ draft, onRemove }: { draft: DraftMedia; onRemove: (id: string) => void }) {
   return (
     <div className="group relative size-20 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
       {draft.mediaType === "IMAGE" ? (

@@ -8,6 +8,7 @@ import chatSlice, { type Message, type MessageSend } from "@/stores/chatSlice";
 import ChatWindow from "./ChatWindow/ChatWindow";
 import { sendMessage } from "@/websocket/chatSocket";
 import chatService from "@/services/chatService";
+import type { MessageType } from "@/stores/chatSlice";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -83,7 +84,7 @@ export default function MessengerLayout() {
     fetchConversations();
   };
 
-  const onSendMessage = (content: string) => {
+  const onSendMessage = (content: string, messageType: MessageType = "TEXT") => {
     if (content.trim() === "") return;
     const tempId = crypto.randomUUID();
     let newMessage: Message = {
@@ -92,6 +93,7 @@ export default function MessengerLayout() {
       createdAt: new Date().toISOString(),
       user: { id: userId, username: "", avatarUrl: "" },
       tempId: tempId,
+      messageType: messageType,
     };
     let newMessageSend: MessageSend = {
       conversationId: conversationId,
@@ -99,8 +101,9 @@ export default function MessengerLayout() {
       createdAt: new Date().toISOString(),
       senderId: userId,
       tempId: tempId,
+      messageType: messageType,
     };
-    dispatch(chatSlice.actions.addMessage(newMessage));
+    // dispatch(chatSlice.actions.addMessage(newMessage));
     sendMessage(newMessage);
   };
 

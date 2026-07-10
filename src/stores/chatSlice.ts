@@ -24,7 +24,7 @@ export interface MessageChat {
   totalElements: number;
 }
 
-export type MessageType = "TEXT" | "VIDEO_CALL" | "AUDIO_CALL";
+export type MessageType = "TEXT" | "VIDEO_CALL" | "AUDIO_CALL" | "IMAGE" | "FILE";
 
 export interface Message {
   id?: number;
@@ -44,6 +44,7 @@ export interface MessageSend {
   createdAt: string;
   senderId: number;
   tempId?: string;
+  messageType?: MessageType;
 }
 
 const initialState: ChatState = {

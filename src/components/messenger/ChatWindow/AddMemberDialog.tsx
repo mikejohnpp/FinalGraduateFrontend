@@ -74,7 +74,6 @@ export default function AddMemberDialog({
       onClose();
       toast.success("Thêm thành viên thành công!");
 
-      // Lấy lại chi tiết chat và cập nhật Redux để không cần reload
       const res = await chatService.getConversationDetail(chatInfo.conversationId, 0, 50);
       if (res?.data) {
         dispatch(chatSlice.actions.setChatList(res.data as MessageChat));

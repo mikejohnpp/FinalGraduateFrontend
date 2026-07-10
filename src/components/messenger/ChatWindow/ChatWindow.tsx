@@ -6,7 +6,7 @@ import type { MessageChat } from "@/stores/chatSlice";
 interface ChatWindowProps {
   chatInfo: MessageChat;
   userId: number;
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, messageType?: any) => void;
 }
 
 export default function ChatWindow({ chatInfo, userId, onSendMessage }: ChatWindowProps) {

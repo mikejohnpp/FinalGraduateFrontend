@@ -60,13 +60,17 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       `/topic/conversation/${conversationId}`,
       (message) => {
         const newMessage = JSON.parse(message.body);
-        console.log("Received new message:", newMessage);
-        if (newMessage.messageType === "TEXT") {
-          if (newMessage.user.id === userId) {
-            dispatch(chatSlice.actions.updateMessage(newMessage));
-            return;
-          }
-        }
+        // console.log("Received new message:", newMessage);
+        // if (
+        //   newMessage.messageType === "TEXT" ||
+        //   newMessage.messageType === "IMAGE" ||
+        //   newMessage.messageType === "FILE"
+        // ) {
+        //   if (newMessage.user.id === userId) {
+        //     dispatch(chatSlice.actions.updateMessage(newMessage));
+        //     return;
+        //   }
+        // }
 
         dispatch(chatSlice.actions.addMessage(newMessage));
       },
@@ -83,9 +87,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     setShowScrollButton(false);
   }, [conversationId]);
 
-  /**
-   * Xử lý khi số lượng tin nhắn thay đổi
-   */
   useEffect(() => {
     const container = containerRef.current;
 
@@ -93,9 +94,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
 
     const currentCount = chatInfo.messages.length;
 
-    /**
-     * Lần đầu mở chat
-     */
     if (isInitialLoadRef.current) {
       setTimeout(() => {
         scrollToBottom("auto");
@@ -107,9 +105,6 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       return;
     }
 
-    /**
-     * Có tin nhắn mới
-     */
     if (currentCount > previousMessageCountRef.current) {
       if (isNearBottom()) {
         scrollToBottom();
@@ -121,22 +116,13 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     previousMessageCountRef.current = currentCount;
   }, [chatInfo?.messages]);
 
-  /**
-   * Infinite scroll
-   */
   const handleScroll = async (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
 
-    /**
-     * Hiện / ẩn nút xuống cuối
-     */
     if (isNearBottom()) {
       setShowScrollButton(false);
     }
 
-    /**
-     * Load tin nhắn cũ
-     */
     if (
       target.scrollTop === 0 &&
       !isLoadingMore &&
@@ -287,6 +273,75 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
                               );
                             })()}
                         </div>
+                      ) : message.messageType === "IMAGE" ? (
+                        <div className="overflow-hidden rounded-lg">
+                          <img
+                            src={message.content}
+                            alt="Sent image"
+                            className="object-full max-h-100 max-w-full"
+                          />
+                        </div>
+                      ) : message.messageType === "FILE" ? (
+                        (() => {
+                          const parts = message.content.split("|");
+                          const fileUrl = parts[0];
+                          const fileName =
+                            parts.length > 1 ? parts.slice(1).join("|") : fileUrl.split("/").pop();
+                          return (
+                            <div
+                              className={`g-red-500" : "bg-background" } flex w-64 max-w-full cursor-pointer items-center gap-3 rounded-xl p-3`}
+                              onClick={() => window.open(fileUrl, "_blank")}
+                            >
+                              <div
+                                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border`}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                  <polyline points="14 2 14 8 20 8" />
+                                  <line x1="16" y1="13" x2="8" y2="13" />
+                                  <line x1="16" y1="17" x2="8" y2="17" />
+                                  <polyline points="10 9 9 9 8 9" />
+                                </svg>
+                              </div>
+                              <div className="flex flex-1 flex-col overflow-hidden">
+                                <span
+                                  className={`truncate text-sm font-medium ${isMe ? "text-foreground" : "text-foreground"}`}
+                                >
+                                  {fileName}
+                                </span>
+                              </div>
+                              <div
+                                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border ${isMe ? "bg-background text-foreground" : "bg-background text-foreground hover:bg-muted"}`}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                  <polyline points="7 10 12 15 17 10" />
+                                  <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                              </div>
+                            </div>
+                          );
+                        })()
                       ) : (
                         <div className="break-words whitespace-pre-wrap">{message.content}</div>
                       )}
