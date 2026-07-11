@@ -10,6 +10,7 @@ import { sendMessage } from "@/websocket/chatSocket";
 import chatService from "@/services/chatService";
 import type { MessageType } from "@/stores/chatSlice";
 import Welcome from "./ChatWindow/Welcome";
+import InfoPanel from "./InfoPanel/InfoPanel";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -20,6 +21,7 @@ export default function MessengerLayout() {
   const chatInfo = useSelector((state: any) => state.chat.chatInfo);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openInfoPanel, setOpenInfoPanel] = useState(false);
 
   const fetchConversations = (): Promise<Conversation[]> =>
     http
@@ -109,9 +111,22 @@ export default function MessengerLayout() {
       />
 
       {activeConversationId && chatInfo ? (
-        <ChatWindow chatInfo={chatInfo} userId={userId} onSendMessage={onSendMessage} />
+        <ChatWindow
+          chatInfo={chatInfo}
+          userId={userId}
+          onSendMessage={onSendMessage}
+          setOpenInfoPanel={setOpenInfoPanel}
+        />
       ) : (
         <Welcome />
+      )}
+      {openInfoPanel && (
+        <InfoPanel
+          activeConversationId={activeConversationId}
+          userId={userId}
+          chatInfo={chatInfo}
+          onClose={() => setOpenInfoPanel(false)}
+        />
       )}
     </div>
   );

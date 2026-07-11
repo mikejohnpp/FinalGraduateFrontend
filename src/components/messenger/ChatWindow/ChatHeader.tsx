@@ -10,9 +10,10 @@ import { useNavigate } from "react-router-dom";
 interface ChatHeaderProps {
   chatInfo: MessageChat;
   userId: number;
+  setOpenInfoPanel: (open: boolean) => void;
 }
 
-export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
+export default function ChatHeader({ chatInfo, userId, setOpenInfoPanel }: ChatHeaderProps) {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const { startCall } = useWebRTC();
   const navigate = useNavigate();
@@ -88,7 +89,13 @@ export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
             <UserPlus data-icon />
           </Button>
         )}
-        <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-9 rounded-full text-primary"
+          onClick={() => setOpenInfoPanel(true)}
+          title="Thông tin đoạn chat"
+        >
           <Info data-icon />
         </Button>
       </div>
