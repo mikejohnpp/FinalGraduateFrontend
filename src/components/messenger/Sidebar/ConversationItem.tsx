@@ -20,7 +20,6 @@ export default function ConversationItem({
 }: ConversationItemProps) {
   const userOnlines = useSelector((state: RootState) => state.userOnline.onlineUsers);
   const memberConversations = conversation.members.map((member) => member.id);
-  // true nếu một trong các thành viên của cuộc trò chuyện đang online
   const isOnline = memberConversations.some((id) => userOnlines.includes(id));
   const isGroup = conversation.group || (conversation as any).isGroup;
   const otherMember = isGroup
@@ -61,7 +60,7 @@ export default function ConversationItem({
         <span
           className={cn(
             "absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 border-background",
-            isOnline ? "bg-green-500" : "bg-amber-700",
+            isOnline ? "bg-green-500" : "bg-amber-400",
           )}
         />
       </div>

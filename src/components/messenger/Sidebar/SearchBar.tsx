@@ -4,9 +4,10 @@ import { InputGroup, InputGroupInput, InputGroupText } from "@/components/ui/inp
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
+  conversations?: any[];
 }
 
-export default function SearchBar({ value, onChange }: SearchBarProps) {
+export default function SearchBar({ value, onChange, conversations }: SearchBarProps) {
   return (
     <div className="flex items-center gap-2 px-3 pb-2">
       <InputGroup className="flex-1">
