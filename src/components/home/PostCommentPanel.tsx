@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ThumbsUp, MessageCircle, Share2, Send, Smile } from "lucide-react";
 import EmojiPickerReact from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
@@ -56,9 +56,12 @@ function ActionButton({
 export default function PostCommentPanel({
   post,
   showPostContent = true,
+  highlightCommentId,
 }: {
   post: IPost;
   showPostContent?: boolean;
+  /** Bình luận cần cuộn tới & highlight (khi mở từ thông báo). */
+  highlightCommentId?: number;
 }) {
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
   const { comments, loading, hasMore, loadMore } = useComments(post.id);
@@ -71,6 +74,27 @@ export default function PostCommentPanel({
   const [emojiOpen, setEmojiOpen] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const liked = post.hasLiked ?? false;
+
+  // Khi mở từ thông báo: cuộn tới & highlight đúng bình luận (nếu đã tải trong danh sách).
+  // Thử lại tối đa ~5s để chờ danh sách bình luận tải xong (infinite scroll).
+  const [flashCommentId, setFlashCommentId] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    if (!highlightCommentId) return;
+    let attempts = 0;
+    const timer = setInterval(() => {
+      attempts += 1;
+      const el = document.querySelector(`[data-comment-id="${highlightCommentId}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        setFlashCommentId(highlightCommentId);
+        setTimeout(() => setFlashCommentId(undefined), 2400);
+        clearInterval(timer);
+      } else if (attempts >= 25) {
+        clearInterval(timer);
+      }
+    }, 200);
+    return () => clearInterval(timer);
+  }, [highlightCommentId, comments.length]);
 
   const MAX_COMMENT_WORDS = 40;
   const wordCount = countWords(commentText);
@@ -232,6 +256,7 @@ export default function PostCommentPanel({
                 comment={comment}
                 postId={post.id}
                 onReply={handleReply}
+                highlight={comment.id === flashCommentId}
               />
             ))
           )}

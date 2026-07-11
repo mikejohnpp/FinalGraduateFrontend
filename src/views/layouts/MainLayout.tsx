@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import OverlaySpinner from "@/components/OverlaySpinner";
+import PostViewer from "@/components/PostViewer";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { useUserProfile } from "@/hooks/useUser";
@@ -15,6 +16,9 @@ export default function MainLayout() {
           <Outlet />
         </Suspense>
       </div>
+      {/* Trình xem bài viết toàn cục (mở từ thông báo bình luận/trả lời) */}
+      <PostViewer />
     </main>
   );
 }
+

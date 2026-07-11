@@ -15,6 +15,8 @@ interface MediaLightboxProps {
   startIndex?: number;
   open: boolean;
   onClose: () => void;
+  /** Bình luận cần cuộn tới & highlight (khi mở từ thông báo). */
+  highlightCommentId?: number;
 }
 
 /** Render 1 media item ở khu vực xem chính (cột trái). */
@@ -46,6 +48,7 @@ export default function MediaLightbox({
   startIndex = 0,
   open,
   onClose,
+  highlightCommentId,
 }: MediaLightboxProps) {
   // Chỉ lấy ảnh & video để xem trong lightbox; audio/file không phù hợp khu vực xem.
   const viewable = media.filter((m) => m.mediaType === "IMAGE" || m.mediaType === "VIDEO");
@@ -145,7 +148,7 @@ export default function MediaLightbox({
                 Bài viết của {post.author?.name || "Người dùng"}
               </span>
             </div>
-            <PostCommentPanel post={post} />
+            <PostCommentPanel post={post} highlightCommentId={highlightCommentId} />
           </div>
         </DialogPrimitive.Popup>
       </DialogPortal>
