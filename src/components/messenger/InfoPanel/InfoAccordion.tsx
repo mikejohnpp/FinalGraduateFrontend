@@ -15,7 +15,7 @@ interface InfoAccordionProps {
 export default function InfoAccordion({ setIsOpenManagerFileOrImage }: InfoAccordionProps) {
   return (
     <Accordion type="multiple" className="px-2">
-      <AccordionItem value="chat-info" className="border-none">
+      {/* <AccordionItem value="chat-info" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Thông tin về đoạn chat
         </AccordionTrigger>
@@ -30,9 +30,9 @@ export default function InfoAccordion({ setIsOpenManagerFileOrImage }: InfoAccor
             </Button>
           </div>
         </AccordionContent>
-      </AccordionItem>
+      </AccordionItem> */}
 
-      <AccordionItem value="customize" className="border-none">
+      {/* <AccordionItem value="customize" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Tùy chỉnh đoạn chat
         </AccordionTrigger>
@@ -47,7 +47,7 @@ export default function InfoAccordion({ setIsOpenManagerFileOrImage }: InfoAccor
             </Button>
           </div>
         </AccordionContent>
-      </AccordionItem>
+      </AccordionItem> */}
 
       <AccordionItem value="media" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
