@@ -9,6 +9,7 @@ import ChatWindow from "./ChatWindow/ChatWindow";
 import { sendMessage } from "@/websocket/chatSocket";
 import chatService from "@/services/chatService";
 import type { MessageType } from "@/stores/chatSlice";
+import Welcome from "./ChatWindow/Welcome";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -107,8 +108,10 @@ export default function MessengerLayout() {
         onConversationCreated={onConversationCreated}
       />
 
-      {activeConversationId && chatInfo && (
+      {activeConversationId && chatInfo ? (
         <ChatWindow chatInfo={chatInfo} userId={userId} onSendMessage={onSendMessage} />
+      ) : (
+        <Welcome />
       )}
     </div>
   );
