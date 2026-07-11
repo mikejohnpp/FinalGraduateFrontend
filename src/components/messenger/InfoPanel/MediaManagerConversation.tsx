@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Message } from "@/stores/chatSlice";
 import dinhDangThoiGian from "@/utils/DinhDangThoiGian";
 import { ArrowLeft, Download, FileText, X } from "lucide-react";
 import { useState } from "react";
