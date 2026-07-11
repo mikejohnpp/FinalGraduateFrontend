@@ -5,20 +5,28 @@ import type { MessageChat } from "@/stores/chatSlice";
 import { Phone, Video, Info, UserPlus } from "lucide-react";
 import AddMemberDialog from "./AddMemberDialog";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import { useNavigate } from "react-router-dom";
 
 interface ChatHeaderProps {
   chatInfo: MessageChat;
   userId: number;
+  setOpenInfoPanel: (open: boolean) => void;
 }
 
-export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
+export default function ChatHeader({ chatInfo, userId, setOpenInfoPanel }: ChatHeaderProps) {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const { startCall } = useWebRTC();
+  const navigate = useNavigate();
 
   const otherMember = chatInfo.group
     ? undefined
     : (chatInfo.members.find((member) => member.id !== userId) ?? chatInfo.members[0]);
-
+  const goToProfile = () => {
+    if (chatInfo.group) {
+      return;
+    }
+    navigate(`/profile/${otherMember?.id}`);
+  };
   const title = chatInfo.group
     ? chatInfo.conversationName
     : (otherMember?.username ?? "Người dùng");
@@ -33,7 +41,7 @@ export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
     <div className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-4">
       <div className="flex items-center gap-3">
         <div className="relative">
-          <Avatar className="size-10">
+          <Avatar className="size-10 hover:cursor-pointer" onClick={goToProfile}>
             <AvatarImage src={otherMember?.avatarUrl} alt={chatInfo.conversationName} />
             <AvatarFallback>{initials || "?"}</AvatarFallback>
           </Avatar>
@@ -81,7 +89,13 @@ export default function ChatHeader({ chatInfo, userId }: ChatHeaderProps) {
             <UserPlus data-icon />
           </Button>
         )}
-        <Button variant="ghost" size="icon" className="size-9 rounded-full text-primary">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-9 rounded-full text-primary"
+          onClick={() => setOpenInfoPanel(true)}
+          title="Thông tin đoạn chat"
+        >
           <Info data-icon />
         </Button>
       </div>

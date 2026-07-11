@@ -9,6 +9,8 @@ import ChatWindow from "./ChatWindow/ChatWindow";
 import { sendMessage } from "@/websocket/chatSocket";
 import chatService from "@/services/chatService";
 import type { MessageType } from "@/stores/chatSlice";
+import Welcome from "./ChatWindow/Welcome";
+import InfoPanel from "./InfoPanel/InfoPanel";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -19,6 +21,7 @@ export default function MessengerLayout() {
   const chatInfo = useSelector((state: any) => state.chat.chatInfo);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openInfoPanel, setOpenInfoPanel] = useState(false);
 
   const fetchConversations = (): Promise<Conversation[]> =>
     http
@@ -90,20 +93,10 @@ export default function MessengerLayout() {
     let newMessage: Message = {
       conversationId: conversationId,
       content: content,
-      createdAt: new Date().toISOString(),
       user: { id: userId, username: "", avatarUrl: "" },
       tempId: tempId,
       messageType: messageType,
     };
-    let newMessageSend: MessageSend = {
-      conversationId: conversationId,
-      content: content,
-      createdAt: new Date().toISOString(),
-      senderId: userId,
-      tempId: tempId,
-      messageType: messageType,
-    };
-    // dispatch(chatSlice.actions.addMessage(newMessage));
     sendMessage(newMessage);
   };
 
@@ -117,8 +110,23 @@ export default function MessengerLayout() {
         onConversationCreated={onConversationCreated}
       />
 
-      {activeConversationId && chatInfo && (
-        <ChatWindow chatInfo={chatInfo} userId={userId} onSendMessage={onSendMessage} />
+      {activeConversationId && chatInfo ? (
+        <ChatWindow
+          chatInfo={chatInfo}
+          userId={userId}
+          onSendMessage={onSendMessage}
+          setOpenInfoPanel={setOpenInfoPanel}
+        />
+      ) : (
+        <Welcome />
+      )}
+      {openInfoPanel && (
+        <InfoPanel
+          activeConversationId={activeConversationId}
+          userId={userId}
+          chatInfo={chatInfo}
+          onClose={() => setOpenInfoPanel(false)}
+        />
       )}
     </div>
   );

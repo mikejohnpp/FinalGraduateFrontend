@@ -1,12 +1,13 @@
 import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Camera, Pencil } from "lucide-react";
+import { Camera, Pencil, MessageCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { IMAGE_ACCEPT } from "@/utils/mediaUpload";
 import { useUploadAvatar, useUploadCover } from "@/hooks/useProfile";
 import ProfileEditPanel from "./ProfileEditPanel";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileCoverProps {
   profile: UserProfileDTO;
@@ -17,6 +18,12 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/messenger?userId=${profile.id}`);
+  };
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -131,7 +138,17 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
                 <ProfileEditPanel profile={profile} onClose={() => setEditPanelOpen(false)} />
               )}
             </div>
-          ) : null}
+          ) : (
+            <div className="relative" onClick={handleClick}>
+              <Button
+                variant="secondary"
+                className="bg-blue-300 text-black backdrop-blur-sm hover:cursor-pointer hover:bg-blue-200"
+              >
+                <MessageCircle data-icon="inline-start" />
+                Nhắn tin
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -4,29 +4,67 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import ProfileInfo from "./ProfileInfo";
 import InfoAccordion from "./InfoAccordion";
-import type { Conversation } from "@/types/messenger";
+import type { MessageChat } from "@/stores/chatSlice";
+import { useEffect, useState } from "react";
+import http from "@/lib/http";
+import type { MediaManager } from "@/stores/mediaSlice";
+import { useDispatch } from "react-redux";
+import mediaSlice from "@/stores/mediaSlice";
+import MediaManageConversation from "./MediaManagerConversation";
 
 interface InfoPanelProps {
-  conversation: Conversation;
+  activeConversationId: number | null;
+  chatInfo?: MessageChat;
   onClose: () => void;
+  userId?: number;
 }
 
-export default function InfoPanel({ conversation, onClose }: InfoPanelProps) {
+export default function InfoPanel({
+  activeConversationId,
+  chatInfo,
+  onClose,
+  userId,
+}: InfoPanelProps) {
+  const [isOpenManagerFileOrImage, setIsOpenManagerFileOrImage] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!activeConversationId) return;
+    http
+      .get(`/chat/conversations/conversationImageAndFile/${activeConversationId}`)
+      .then((res: any) => {
+        console.log("conversationImageAndFile", res);
+        const data = res.data;
+        const newMediaManager: MediaManager = {
+          conversationId: data.conversationId,
+          members: data.members,
+          messages: data.messages,
+        };
+        dispatch(mediaSlice.actions.setMediaManager(newMediaManager));
+      })
+      .catch((err) => {
+        console.error("Failed to fetch conversationImageAndFile", err);
+      });
+  }, [activeConversationId]);
   return (
-    <div className="flex h-full w-[320px] flex-shrink-0 flex-col border-l border-border bg-background">
-      {/* Header */}
-      <div className="flex h-16 flex-shrink-0 items-center justify-between border-b border-border px-4">
-        <h2 className="text-base font-semibold text-foreground">Thông tin về đoạn chat</h2>
-        <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={onClose}>
-          <X data-icon />
-        </Button>
-      </div>
+    <div className="flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-background">
+      {isOpenManagerFileOrImage ? (
+        <MediaManageConversation setIsOpenManagerFileOrImage={setIsOpenManagerFileOrImage} />
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-4">
+            <h2 className="text-base font-semibold text-foreground">Thông tin về đoạn chat</h2>
+            <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={onClose}>
+              <X data-icon />
+            </Button>
+          </div>
 
-      <ScrollArea className="flex-1">
-        <ProfileInfo conversation={conversation} />
-        <Separator />
-        <InfoAccordion />
-      </ScrollArea>
+          <ScrollArea className="flex-1">
+            <ProfileInfo chatInfo={chatInfo} userId={userId} />
+            <Separator />
+            <InfoAccordion setIsOpenManagerFileOrImage={setIsOpenManagerFileOrImage} />
+          </ScrollArea>
+        </div>
+      )}
     </div>
   );
 }

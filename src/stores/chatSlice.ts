@@ -30,7 +30,7 @@ export interface Message {
   id?: number;
   conversationId?: number;
   content: string;
-  createdAt: string;
+  createdAt?: string;
   user: UserResponse;
   isActive?: boolean;
   messageType?: MessageType;
@@ -41,7 +41,7 @@ export interface Message {
 export interface MessageSend {
   conversationId?: number;
   content: string;
-  createdAt: string;
+  createdAt?: string;
   senderId: number;
   tempId?: string;
   messageType?: MessageType;

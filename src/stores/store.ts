@@ -9,6 +9,7 @@ import { THUNK_EXTRA } from "./thunkExtra.ts";
 import socketSlice from "./socketSlice.ts";
 import chatSlice from "./chatSlice.ts";
 import { userOnlineSlice } from "./userOnlineSlice.ts";
+import mediaSlice from "./mediaSlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     socket: socketSlice.reducer,
     chat: chatSlice.reducer,
     userOnline: userOnlineSlice.reducer,
+    media: mediaSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

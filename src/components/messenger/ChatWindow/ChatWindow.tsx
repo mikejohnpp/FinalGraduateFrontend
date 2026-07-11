@@ -7,12 +7,18 @@ interface ChatWindowProps {
   chatInfo: MessageChat;
   userId: number;
   onSendMessage: (content: string, messageType?: any) => void;
+  setOpenInfoPanel: (open: boolean) => void;
 }
 
-export default function ChatWindow({ chatInfo, userId, onSendMessage }: ChatWindowProps) {
+export default function ChatWindow({
+  chatInfo,
+  userId,
+  onSendMessage,
+  setOpenInfoPanel,
+}: ChatWindowProps) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
-      <ChatHeader chatInfo={chatInfo} userId={userId} />
+      <ChatHeader chatInfo={chatInfo} userId={userId} setOpenInfoPanel={setOpenInfoPanel} />
       <MessageList chatInfo={chatInfo} userId={userId} />
       <ChatInput onSendMessage={onSendMessage} />
     </div>

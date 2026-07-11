@@ -8,11 +8,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pin, Image, FileText, Link, Palette, Shield, AlertTriangle, Ban } from "lucide-react";
 
-export default function InfoAccordion() {
+interface InfoAccordionProps {
+  setIsOpenManagerFileOrImage: (isOpen: boolean) => void;
+}
+
+export default function InfoAccordion({ setIsOpenManagerFileOrImage }: InfoAccordionProps) {
   return (
-    // @ts-expect-error type is valid
     <Accordion type="multiple" className="px-2">
-      {/* Chat info */}
       <AccordionItem value="chat-info" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Thông tin về đoạn chat
@@ -30,7 +32,6 @@ export default function InfoAccordion() {
         </AccordionContent>
       </AccordionItem>
 
-      {/* Customize chat */}
       <AccordionItem value="customize" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Tùy chỉnh đoạn chat
@@ -48,7 +49,6 @@ export default function InfoAccordion() {
         </AccordionContent>
       </AccordionItem>
 
-      {/* Media & files */}
       <AccordionItem value="media" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           File phương tiện và file
@@ -58,6 +58,7 @@ export default function InfoAccordion() {
             <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-3 rounded-lg px-2 text-sm font-normal"
+              onClick={() => setIsOpenManagerFileOrImage(true)}
             >
               <Image data-icon="inline-start" />
               File phương tiện
@@ -65,23 +66,23 @@ export default function InfoAccordion() {
             <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-3 rounded-lg px-2 text-sm font-normal"
+              onClick={() => setIsOpenManagerFileOrImage(true)}
             >
               <FileText data-icon="inline-start" />
               File
             </Button>
-            <Button
+            {/* <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-3 rounded-lg px-2 text-sm font-normal"
             >
               <Link data-icon="inline-start" />
               Liên kết
-            </Button>
+            </Button> */}
           </div>
         </AccordionContent>
       </AccordionItem>
 
-      {/* Privacy & support */}
-      <AccordionItem value="privacy" className="border-none">
+      {/* <AccordionItem value="privacy" className="border-none">
         <AccordionTrigger className="rounded-lg px-2 py-3 text-sm font-medium hover:bg-secondary hover:no-underline">
           Quyền riêng tư và hỗ trợ
         </AccordionTrigger>
@@ -110,7 +111,7 @@ export default function InfoAccordion() {
             </Button>
           </div>
         </AccordionContent>
-      </AccordionItem>
+      </AccordionItem> */}
     </Accordion>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, SquarePen, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SearchBar from "./SearchBar";
 import ConversationItem from "./ConversationItem";
@@ -25,14 +25,27 @@ export default function Sidebar({
 }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
+  console.log("Sidebar conversations:", conversations);
 
-  // conversations filter by isGroup (API returns isGroup, UI might use group)
   const privateConversations = conversations.filter((c) => !c.group && (c as any).isGroup !== true);
   const groupConversations = conversations.filter((c) => c.group || (c as any).isGroup === true);
+  const fiterSearchPrivateConversations = searchQuery.trim()
+    ? privateConversations.filter((c) => {
+        const title = c.group
+          ? c.name
+          : (c.members.find((m) => m.id !== userId)?.username ?? "Người dùng");
+        return title.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+    : privateConversations;
+  const fiterSearchGroupConversations = searchQuery.trim()
+    ? groupConversations.filter((c) => {
+        const title = c.group ? c.name : "Nhóm";
+        return title.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+    : groupConversations;
 
   return (
     <div className="flex h-full w-[320px] shrink-0 flex-col border-r border-border bg-background">
-      {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <h1 className="text-2xl font-bold text-foreground">Đoạn chat</h1>
         <div className="flex items-center gap-1">
@@ -48,8 +61,7 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* Search */}
-      <SearchBar value={searchQuery} onChange={setSearchQuery} />
+      <SearchBar value={searchQuery} onChange={setSearchQuery} conversations={conversations} />
 
       <Tabs defaultValue="private" className="mt-2 flex h-0 flex-1 flex-col">
         <div className="mb-2 shrink-0 px-4">
@@ -69,7 +81,7 @@ export default function Sidebar({
         >
           <ScrollArea className="h-full flex-1 px-1">
             <div className="flex flex-col gap-0.5">
-              {privateConversations.map((conv) => (
+              {fiterSearchPrivateConversations.map((conv) => (
                 <ConversationItem
                   key={conv.id}
                   conversation={conv}
@@ -78,7 +90,7 @@ export default function Sidebar({
                   userId={userId}
                 />
               ))}
-              {privateConversations.length === 0 && (
+              {fiterSearchPrivateConversations.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                   <p className="text-sm">Không tìm thấy đoạn chat cá nhân</p>
                 </div>
@@ -93,7 +105,7 @@ export default function Sidebar({
         >
           <ScrollArea className="h-full flex-1 px-1">
             <div className="flex flex-col gap-0.5">
-              {groupConversations.map((conv) => (
+              {fiterSearchGroupConversations.map((conv) => (
                 <ConversationItem
                   key={conv.id}
                   conversation={conv}
@@ -102,7 +114,7 @@ export default function Sidebar({
                   userId={userId}
                 />
               ))}
-              {groupConversations.length === 0 && (
+              {fiterSearchGroupConversations.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
                   <p className="text-sm">Không tìm thấy nhóm</p>
                 </div>

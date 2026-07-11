@@ -60,7 +60,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       `/topic/conversation/${conversationId}`,
       (message) => {
         const newMessage = JSON.parse(message.body);
-        // console.log("Received new message:", newMessage);
+        console.log("Received new message:", newMessage);
         // if (
         //   newMessage.messageType === "TEXT" ||
         //   newMessage.messageType === "IMAGE" ||
