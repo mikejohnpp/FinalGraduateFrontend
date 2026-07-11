@@ -1,4 +1,4 @@
-import { GiftIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -9,6 +9,7 @@ import type { RootState } from "@/stores/store";
 import type { IFriendship } from "@/types/interfaces/friend/IFriendship";
 
 import ContactItem from "./ContactItem";
+import NotificationsPreview from "./NotificationsPreview";
 
 function ContactSkeleton() {
   return (
@@ -38,7 +39,12 @@ export default function RightSidebar() {
   const sorted = [...onlineFriends, ...offlineFriends];
 
   return (
-    <aside className="hidden w-75 shrink-0 flex-col gap-2 overflow-y-auto py-4 pr-4 pl-2 lg:flex">
+    <aside className="hidden w-75 shrink-0 flex-col gap-2 overflow-x-hidden overflow-y-auto py-4 pr-4 pl-2 lg:flex">
+      {/* Thông báo mới nhất (tối đa 4, bấm để mở popover đầy đủ) */}
+      <NotificationsPreview />
+
+      <Separator className="mx-2" />
+
       <div className="flex flex-col gap-1 px-2">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-xs font-semibold text-muted-foreground">

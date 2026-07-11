@@ -7,10 +7,13 @@ export default function CommentModal({
   post,
   open,
   onClose,
+  highlightCommentId,
 }: {
   post: IPost;
   open: boolean;
   onClose: () => void;
+  /** Bình luận cần cuộn tới & highlight (khi mở từ thông báo). */
+  highlightCommentId?: number;
 }) {
   const authorName = post.author?.name || "Người dùng";
 
@@ -30,7 +33,7 @@ export default function CommentModal({
           </button>
         </div>
 
-        <PostCommentPanel post={post} />
+        <PostCommentPanel post={post} highlightCommentId={highlightCommentId} />
       </DialogContent>
     </Dialog>
   );

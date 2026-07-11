@@ -23,11 +23,14 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { cn } from "@/lib/utils";
 import ButtonPopover from "./ButtonPopover";
 import MessagesInnerPopover from "./MessagesInnerPopover";
+import NotificationsInnerPopover from "./NotificationsInnerPopover";
 import AutoComplete from "./AutoComplete";
 import userService from "@/services/userService";
 import { useLogoutUser } from "@/hooks/useUser";
+import { useUnreadCount } from "@/hooks/useNotification";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
+import { useState } from "react";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
@@ -43,8 +46,10 @@ const navItems = [
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout, isLoading } = useLogoutUser();
+  const { logout } = useLogoutUser();
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
+  const { unreadCount, refresh: refreshUnread } = useUnreadCount();
+
 
   const userAvatar = profile?.avatar || undefined;
   const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
@@ -106,6 +111,34 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 justify-self-end">
+          {/* Chuông thông báo */}
+          <Popover onOpenChange={(open) => open && refreshUnread()}>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative size-10 rounded-full p-0 hover:bg-secondary"
+                  aria-label="Thông báo"
+                >
+                  <BellIcon className="size-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-semibold text-white">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </Button>
+              }
+            />
+            <PopoverContent
+              align="end"
+              sideOffset={8}
+              className="w-[400px] rounded-xl p-0 shadow-lg"
+            >
+              <NotificationsInnerPopover />
+            </PopoverContent>
+          </Popover>
+
           <Popover>
             <PopoverTrigger
               render={

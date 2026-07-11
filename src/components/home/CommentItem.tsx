@@ -30,6 +30,8 @@ interface CommentItemProps {
   comment: IComment;
   postId: number;
   onReply?: (commentId: number, authorName: string) => void;
+  /** Đánh dấu highlight khi mở từ thông báo (cuộn tới bình luận này). */
+  highlight?: boolean;
 }
 
 function TimeAgo({ dateStr }: { dateStr: string }) {
@@ -162,7 +164,7 @@ function ReplyList({ comment, postId }: { comment: IComment; postId: number }) {
   );
 }
 
-export default function CommentItem({ comment, postId, onReply }: CommentItemProps) {
+export default function CommentItem({ comment, postId, onReply, highlight }: CommentItemProps) {
   const { userId } = useSelector((r: RootState) => r.user);
   const { like, unlike } = useLikeComment(postId);
   const { remove } = useDeleteComment(postId);
@@ -191,7 +193,13 @@ export default function CommentItem({ comment, postId, onReply }: CommentItemPro
   const isOwner = userId === comment.author.id;
 
   return (
-    <div className="flex gap-2.5 py-1">
+    <div
+      data-comment-id={comment.id}
+      className={cn(
+        "flex gap-2.5 rounded-xl py-1 transition-colors duration-500",
+        highlight && "bg-primary/10 ring-1 ring-primary/30",
+      )}
+    >
       <Avatar className="size-9 shrink-0">
         <AvatarImage src={comment.author.avatar ?? ""} />
         <AvatarFallback className="text-xs font-bold">

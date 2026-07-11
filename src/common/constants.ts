@@ -31,6 +31,14 @@ export const API = {
     SUGGESTIONS: "users/friends/suggestions", // GET gợi ý bạn bè
   },
 
+  NOTIFICATION: {
+    BASE: "notifications", // GET danh sách thông báo
+    UNREAD_COUNT: "notifications/unread-count", // GET badge count chưa đọc
+    READ_ALL: "notifications/read-all", // PUT đánh dấu tất cả đã đọc
+    // PUT notifications/{id}/read — đánh dấu 1 thông báo đã đọc
+  },
+
+
   PROFILE: {
     BASE: "users",
     UPDATE: "users/profile",
