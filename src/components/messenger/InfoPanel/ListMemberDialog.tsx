@@ -12,7 +12,7 @@ import type { UserResponse } from "@/stores/chatSlice";
 interface ListMemberDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  members?: UserResponse[]; // Replace 'any' with the appropriate type for chatInfo
+  members?: UserResponse[];
 }
 
 function ListMemberDialog({ isOpen, onClose, members }: ListMemberDialogProps) {

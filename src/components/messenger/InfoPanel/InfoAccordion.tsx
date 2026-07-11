@@ -8,7 +8,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pin, Image, FileText, Link, Palette, Shield, AlertTriangle, Ban } from "lucide-react";
 
-export default function InfoAccordion() {
+interface InfoAccordionProps {
+  setIsOpenManagerFileOrImage: (isOpen: boolean) => void;
+}
+
+export default function InfoAccordion({ setIsOpenManagerFileOrImage }: InfoAccordionProps) {
   return (
     <Accordion type="multiple" className="px-2">
       <AccordionItem value="chat-info" className="border-none">
@@ -54,6 +58,7 @@ export default function InfoAccordion() {
             <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-3 rounded-lg px-2 text-sm font-normal"
+              onClick={() => setIsOpenManagerFileOrImage(true)}
             >
               <Image data-icon="inline-start" />
               File phương tiện
@@ -61,6 +66,7 @@ export default function InfoAccordion() {
             <Button
               variant="ghost"
               className="h-9 w-full justify-start gap-3 rounded-lg px-2 text-sm font-normal"
+              onClick={() => setIsOpenManagerFileOrImage(true)}
             >
               <FileText data-icon="inline-start" />
               File

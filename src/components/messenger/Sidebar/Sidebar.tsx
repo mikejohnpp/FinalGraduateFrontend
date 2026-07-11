@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, SquarePen, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SearchBar from "./SearchBar";
 import ConversationItem from "./ConversationItem";
