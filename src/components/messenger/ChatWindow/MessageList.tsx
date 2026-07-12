@@ -7,6 +7,7 @@ import { stompClient } from "@/websocket/stompClient";
 import chatSlice, { type MessageChat } from "@/stores/chatSlice";
 import chatService from "@/services/chatService";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import mediaSlice from "@/stores/mediaSlice";
 
 interface MessageListProps {
   chatInfo: MessageChat;
@@ -61,16 +62,9 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       (message) => {
         const newMessage = JSON.parse(message.body);
         console.log("Received new message:", newMessage);
-        // if (
-        //   newMessage.messageType === "TEXT" ||
-        //   newMessage.messageType === "IMAGE" ||
-        //   newMessage.messageType === "FILE"
-        // ) {
-        //   if (newMessage.user.id === userId) {
-        //     dispatch(chatSlice.actions.updateMessage(newMessage));
-        //     return;
-        //   }
-        // }
+        if (newMessage.messageType === "IMAGE" || newMessage.messageType === "FILE") {
+          dispatch(mediaSlice.actions.addMediaMessage(newMessage));
+        }
 
         dispatch(chatSlice.actions.addMessage(newMessage));
       },

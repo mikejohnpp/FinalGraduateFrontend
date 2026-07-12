@@ -3,7 +3,7 @@ import { MessageCircleMore } from "lucide-react";
 function Welcome() {
   return (
     <div className="flex h-full flex-1 items-center justify-center bg-background">
-      <div className={"flex h-full flex-col items-center justify-center bg-[#111116]"}>
+      <div className="flex h-full flex-col items-center justify-center">
         <div>
           <div className="relative m-auto flex aspect-square w-full max-w-62.5 items-center justify-center">
             <svg
