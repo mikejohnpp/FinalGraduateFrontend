@@ -71,7 +71,11 @@ export default function Login() {
               <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="login-password">Mật khẩu</Label>
-                  <Button variant="link" className="h-auto p-0 text-xs text-primary">
+                  <Button
+                    variant="link"
+                    className="h-auto p-0 text-xs text-primary"
+                    onClick={() => navigate(`/${PATH_CONSTRAINT.FORGOT_PASSWORD}`)}
+                  >
                     Quên mật khẩu?
                   </Button>
                 </div>

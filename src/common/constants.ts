@@ -4,6 +4,9 @@ export const API = {
   LOGOUT: "auth/logout",
   REGISTER: "auth/register",
   ACTIVE: "auth/active",
+  FORGOT_PASSWORD: "auth/forgot-password",
+  VERIFY_OTP: "auth/verify-otp",
+  RESET_PASSWORD: "auth/reset-password",
 
   POST: {
     BASE: "users/posts",

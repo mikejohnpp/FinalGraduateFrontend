@@ -188,7 +188,126 @@ export function useUserActivate(code: string | undefined) {
   return { status, errorMessage };
 }
 
+export function useForgotPassword() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  /** Bước 1: gửi OTP về email */
+  async function sendOtp(email: string): Promise<boolean> {
+    setError(null);
+    if (!email.trim()) {
+      setError("Vui lòng nhập email");
+      return false;
+    }
+    setLoading(true);
+    try {
+      const res = await userService.forgotPassword(email);
+      if (res?.success) {
+        toast.success("Mã xác nhận (OTP) đã được gửi đến email của bạn.");
+        return true;
+      }
+      toast.error(res?.message || "Không thể gửi mã OTP");
+      return false;
+    } catch (e: any) {
+      const msg = parseResDataOrMessage(e?.response?.data);
+      if (typeof msg === "string") {
+        setError(msg);
+        toast.error(msg);
+      } else {
+        setError("Không thể gửi mã OTP. Vui lòng thử lại!");
+        toast.error("Không thể gửi mã OTP. Vui lòng thử lại!");
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /** Bước 2: xác nhận OTP */
+  async function verifyOtp(email: string, otp: string): Promise<boolean> {
+    setError(null);
+    if (!otp.trim()) {
+      setError("Vui lòng nhập mã OTP");
+      return false;
+    }
+    setLoading(true);
+    try {
+      const res = await userService.verifyOtp(email, otp);
+      if (res?.success) {
+        return true;
+      }
+      setError(res?.message || "Mã OTP không hợp lệ hoặc đã hết hạn");
+      toast.error(res?.message || "Mã OTP không hợp lệ hoặc đã hết hạn");
+      return false;
+    } catch (e: any) {
+      const msg = parseResDataOrMessage(e?.response?.data);
+      if (typeof msg === "string") {
+        setError(msg);
+        toast.error(msg);
+      } else {
+        setError("Mã OTP không hợp lệ hoặc đã hết hạn");
+        toast.error("Mã OTP không hợp lệ hoặc đã hết hạn");
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  /** Bước 3: đặt lại mật khẩu */
+  async function resetPassword(
+    email: string,
+    otp: string,
+    newPassword: string,
+    confirmPassword: string,
+  ): Promise<boolean> {
+    setError(null);
+
+    if (!newPassword.trim() || !confirmPassword.trim()) {
+      setError("Vui lòng điền đầy đủ thông tin");
+      return false;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp");
+      return false;
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      setError("Mật khẩu tối thiểu 8 ký tự, ít nhất một chữ cái và một số");
+      return false;
+    }
+
+    setLoading(true);
+    try {
+      const res = await userService.resetPassword(email, otp, newPassword, confirmPassword);
+      if (res?.success) {
+        toast.success("Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay bây giờ.");
+        return true;
+      }
+      toast.error(res?.message || "Đặt lại mật khẩu thất bại");
+      return false;
+    } catch (e: any) {
+      const msg = parseResDataOrMessage(e?.response?.data);
+      if (typeof msg === "string") {
+        setError(msg);
+        toast.error(msg);
+      } else {
+        setError("Đặt lại mật khẩu thất bại. Vui lòng thử lại!");
+        toast.error("Đặt lại mật khẩu thất bại. Vui lòng thử lại!");
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { sendOtp, verifyOtp, resetPassword, loading, error, setError };
+}
+
 export function useUserProfile() {
+
   const dispatch = useDispatch<AppDispatch>();
   const { userId, profile } = useSelector((r: RootState) => r.user);
   const [loading, setLoading] = useState(false);
