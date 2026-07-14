@@ -19,8 +19,6 @@ export interface MessageChat {
   createAd: string;
   members: UserResponse[];
   messages: Message[];
-  currentPage: number;
-  totalPages: number;
   totalElements: number;
 }
 
@@ -87,13 +85,9 @@ const chatSlice = createSlice({
       }
     },
 
-    prependMessages: (
-      state,
-      action: PayloadAction<{ messages: Message[]; currentPage: number }>,
-    ) => {
+    prependMessages: (state, action: PayloadAction<{ messages: Message[] }>) => {
       if (!state.chatInfo) return;
       state.chatInfo.messages = [...state.chatInfo.messages, ...action.payload.messages];
-      state.chatInfo.currentPage = action.payload.currentPage;
     },
 
     clearChat: (state) => {

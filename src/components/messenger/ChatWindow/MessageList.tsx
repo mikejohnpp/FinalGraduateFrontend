@@ -7,6 +7,7 @@ import { stompClient } from "@/websocket/stompClient";
 import chatSlice, { type MessageChat } from "@/stores/chatSlice";
 import chatService from "@/services/chatService";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import mediaSlice from "@/stores/mediaSlice";
 
 interface MessageListProps {
   chatInfo: MessageChat;
@@ -21,6 +22,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   const isInitialLoadRef = useRef(true);
   const previousMessageCountRef = useRef(0);
@@ -61,16 +63,9 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       (message) => {
         const newMessage = JSON.parse(message.body);
         console.log("Received new message:", newMessage);
-        // if (
-        //   newMessage.messageType === "TEXT" ||
-        //   newMessage.messageType === "IMAGE" ||
-        //   newMessage.messageType === "FILE"
-        // ) {
-        //   if (newMessage.user.id === userId) {
-        //     dispatch(chatSlice.actions.updateMessage(newMessage));
-        //     return;
-        //   }
-        // }
+        if (newMessage.messageType === "IMAGE" || newMessage.messageType === "FILE") {
+          dispatch(mediaSlice.actions.addMediaMessage(newMessage));
+        }
 
         dispatch(chatSlice.actions.addMessage(newMessage));
       },
@@ -85,6 +80,7 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
     isInitialLoadRef.current = true;
     previousMessageCountRef.current = 0;
     setShowScrollButton(false);
+    setHasMore(true);
   }, [conversationId]);
 
   useEffect(() => {
@@ -123,35 +119,35 @@ export default function MessageList({ chatInfo, userId }: MessageListProps) {
       setShowScrollButton(false);
     }
 
-    if (
-      target.scrollTop === 0 &&
-      !isLoadingMore &&
-      chatInfo.currentPage + 1 < chatInfo.totalPages
-    ) {
+    if (target.scrollTop === 0 && !isLoadingMore && hasMore) {
       setIsLoadingMore(true);
 
       const previousScrollHeight = target.scrollHeight;
 
       try {
-        const res = await chatService.getConversationDetail(
-          conversationId,
-          chatInfo.currentPage + 1,
-          50,
-        );
+        // const res = await chatService.getConversationDetail(
+        //   conversationId,
+        //   chatInfo.currentPage + 1,
+        //   50,
+        // );
 
+        const res = await chatService.getConversationDetail2(
+          conversationId,
+          chatInfo.messages[chatInfo.messages.length - 1]?.id || null,
+        );
+        console.log("Fetched older messages2222222:", res);
         if (res?.data) {
           const data = res.data as MessageChat;
+          if (!data.messages || data.messages.length === 0) {
+            setHasMore(false);
+          } else {
+            dispatch(
+              chatSlice.actions.prependMessages({
+                messages: data.messages,
+              }),
+            );
+          }
 
-          dispatch(
-            chatSlice.actions.prependMessages({
-              messages: data.messages,
-              currentPage: data.currentPage,
-            }),
-          );
-
-          /**
-           * Giữ nguyên vị trí đang đọc
-           */
           setTimeout(() => {
             if (containerRef.current) {
               containerRef.current.scrollTop =
