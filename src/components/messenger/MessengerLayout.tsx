@@ -69,14 +69,27 @@ export default function MessengerLayout() {
   useEffect(() => {
     if (!conversationId || !connected) return;
     http
-      .get(`/chat/conversations/conversation/${conversationId}`)
+      .get(`/chat/conversations/conversation2/${conversationId}`)
       .then((res: any) => {
+        console.log("Fetched conversation details2222:", res);
         dispatch(chatSlice.actions.setChatList(res.data));
       })
       .catch((err) => {
         console.error("Failed to fetch conversation details", err);
       });
   }, [conversationId, connected]);
+
+  // useEffect(() => {
+  //   if (!conversationId || !connected) return;
+  //   http
+  //     .get(`/chat/conversations/conversation/${conversationId}`)
+  //     .then((res: any) => {
+  //       dispatch(chatSlice.actions.setChatList(res.data));
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to fetch conversation details", err);
+  //     });
+  // }, [conversationId, connected]);
 
   const onSelectConversation = (id: any) => {
     dispatch(chatSlice.actions.setConversationId(id));
