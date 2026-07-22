@@ -57,9 +57,9 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
   };
 
   return (
-    <div className="relative flex w-full flex-col bg-background">
+    <div className="relative mt-15 flex w-full flex-col bg-background md:mt-0">
       {/* Ảnh bìa */}
-      <div className="group relative aspect-[3/1] max-h-[400px] w-full overflow-hidden rounded-b-lg bg-muted">
+      <div className="group relative aspect-3/1 max-h-100 w-full overflow-hidden rounded-b-lg bg-muted">
         {coverSrc && <img src={coverSrc} alt="Ảnh bìa" className="h-full w-full object-cover" />}
 
         {isOwner && (

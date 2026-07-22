@@ -156,7 +156,7 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
           </div>
           <div className="flex items-center">
             <Popover open={isEmojiOpen} onOpenChange={setIsEmojiOpen}>
-              <PopoverTrigger asChild>
+              <PopoverTrigger>
                 <button
                   type="button"
                   disabled={uploading}

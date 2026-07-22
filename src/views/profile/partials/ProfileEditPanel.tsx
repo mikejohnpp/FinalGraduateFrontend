@@ -61,7 +61,7 @@ export default function ProfileEditPanel({ profile, onClose }: ProfileEditPanelP
   };
 
   return (
-    <Card className="absolute top-full right-0 z-50 mt-2 w-full border shadow-lg md:w-[800px]">
+    <Card className="absolute top-full -right-25 z-50 mt-2 w-100 border shadow-lg md:right-0 md:w-[800px]">
       <CardHeader className="flex flex-row items-center justify-between border-b px-4 py-3">
         <CardTitle className="text-lg font-bold">Chỉnh sửa trang cá nhân</CardTitle>
         <Button variant="ghost" size="icon" onClick={onClose} className="size-8 rounded-full">

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import GroupCard from "./GroupCard";
 import { useGroupsData, useGroupActions } from "@/hooks/useGroup";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function GroupDiscoverGrid() {
   const [dismissed, setDismissed] = useState<number[]>([]);
   const { suggestedGroups, loading } = useGroupsData();
   const { joinGroup } = useGroupActions();
+  const isMobile = useIsMobile();
 
   const handleDismiss = (id: number) => {
     setDismissed((prev) => [...prev, id]);
@@ -23,10 +25,11 @@ export default function GroupDiscoverGrid() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {visibleGroups.map((group) => (
-          <GroupCard 
-            key={group.id} 
-            group={group} 
-            onDismiss={() => handleDismiss(group.id)} 
+          <GroupCard
+            className={isMobile ? "w-100" : ""}
+            key={group.id}
+            group={group}
+            onDismiss={() => handleDismiss(group.id)}
             onJoin={async () => {
               const success = await joinGroup(group);
               if (success) {
