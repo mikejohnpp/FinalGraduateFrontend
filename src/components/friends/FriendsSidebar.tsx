@@ -53,7 +53,6 @@ export default function FriendsSidebar() {
     },
   ];
 
-
   return (
     <SidebarProvider
       defaultOpen
@@ -64,8 +63,8 @@ export default function FriendsSidebar() {
       }
       className="h-full"
     >
-      <Sidebar collapsible="none" className="bg-sidebar text-sidebar-foreground">
-        <SidebarHeader className="gap-0 px-4 pt-4 pb-2">
+      <Sidebar collapsible="none" className="min-h-4 bg-sidebar text-sidebar-foreground">
+        <SidebarHeader className="mt-10 gap-0 px-4 pt-4 pb-2 md:mt-0">
           <h2 className="text-lg font-semibold">Bạn bè</h2>
         </SidebarHeader>
         <SidebarContent className="px-3 pb-4">
@@ -87,7 +86,6 @@ export default function FriendsSidebar() {
                               <Icon className="size-4" />
                             </span>
                             <span className="flex-1">{item.label}</span>
-
 
                             {item.badge !== null && (
                               <span className="text-destructive-foreground ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold">

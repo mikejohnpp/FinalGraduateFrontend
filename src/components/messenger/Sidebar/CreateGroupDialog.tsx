@@ -75,7 +75,7 @@ export default function CreateGroupDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="md:max-w-md">
         <DialogHeader>
           <DialogTitle>Tạo nhóm mới</DialogTitle>
         </DialogHeader>

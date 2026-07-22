@@ -41,7 +41,6 @@ export default function GroupsSidebar() {
     },
   ];
 
-
   return (
     <aside className="hidden w-70 shrink-0 flex-col border-r bg-background md:flex">
       <ScrollArea className="h-full">
