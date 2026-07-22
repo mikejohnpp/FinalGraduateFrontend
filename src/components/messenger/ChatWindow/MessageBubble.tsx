@@ -105,10 +105,10 @@ export default function MessageBubble({
         )}
 
         <span className="px-1 text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
-          {new Date(message.createdAt).toLocaleTimeString([], {
+          {message.createdAt ? new Date(message.createdAt).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
-          })}
+          }) : ""}
         </span>
       </div>
     </div>
