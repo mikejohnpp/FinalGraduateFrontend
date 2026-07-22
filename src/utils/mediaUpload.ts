@@ -1,4 +1,4 @@
-import { supabase, MEDIA_BUCKET } from "@/plugins/supabase";
+import { uploadToStorage } from "@/plugins/storage";
 import type { MediaType, MediaInput } from "@/types/interfaces/media/IMedia";
 
 /** Suy ra MediaType từ MIME type của file. Mặc định FILE nếu không khớp. */
@@ -17,18 +17,7 @@ export const MAX_MEDIA_SIZE_MB = 25;
 export const MEDIA_ACCEPT = "image/*,video/*,audio/*";
 
 /**
- * Sinh tên file duy nhất, giữ đuôi file gốc.
- * VD: "abc.jpg" → "1712345678901-4f3a.jpg"
- */
-function buildObjectPath(file: File): string {
-    const dotIdx = file.name.lastIndexOf(".");
-    const ext = dotIdx >= 0 ? file.name.slice(dotIdx) : "";
-    const rand = Math.random().toString(16).slice(2, 8);
-    return `${Date.now()}-${rand}${ext}`;
-}
-
-/**
- * Upload một file lên Supabase Storage và trả về MediaInput (url + mediaType).
+ * Upload một file lên storage và trả về MediaInput (url + mediaType).
  * `position` sẽ được gán ở tầng gọi (theo thứ tự mảng).
  * @throws Error nếu upload thất bại hoặc file quá lớn.
  */
@@ -37,23 +26,8 @@ export async function uploadMediaFile(file: File): Promise<MediaInput> {
         throw new Error(`Tệp "${file.name}" vượt quá ${MAX_MEDIA_SIZE_MB}MB`);
     }
 
-    const path = buildObjectPath(file);
-    const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: file.type || undefined,
-    });
-
-    if (error) {
-        throw new Error(`Upload thất bại: ${error.message}`);
-    }
-
-    const { data } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path);
-    if (!data?.publicUrl) {
-        throw new Error("Không lấy được đường dẫn công khai của tệp");
-    }
-
-    return { url: data.publicUrl, mediaType: inferMediaType(file) };
+    const { url } = await uploadToStorage(file);
+    return { url, mediaType: inferMediaType(file) };
 }
 
 /**
@@ -72,7 +46,7 @@ export const MAX_IMAGE_SIZE_MB = 10;
 export const IMAGE_ACCEPT = "image/*";
 
 /**
- * Upload một ảnh (avatar/cover) lên Supabase Storage và trả về public URL.
+ * Upload một ảnh (avatar/cover) lên storage và trả về public URL.
  * Chỉ chấp nhận file ảnh.
  * @throws Error nếu không phải ảnh, quá lớn, hoặc upload thất bại.
  */
@@ -84,22 +58,6 @@ export async function uploadImageToSupabase(file: File): Promise<string> {
         throw new Error(`Ảnh vượt quá ${MAX_IMAGE_SIZE_MB}MB`);
     }
 
-    const path = buildObjectPath(file);
-    const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: file.type || undefined,
-    });
-
-    if (error) {
-        throw new Error(`Upload thất bại: ${error.message}`);
-    }
-
-    const { data } = supabase.storage.from(MEDIA_BUCKET).getPublicUrl(path);
-    if (!data?.publicUrl) {
-        throw new Error("Không lấy được đường dẫn công khai của ảnh");
-    }
-
-    return data.publicUrl;
+    const { url } = await uploadToStorage(file);
+    return url;
 }
-
