@@ -50,7 +50,7 @@ export default function Login() {
           <div className="w-full max-w-sm">
             <div className="mb-10 flex flex-col gap-2">
               <h1 className="text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
-                Đang xảy ra ngay bây giờ
+                Misa App
               </h1>
               <h2 className="text-xl font-bold text-foreground lg:text-2xl">Chào mừng trở lại.</h2>
             </div>

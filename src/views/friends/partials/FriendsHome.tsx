@@ -12,6 +12,7 @@ import {
   useFriendSuggestions,
   useSendFriendRequest,
 } from "@/hooks/useFriend";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function FriendsHome() {
   const navigate = useNavigate();
@@ -23,12 +24,15 @@ export default function FriendsHome() {
   const { decline, loadingId: declineLoadingId } = useDeclineRequest();
   const { send, loadingId: sendLoadingId } = useSendFriendRequest();
   const { dismiss } = useDismissSuggestion();
+  const isMobile = useIsMobile();
 
   // Dùng loadingId từ accept hoặc decline (chỉ 1 active tại 1 thời điểm)
   const requestLoadingId = acceptLoadingId ?? declineLoadingId;
 
   return (
-    <ScrollArea className="h-full w-full px-8 pt-8 pb-0">
+    <div
+      className={isMobile ? "w-full px-8 pt-8 pb-0" : "h-full w-full overflow-auto px-8 pt-8 pb-0"}
+    >
       <div className="flex flex-col gap-6">
         {/* Lời mời kết bạn */}
         <section className="flex flex-col gap-4">
@@ -80,6 +84,6 @@ export default function FriendsHome() {
           )}
         </section>
       </div>
-    </ScrollArea>
+    </div>
   );
 }

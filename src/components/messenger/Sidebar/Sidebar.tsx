@@ -7,6 +7,7 @@ import SearchBar from "./SearchBar";
 import ConversationItem from "./ConversationItem";
 import type { Conversation } from "../interface/Conversation";
 import CreateGroupDialog from "./CreateGroupDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SidebarProps {
   conversations: Conversation[];
@@ -25,6 +26,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
+  const isMobile = useIsMobile();
   console.log("Sidebar conversations:", conversations);
 
   const privateConversations = conversations.filter((c) => !c.group && (c as any).isGroup !== true);
@@ -45,7 +47,13 @@ export default function Sidebar({
     : groupConversations;
 
   return (
-    <div className="flex h-full w-[320px] shrink-0 flex-col border-r border-border bg-background">
+    <div
+      className={
+        isMobile && activeConversationId
+          ? "hidden"
+          : "mt-10 flex h-full w-full shrink-0 flex-col border-r border-border bg-background md:mt-0 md:w-[320px]"
+      }
+    >
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <h1 className="text-2xl font-bold text-foreground">Đoạn chat</h1>
         <div className="flex items-center gap-1">

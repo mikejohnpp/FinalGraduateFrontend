@@ -156,7 +156,7 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
           </div>
           <div className="flex items-center">
             <Popover open={isEmojiOpen} onOpenChange={setIsEmojiOpen}>
-              <PopoverTrigger>
+              <PopoverTrigger asChild>
                 <button
                   type="button"
                   disabled={uploading}
@@ -182,7 +182,9 @@ export default function ChatInput({ onSendMessage, onTypingChange }: ChatInputPr
             variant="ghost"
             size="icon"
             className="size-9 rounded-full text-primary"
-            onClick={() => handleSend()}
+            onClick={() => {
+              handleSend();
+            }}
             disabled={uploading}
           >
             {uploading ? (

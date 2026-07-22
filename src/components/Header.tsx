@@ -6,6 +6,7 @@ import {
   UsersIcon,
   LogOutIcon,
   Plus,
+  Group,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,6 +36,7 @@ import { useState } from "react";
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
   { id: "friends", icon: UsersIcon, label: "Ban be", to: "friends" },
+  { id: "groups", icon: Group, label: "Nhom", to: "groups" },
   {
     id: "messenger",
     icon: MessageCircleIcon,
@@ -50,7 +52,6 @@ export default function Header() {
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
   const { unreadCount, refresh: refreshUnread } = useUnreadCount();
 
-
   const userAvatar = profile?.avatar || undefined;
   const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
   const initial = displayName.charAt(0).toUpperCase();
@@ -60,8 +61,8 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-20 h-[62px] shrink-0 border-b border-border bg-card/95 backdrop-blur">
-      <div className="grid h-full w-full grid-cols-[1fr_auto_1fr] items-center px-4">
+    <header className="sticky top-0 z-20 h-15.5 shrink-0 border-b border-border bg-card/95 backdrop-blur">
+      <div className="flex h-full w-full flex-row items-center justify-between px-4 md:grid md:grid-cols-[1fr_auto_1fr]">
         <div className="flex items-center gap-3 justify-self-start">
           <button
             type="button"
@@ -78,7 +79,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="flex h-full items-center justify-center gap-2 justify-self-center">
+        <div className="hidden h-full items-center justify-center gap-2 justify-self-center md:flex">
           {navItems.map((item) => {
             const Icon = item.icon;
             var isActive = false;
@@ -204,6 +205,37 @@ export default function Header() {
             </PopoverContent>
           </Popover>
         </div>
+      </div>
+      <div className="flex items-center justify-center justify-self-center overflow-hidden border-t border-border bg-card/95 px-2 py-1 md:hidden">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          let isActive = false;
+          if (item.to === "/") {
+            isActive = location.pathname === "/";
+          } else {
+            const path = location.pathname.slice(1); // "friends/..."
+            isActive = path.startsWith(item.to);
+          }
+          return (
+            <div
+              key={item.id}
+              className={cn(
+                "flex h-12 items-center justify-center rounded-lg px-0",
+                isActive && "bg-primary/10",
+              )}
+            >
+              <Button
+                variant="ghost"
+                size="lg"
+                className={cn("w-27", isActive && "text-primary")}
+                aria-label={item.label}
+                onClick={() => navigate(item.to)}
+              >
+                <Icon data-icon="inline-start" />
+              </Button>
+            </div>
+          );
+        })}
       </div>
     </header>
   );

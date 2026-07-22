@@ -11,6 +11,7 @@ import chatService from "@/services/chatService";
 import type { MessageType } from "@/stores/chatSlice";
 import Welcome from "./ChatWindow/Welcome";
 import InfoPanel from "./InfoPanel/InfoPanel";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function MessengerLayout() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -22,7 +23,7 @@ export default function MessengerLayout() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const [openInfoPanel, setOpenInfoPanel] = useState(false);
-
+  const isMobile = useIsMobile();
   const fetchConversations = (): Promise<Conversation[]> =>
     http
       .get(`/chat/conversations/user/${userId}`)
@@ -102,7 +103,7 @@ export default function MessengerLayout() {
 
   const onSendMessage = (content: string, messageType: MessageType = "TEXT") => {
     if (content.trim() === "") return;
-    const tempId = crypto.randomUUID();
+    const tempId = Date.now().toString(36) + Math.random().toString(36).substring(2);
     let newMessage: Message = {
       conversationId: conversationId,
       content: content,
@@ -113,8 +114,13 @@ export default function MessengerLayout() {
     sendMessage(newMessage);
   };
 
+  const handleRemoveActiveConversation = () => {
+    setActiveConversationId(null);
+    setOpenInfoPanel(false);
+  };
+
   return (
-    <div className="flex h-[calc(100svh-62px)] w-full overflow-hidden bg-background">
+    <div className="flex h-[calc(100dvh-62px)] w-full overflow-hidden bg-background">
       <Sidebar
         conversations={conversations}
         activeConversationId={activeConversationId}
@@ -129,9 +135,12 @@ export default function MessengerLayout() {
           userId={userId}
           onSendMessage={onSendMessage}
           setOpenInfoPanel={setOpenInfoPanel}
+          handleRemoveActiveConversation={handleRemoveActiveConversation}
         />
       ) : (
-        <Welcome />
+        <div className="flex h-full flex-1 items-center justify-center bg-background">
+          {!isMobile && <Welcome />}
+        </div>
       )}
       {openInfoPanel && (
         <InfoPanel

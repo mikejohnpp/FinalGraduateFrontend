@@ -11,6 +11,7 @@ import type { MediaManager } from "@/stores/mediaSlice";
 import { useDispatch } from "react-redux";
 import mediaSlice from "@/stores/mediaSlice";
 import MediaManageConversation from "./MediaManagerConversation";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface InfoPanelProps {
   activeConversationId: number | null;
@@ -27,6 +28,7 @@ export default function InfoPanel({
 }: InfoPanelProps) {
   const [isOpenManagerFileOrImage, setIsOpenManagerFileOrImage] = useState(false);
   const dispatch = useDispatch();
+  const isMobile = useIsMobile();
   useEffect(() => {
     if (!activeConversationId) return;
     http
@@ -46,7 +48,13 @@ export default function InfoPanel({
       });
   }, [activeConversationId]);
   return (
-    <div className="flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-background">
+    <div
+      className={
+        isMobile
+          ? "mt-12 flex h-full w-full shrink-0 flex-col border-l border-border bg-background"
+          : "flex h-full w-[320px] shrink-0 flex-col border-l border-border bg-background"
+      }
+    >
       {isOpenManagerFileOrImage ? (
         <MediaManageConversation setIsOpenManagerFileOrImage={setIsOpenManagerFileOrImage} />
       ) : (

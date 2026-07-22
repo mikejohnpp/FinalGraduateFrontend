@@ -2,21 +2,29 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { MessageChat } from "@/stores/chatSlice";
-import { Phone, Video, Info, UserPlus } from "lucide-react";
+import { Phone, Video, Info, UserPlus, ChevronLeft } from "lucide-react";
 import AddMemberDialog from "./AddMemberDialog";
 import { useWebRTC } from "@/hooks/useWebRTC";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChatHeaderProps {
   chatInfo: MessageChat;
   userId: number;
   setOpenInfoPanel: (open: boolean) => void;
+  handleRemoveActiveConversation: () => void;
 }
 
-export default function ChatHeader({ chatInfo, userId, setOpenInfoPanel }: ChatHeaderProps) {
+export default function ChatHeader({
+  chatInfo,
+  userId,
+  setOpenInfoPanel,
+  handleRemoveActiveConversation,
+}: ChatHeaderProps) {
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
   const { startCall } = useWebRTC();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const otherMember = chatInfo.group
     ? undefined
@@ -40,6 +48,12 @@ export default function ChatHeader({ chatInfo, userId, setOpenInfoPanel }: ChatH
   return (
     <div className="relative z-10 flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-4">
       <div className="flex items-center gap-3">
+        {isMobile && (
+          <div>
+            <ChevronLeft onClick={handleRemoveActiveConversation} />
+          </div>
+        )}
+
         <div className="relative">
           <Avatar className="size-10 hover:cursor-pointer" onClick={goToProfile}>
             <AvatarImage src={otherMember?.avatarUrl} alt={chatInfo.conversationName} />
