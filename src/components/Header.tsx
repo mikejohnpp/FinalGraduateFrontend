@@ -32,6 +32,8 @@ import { useUnreadCount } from "@/hooks/useNotification";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { PATH_CONSTRAINT } from "@/plugins/routers";
 
 const navItems = [
   { id: "home", icon: HomeIcon, label: "Trang chu", to: "/" },
@@ -51,6 +53,7 @@ export default function Header() {
   const { logout } = useLogoutUser();
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
   const { unreadCount, refresh: refreshUnread } = useUnreadCount();
+  const isMobile = useIsMobile();
 
   const userAvatar = profile?.avatar || undefined;
   const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
@@ -180,11 +183,29 @@ export default function Header() {
                   </Item>
                   <Button
                     variant="secondary"
-                    className="h-9 w-full text-[15px] font-semibold"
+                    className="mb-2 h-9 w-full text-[15px] font-semibold"
                     onClick={() => navigate(`/profile/${userId}`)}
                   >
                     Xem tất cả trang cá nhân
                   </Button>
+                  {isMobile && (
+                    <div>
+                      <Button
+                        variant="secondary"
+                        className="mb-2 h-9 w-full text-[15px] font-semibold"
+                        onClick={() => navigate(PATH_CONSTRAINT.GROUPS_DISCOVER)}
+                      >
+                        Khám phá nhóm
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="mb-2 h-9 w-full text-[15px] font-semibold"
+                        onClick={() => navigate(PATH_CONSTRAINT.GROUPS_MINE)}
+                      >
+                        Nhóm của bạn
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Nút đăng xuất */}

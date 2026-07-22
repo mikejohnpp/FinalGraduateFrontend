@@ -6,9 +6,9 @@ import { PATH_CONSTRAINT } from "@/plugins/routers";
 
 export default function GroupDiscoverSection() {
   const navigate = useNavigate();
-  const { suggestedGroups, loading } = useGroupsData();
+  const { suggestedGroups } = useGroupsData();
   const { joinGroup } = useGroupActions();
-  
+
   const topSuggested = suggestedGroups.slice(0, 6);
 
   return (
@@ -23,12 +23,12 @@ export default function GroupDiscoverSection() {
         </Button>
       </div>
 
-      <div className="flex snap-x gap-3 overflow-x-auto pb-4">
+      <div className="flex w-full min-w-0 touch-pan-x snap-x snap-mandatory flex-nowrap gap-3 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {topSuggested.map((group) => (
-          <GroupCard 
-            key={group.id} 
-            group={group} 
-            className="w-[240px] shrink-0 snap-start" 
+          <GroupCard
+            key={group.id}
+            group={group}
+            className="w-60 shrink-0 snap-start"
             onJoin={async () => {
               await joinGroup(group);
             }}

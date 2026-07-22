@@ -82,7 +82,9 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
       {otherJoinedGroups.length > 0 && (
         <>
           <div className="flex items-center justify-between bg-background py-2">
-            <h2 className="text-xl font-bold">Tất cả các nhóm bạn đã tham gia ({otherJoinedGroups.length})</h2>
+            <h2 className="text-xl font-bold">
+              Tất cả các nhóm bạn đã tham gia ({otherJoinedGroups.length})
+            </h2>
             <Button variant="outline" size="sm" className="bg-secondary/50">
               <ArrowUpDown data-icon="inline-start" /> Sắp xếp
             </Button>

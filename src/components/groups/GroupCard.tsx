@@ -34,7 +34,6 @@ export default function GroupCard({
 
   const goToGroup = () => navigate(`/groups/${group.id}`);
 
-
   return (
     <Card className={cn("relative flex h-full flex-col overflow-hidden", className)}>
       <div
@@ -51,7 +50,6 @@ export default function GroupCard({
           </div>
         )}
         {onDismiss && (
-
           <Button
             variant="ghost"
             size="icon"
@@ -77,14 +75,15 @@ export default function GroupCard({
           </p>
         )}
 
-
         {group.mutualFriendCount && group.mutualFriendCount > 0 ? (
           <div className="mt-2 flex items-center gap-2">
             <div className="flex items-center -space-x-1">
               {/* Fake avatars for mutual friends */}
               {Array.from({ length: Math.min(group.mutualFriendCount, 3) }).map((_, i) => (
                 <Avatar key={i} className="size-5 border-2 border-background">
-                  <AvatarFallback className="bg-primary/10 text-[10px] text-primary">B</AvatarFallback>
+                  <AvatarFallback className="bg-primary/10 text-[10px] text-primary">
+                    B
+                  </AvatarFallback>
                 </Avatar>
               ))}
             </div>
@@ -109,7 +108,6 @@ export default function GroupCard({
             </Button>
           )}
         </div>
-
       </div>
     </Card>
   );
