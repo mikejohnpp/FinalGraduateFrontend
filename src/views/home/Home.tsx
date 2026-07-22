@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="flex h-[calc(100vh-62px)] justify-center overflow-hidden">
       <LeftSidebar />
-      <ScrollArea className="min-w-0 flex-1 overflow-y-auto">
+      <ScrollArea className="mt-13 min-w-0 flex-1 overflow-y-auto md:mt-0">
         <NewsFeed />
       </ScrollArea>
       <RightSidebar />

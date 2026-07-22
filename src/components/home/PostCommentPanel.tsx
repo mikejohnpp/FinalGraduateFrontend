@@ -19,7 +19,6 @@ import MediaPicker from "@/components/media/MediaPicker";
 import { countWords, limitWords } from "@/utils/stringHelper";
 import CommentItem from "./CommentItem";
 
-
 function ActionButton({
   icon,
   label,
@@ -104,8 +103,6 @@ export default function PostCommentPanel({
     setTimeout(() => inputRef.current?.focus(), 0);
   };
 
-
-
   const observer = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -142,7 +139,6 @@ export default function PostCommentPanel({
     } else {
       await likePost(post.id, userId);
     }
-
   };
 
   const handleReply = (commentId: number, authorName: string) => {
@@ -158,7 +154,7 @@ export default function PostCommentPanel({
   return (
     <>
       {/* ── Scrollable body ── */}
-      <div className="flex-1 overflow-x-hidden overflow-y-auto">
+      <div className="custom-scrollbar flex-1 overflow-x-hidden overflow-y-auto">
         {/* Post preview */}
         <div className="px-4 pt-4">
           <div className="flex items-start gap-3">
@@ -329,15 +325,9 @@ export default function PostCommentPanel({
                 }
               }}
               className="max-h-[120px] flex-1 resize-none bg-transparent text-[13.5px] leading-relaxed text-foreground outline-none placeholder:text-muted-foreground"
-
             />
             <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
-              <MediaPicker
-                drafts={[]}
-                onAdd={addFiles}
-                onRemove={removeDraft}
-                disabled={busy}
-              />
+              <MediaPicker drafts={[]} onAdd={addFiles} onRemove={removeDraft} disabled={busy} />
               <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
                 <PopoverTrigger
                   render={
@@ -349,14 +339,10 @@ export default function PostCommentPanel({
                 >
                   <Smile className="size-4" />
                 </PopoverTrigger>
-                <PopoverContent
-                  align="end"
-                  className="w-auto border-none p-0 shadow-none"
-                >
+                <PopoverContent align="end" className="w-auto border-none p-0 shadow-none">
                   <EmojiPickerReact onEmojiClick={handleEmojiClick} />
                 </PopoverContent>
               </Popover>
-
             </div>
           </div>
 
@@ -386,8 +372,9 @@ export default function PostCommentPanel({
             </kbd>{" "}
             xuống dòng
           </p>
-          <span className="text-[11px] text-muted-foreground">{wordCount}/{MAX_COMMENT_WORDS} từ</span>
-
+          <span className="text-[11px] text-muted-foreground">
+            {wordCount}/{MAX_COMMENT_WORDS} từ
+          </span>
         </div>
       </div>
     </>

@@ -19,7 +19,7 @@ export default function CommentModal({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="flex max-h-[90vh] w-[700px] !max-w-[700px] flex-col gap-0 overflow-x-hidden overflow-y-hidden rounded-2xl border border-border bg-card p-0 shadow-2xl [&>button]:hidden">
+      <DialogContent className="flex h-150 flex-col gap-0 overflow-x-hidden overflow-y-auto rounded-2xl border border-border bg-card p-0 shadow-2xl md:max-h-[90vh] md:w-175 md:max-w-175! [&>button]:hidden">
         <DialogTitle className="sr-only">Bình luận bài viết</DialogTitle>
 
         {/* ── Header ── */}

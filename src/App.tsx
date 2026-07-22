@@ -11,8 +11,7 @@ import { useUserProfile } from "@/hooks/useUser";
 
 function App() {
   const loginSuccess = useSelector((state: RootState) => state.user.loginSuccess);
-  
-  // Fetch profile globally when logged in
+
   useUserProfile();
 
   useEffect(() => {

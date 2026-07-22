@@ -20,7 +20,6 @@ const iconMap: Record<string, React.ElementType> = {
   Clock,
 };
 
-// Mỗi lối tắt có một tông màu thương hiệu riêng để menu bớt đơn điệu
 const iconColorMap: Record<string, string> = {
   Users: "bg-blue-500/15 text-blue-600 dark:text-blue-400",
   UsersRound: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400",
@@ -30,7 +29,6 @@ const iconColorMap: Record<string, string> = {
   Clock: "bg-teal-500/15 text-teal-600 dark:text-teal-400",
 };
 
-
 export default function LeftSidebar() {
   const navigate = useNavigate();
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
@@ -38,15 +36,13 @@ export default function LeftSidebar() {
   const avatarSrc = resolveUploadUrl(profile?.avatar) ?? undefined;
 
   const { joinedGroups } = useGroupsData();
-  const managedGroups = joinedGroups.filter(
-    (g) => g.role === "ADMIN" || g.role === "MODERATOR",
-  );
+  const managedGroups = joinedGroups.filter((g) => g.role === "ADMIN" || g.role === "MODERATOR");
   const otherJoinedGroups = joinedGroups.filter(
     (g) => g.role !== "ADMIN" && g.role !== "MODERATOR",
   );
 
   return (
-    <aside className="hidden w-[300px] shrink-0 flex-col gap-2 overflow-y-auto py-4 pr-2 pl-4 xl:flex">
+    <aside className="custom-scrollbar hidden w-75 shrink-0 flex-col gap-2 overflow-y-auto py-4 pr-2 pl-4 xl:flex">
       <button
         type="button"
         className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
@@ -65,8 +61,7 @@ export default function LeftSidebar() {
         <span className="px-3 text-xs font-semibold text-muted-foreground">Lối tắt</span>
         {shortcuts.map((s) => {
           const Icon = iconMap[s.icon];
-          const colorClass =
-            iconColorMap[s.icon] ?? "bg-muted text-muted-foreground";
+          const colorClass = iconColorMap[s.icon] ?? "bg-muted text-muted-foreground";
           return (
             <button
               key={s.id}
@@ -74,16 +69,13 @@ export default function LeftSidebar() {
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
               onClick={() => s.to && navigate(s.to)}
             >
-              <span
-                className={`flex size-8 items-center justify-center rounded-lg ${colorClass}`}
-              >
+              <span className={`flex size-8 items-center justify-center rounded-lg ${colorClass}`}>
                 {Icon && <Icon className="size-4" />}
               </span>
               <span className="truncate">{s.label}</span>
             </button>
           );
         })}
-
       </div>
 
       {(managedGroups.length > 0 || otherJoinedGroups.length > 0) && (
@@ -107,9 +99,7 @@ export default function LeftSidebar() {
                       src={resolveUploadUrl(group.coverPhoto) || ""}
                       className="object-cover"
                     />
-                    <AvatarFallback className="rounded-lg">
-                      {group.name.charAt(0)}
-                    </AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{group.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1 text-left">
                     <p className="truncate font-semibold">{group.name}</p>
@@ -149,9 +139,7 @@ export default function LeftSidebar() {
                       src={resolveUploadUrl(group.coverPhoto) || ""}
                       className="object-cover"
                     />
-                    <AvatarFallback className="rounded-lg">
-                      {group.name.charAt(0)}
-                    </AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{group.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1 text-left">
                     <p className="truncate font-semibold">{group.name}</p>

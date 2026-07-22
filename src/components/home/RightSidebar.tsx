@@ -39,7 +39,7 @@ export default function RightSidebar() {
   const sorted = [...onlineFriends, ...offlineFriends];
 
   return (
-    <aside className="hidden w-75 shrink-0 flex-col gap-2 overflow-x-hidden overflow-y-auto py-4 pr-4 pl-2 lg:flex">
+    <aside className="custom-scrollbar hidden w-75 shrink-0 flex-col gap-2 overflow-x-hidden overflow-y-auto py-4 pr-4 pl-2 lg:flex">
       {/* Thông báo mới nhất (tối đa 4, bấm để mở popover đầy đủ) */}
       <NotificationsPreview />
 

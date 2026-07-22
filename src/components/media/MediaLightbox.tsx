@@ -23,12 +23,7 @@ interface MediaLightboxProps {
 function LightboxMedia({ item }: { item: MediaItem }) {
   if (item.mediaType === "VIDEO") {
     return (
-      <video
-        src={item.url}
-        controls
-        autoPlay
-        className="max-h-full max-w-full object-contain"
-      />
+      <video src={item.url} controls autoPlay className="max-h-full max-w-full object-contain" />
     );
   }
   // IMAGE (và fallback cho các loại khác vẫn hiển thị như ảnh nếu lỡ truyền vào)
@@ -64,7 +59,6 @@ export default function MediaLightbox({
   }
 
   const hasMultiple = viewable.length > 1;
-
 
   const goPrev = useCallback(() => {
     setIndex((i) => (i - 1 + viewable.length) % viewable.length);

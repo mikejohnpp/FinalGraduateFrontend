@@ -7,6 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   server: {
     port: 3000,
+    host: true,
     // proxy: {
     //   '/auth': {
     //     target: 'https://api.vieface.io.vn',
