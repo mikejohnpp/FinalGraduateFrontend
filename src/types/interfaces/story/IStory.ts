@@ -3,7 +3,7 @@ export interface IStoryRequest {
   content?: string;
   urlImage?: string;
   urlVideo?: string;
-  type: "STORY";
+  type: "STORY" | "REEL";
   color?: string;
 }
 

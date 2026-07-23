@@ -22,7 +22,6 @@ export default function ProfileFriends({ profile }: ProfileFriendsProps) {
     const fetchFriends = async () => {
       setLoading(true);
       try {
-        // GET /users/friends?userId={userId}&cursor=&size=6 (preview 6 bạn)
         const result = await friendService.getSingle<CursorPageResponse<IFriendship>>(
           API.FRIEND.BASE,
           undefined,
@@ -30,7 +29,6 @@ export default function ProfileFriends({ profile }: ProfileFriendsProps) {
         );
         setFriends(result?.data?.map((f) => f.user) ?? []);
       } catch {
-        // Silently fail — không hiện lỗi trong widget nhỏ
       } finally {
         setLoading(false);
       }

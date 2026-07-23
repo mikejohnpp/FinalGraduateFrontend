@@ -14,6 +14,16 @@ export class StoryService extends BaseService {
     const res = await http.get<ApiResultGeneric<IStoryDTO[]>>(API.STORY.FRIENDS, { userId });
     return res.data ?? [];
   }
+
+  async getAllReel(page: number = 0): Promise<IStoryDTO[]> {
+    const res = await http.get<ApiResultGeneric<IStoryDTO[]>>(API.STORY.REEL, { page });
+    return res.data ?? [];
+  }
+
+  async getAllReelByUserId(userId: number, page: number = 0): Promise<IStoryDTO[]> {
+    const res = await http.get<ApiResultGeneric<IStoryDTO[]>>(`${API.STORY.BASE}/reelUser`, { userId, page });
+    return res.data ?? [];
+  }
 }
 
 export default new StoryService();
