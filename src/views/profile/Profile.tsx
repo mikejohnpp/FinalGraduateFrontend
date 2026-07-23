@@ -11,6 +11,7 @@ import ProfileFriends from "./partials/ProfileFriends";
 import ProfilePhotos from "./partials/ProfilePhotos";
 import CreatePostCard from "@/components/home/CreatePostCard";
 import ProfilePostFeed from "./partials/ProfilePostFeed";
+import ProfileReel from "./partials/ProfileReel";
 
 export default function Profile() {
   const { userId } = useParams();
@@ -71,6 +72,11 @@ export default function Profile() {
         {activeTab === "photos" && (
           <div className="w-full">
             <ProfilePhotos />
+          </div>
+        )}
+        {activeTab === "reels" && (
+          <div className="w-full">
+            <ProfileReel />
           </div>
         )}
       </div>

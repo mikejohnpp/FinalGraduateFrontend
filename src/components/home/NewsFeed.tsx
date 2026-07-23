@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import CreatePostCard from "./CreatePostCard";
 import PostCard from "@/components/PostCard";
-import StoriesBar from "./StoriesBar";
+import StoriesBar from "./story/StoriesBar";
 import PostSkeleton from "./PostSkeleton";
 import { useSuggestedFeed } from "@/hooks/usePost";
 import { Loader2 } from "lucide-react";

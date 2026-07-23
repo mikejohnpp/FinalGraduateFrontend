@@ -38,6 +38,12 @@ export default function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps
             >
               Bạn bè
             </TabsTrigger>
+            <TabsTrigger
+              value="reels"
+              className="h-full rounded-none border-b-4 border-transparent px-4 font-semibold data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            >
+              Reels
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

@@ -7,6 +7,7 @@ import {
   LogOutIcon,
   Plus,
   Group,
+  Clapperboard,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -46,6 +47,7 @@ const navItems = [
     label: "Tin nhan",
     to: "messenger",
   },
+  { id: "reels", icon: Clapperboard, label: "Reels", to: "reels" },
 ];
 
 export default function Header() {
@@ -252,7 +254,7 @@ export default function Header() {
               <Button
                 variant="ghost"
                 size="lg"
-                className={cn("w-27", isActive && "text-primary")}
+                className={cn("w-20", isActive && "text-primary")}
                 aria-label={item.label}
                 onClick={() => navigate(item.to)}
               >
