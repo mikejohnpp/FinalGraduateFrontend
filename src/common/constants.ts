@@ -71,6 +71,12 @@ export const API = {
     POST_APPROVE: "users/groups", // Sẽ append /admin/pending-posts/.../approve
     POST_REJECT: "users/groups", // Sẽ append /admin/pending-posts/.../reject
   },
+
+  STORY: {
+    BASE: "users/story",
+    REEL: "users/story/reel",
+    FRIENDS: "users/story/friends",
+  },
 };
 
 export const AUTH_TOKEN_NAME = "access_token";

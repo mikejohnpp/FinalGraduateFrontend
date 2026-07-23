@@ -12,6 +12,7 @@ import socketSlice from "./socketSlice.ts";
 import chatSlice from "./chatSlice.ts";
 import { userOnlineSlice } from "./userOnlineSlice.ts";
 import mediaSlice from "./mediaSlice.ts";
+import storySlice from "./storySlice.ts";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     chat: chatSlice.reducer,
     userOnline: userOnlineSlice.reducer,
     media: mediaSlice.reducer,
+    story: storySlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
