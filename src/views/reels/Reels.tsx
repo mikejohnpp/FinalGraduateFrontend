@@ -51,46 +51,43 @@ export default function Reels() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black overflow-hidden md:relative md:h-[calc(100vh-62px)] md:w-full md:bg-[#18191A] md:z-auto">
-
-      <div className="absolute right-4 top-1/2 flex -translate-y-1/2 flex-col gap-4 z-30">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-black md:relative md:z-auto md:h-[calc(100vh-62px)] md:w-full md:bg-[#18191A]">
+      <div className="absolute top-1/2 right-4 z-30 flex -translate-y-1/2 flex-col gap-4">
         <button
           onClick={handlePrev}
           disabled={activeIndex === 0}
-          className="flex size-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-white/10 cursor-pointer"
+          className="flex size-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-white/10"
         >
           <ChevronUp className="size-8" />
         </button>
         <button
           onClick={handleNext}
           disabled={activeIndex === reels.length - 1 && !hasMore}
-          className="flex size-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-white/10 cursor-pointer"
+          className="flex size-12 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-white/10"
         >
           <ChevronDown className="size-8" />
         </button>
       </div>
 
       {activeReel ? (
-        <div className="relative flex h-full w-full flex-col items-center justify-center bg-black overflow-hidden md:max-h-[90%] md:max-w-[500px] md:rounded-xl md:shadow-2xl">
-          
+        <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-black md:max-h-[90%] md:max-w-[500px] md:rounded-xl md:shadow-2xl">
           <button
             onClick={() => navigate(-1)}
-            className="absolute right-4 top-4 z-20 flex size-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 cursor-pointer md:hidden"
+            className="absolute top-4 right-4 z-20 flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 md:hidden"
           >
             <X className="size-6" />
           </button>
 
           <button
             onClick={() => setIsMuted(!isMuted)}
-            className="absolute left-4 top-4 z-20 flex size-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 cursor-pointer"
+            className="absolute top-4 left-4 z-20 flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
           >
             {isMuted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
           </button>
 
-
           <video
             ref={videoRef}
-            src={activeReel.urlVideo}
+            src={activeReel.urlVideo || ""}
             className="h-full w-full object-contain"
             loop
             muted={isMuted}
@@ -98,19 +95,19 @@ export default function Reels() {
             playsInline
           />
 
-          <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
             <div className="flex items-center gap-3">
               <Avatar className="size-10 border-2 border-primary">
                 <AvatarImage src={activeReel.user?.avatarUrl || ""} />
-                <AvatarFallback>{activeReel.user?.username?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                <AvatarFallback>
+                  {activeReel.user?.username?.charAt(0).toUpperCase() || "U"}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="font-semibold text-white text-base">
+                <span className="text-base font-semibold text-white">
                   {activeReel.user?.username || "Người dùng"}
                 </span>
-                <span className="text-xs text-white/80 line-clamp-2">
-                  {activeReel.content}
-                </span>
+                <span className="line-clamp-2 text-xs text-white/80">{activeReel.content}</span>
               </div>
             </div>
           </div>
