@@ -28,19 +28,17 @@ export const API = {
   },
 
   FRIEND: {
-    BASE: "users/friends", // GET danh sách bạn bè, DELETE unfriend
-    REQUESTS: "users/friends/requests", // GET lời mời, POST gửi lời mời
-    REQUESTS_COUNT: "users/friends/requests/count", // GET badge count
-    SUGGESTIONS: "users/friends/suggestions", // GET gợi ý bạn bè
+    BASE: "users/friends",
+    REQUESTS: "users/friends/requests",
+    REQUESTS_COUNT: "users/friends/requests/count",
+    SUGGESTIONS: "users/friends/suggestions",
   },
 
   NOTIFICATION: {
-    BASE: "notifications", // GET danh sách thông báo
-    UNREAD_COUNT: "notifications/unread-count", // GET badge count chưa đọc
-    READ_ALL: "notifications/read-all", // PUT đánh dấu tất cả đã đọc
-    // PUT notifications/{id}/read — đánh dấu 1 thông báo đã đọc
+    BASE: "notifications",
+    UNREAD_COUNT: "notifications/unread-count",
+    READ_ALL: "notifications/read-all",
   },
-
 
   PROFILE: {
     BASE: "users",
@@ -60,16 +58,15 @@ export const API = {
     REPORT_EXPORT: "users/admin/reports/export",
   },
 
-
   GROUP_ADMIN: {
-    INFO: "users/groups", // Sẽ append /admin/info
-    STATS: "users/groups", // Sẽ append /admin/stats
-    MEMBER_REQUESTS: "users/groups", // Sẽ append /admin/member-requests
-    MEMBER_APPROVE: "users/groups", // Sẽ append /admin/member-requests/approve
-    MEMBER_REJECT: "users/groups", // Sẽ append /admin/member-requests/reject
-    PENDING_POSTS: "users/groups", // Sẽ append /admin/pending-posts
-    POST_APPROVE: "users/groups", // Sẽ append /admin/pending-posts/.../approve
-    POST_REJECT: "users/groups", // Sẽ append /admin/pending-posts/.../reject
+    INFO: "users/groups",
+    STATS: "users/groups",
+    MEMBER_REQUESTS: "users/groups",
+    MEMBER_APPROVE: "users/groups",
+    MEMBER_REJECT: "users/groups",
+    PENDING_POSTS: "users/groups",
+    POST_APPROVE: "users/groups",
+    POST_REJECT: "users/groups",
   },
 
   STORY: {

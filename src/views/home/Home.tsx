@@ -5,8 +5,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useReels } from "@/hooks/useReel";
 
 export default function Home() {
-
-  // Call useReels to clear and fetch all reels when navigating to home page
   useReels();
 
   return (
