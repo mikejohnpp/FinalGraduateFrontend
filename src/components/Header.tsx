@@ -26,6 +26,7 @@ import ButtonPopover from "./ButtonPopover";
 import MessagesInnerPopover from "./MessagesInnerPopover";
 import NotificationsInnerPopover from "./NotificationsInnerPopover";
 import AutoComplete from "./AutoComplete";
+import ThemeToggle from "./ThemeToggle";
 import userService from "@/services/userService";
 import { useLogoutUser } from "@/hooks/useUser";
 import { useUnreadCount } from "@/hooks/useNotification";
@@ -115,6 +116,9 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 justify-self-end">
+          {/* Chuyển giao diện sáng/tối */}
+          <ThemeToggle />
+
           {/* Chuông thông báo */}
           <Popover onOpenChange={(open) => open && refreshUnread()}>
             <PopoverTrigger
