@@ -19,6 +19,82 @@ function fileNameFromUrl(url: string): string {
   }
 }
 
+function SingleMediaFrame({
+  url,
+  type,
+  heightCap,
+  rounded,
+  onClick,
+  children,
+}: {
+  url: string;
+  type: "IMAGE" | "VIDEO";
+  heightCap: string;
+  rounded?: boolean;
+  onClick?: () => void;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div
+      className={cn(
+        "relative flex w-full items-center justify-center overflow-hidden bg-muted",
+        rounded && "rounded-lg",
+        heightCap,
+      )}
+    >
+      {/* Lớp nền mờ để lấp đầy hai bên viền (letterbox) */}
+      {type === "IMAGE" ? (
+        <img
+          src={url}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute inset-0 size-full scale-110 object-cover blur-2xl"
+        />
+      ) : (
+        <video
+          src={url}
+          aria-hidden
+          muted
+          playsInline
+          className="pointer-events-none absolute inset-0 size-full scale-110 object-cover blur-2xl"
+        />
+      )}
+      {/* Lớp phủ tối nhẹ để media chính nổi bật hơn trên nền mờ */}
+      <div aria-hidden className="absolute inset-0 bg-black/20" />
+
+      {/* Media chính: hiển thị toàn bộ, không crop */}
+      {type === "IMAGE" ? (
+        onClick ? (
+          <button
+            type="button"
+            onClick={onClick}
+            className="relative z-10 flex size-full cursor-pointer items-center justify-center"
+          >
+            <img src={url} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
+          </button>
+        ) : (
+          <img
+            src={url}
+            alt=""
+            loading="lazy"
+            className="relative z-10 max-h-full max-w-full object-contain"
+          />
+        )
+      ) : (
+        <>
+          <video
+            src={url}
+            controls
+            className="relative z-10 max-h-full max-w-full object-contain"
+          />
+          {children}
+        </>
+      )}
+    </div>
+  );
+}
+
+
 function ImageTile({
   item,
   rounded,
@@ -93,23 +169,34 @@ function ImageMosaic({
 }) {
   const count = images.length;
   const heightCap = isComment ? "max-h-72" : "max-h-[500px]";
+  // Comment: giữ bo góc + khoảng cách rõ. Post: sát nhau, không bo góc.
+  const gap = isComment ? "gap-1.5" : "gap-0.5";
+  const tileRounded = isComment;
 
-  // 1 ảnh: full, giới hạn chiều cao, không ép tỉ lệ.
+  // 1 ảnh: hiển thị toàn bộ + làm mờ hai bên viền (letterbox).
   if (count === 1) {
     return (
-      <div className={cn("overflow-hidden rounded-lg", heightCap)}>
-        <ImageTile item={images[0]} rounded onClick={clickOf(images[0])} />
-      </div>
+      <SingleMediaFrame
+        url={images[0].url}
+        type="IMAGE"
+        heightCap={heightCap}
+        rounded={isComment}
+        onClick={clickOf(images[0])}
+      />
     );
   }
+
 
   // 2 ảnh: 2 cột bằng nhau, mỗi ô vuông.
   if (count === 2) {
     return (
-      <div className="grid grid-cols-2 gap-1.5">
+      <div className={cn("grid grid-cols-2", gap)}>
         {images.map((item) => (
-          <div key={item.id} className="aspect-square overflow-hidden rounded-lg">
-            <ImageTile item={item} rounded onClick={clickOf(item)} />
+          <div
+            key={item.id}
+            className={cn("aspect-square overflow-hidden", tileRounded && "rounded-lg")}
+          >
+            <ImageTile item={item} rounded={tileRounded} onClick={clickOf(item)} />
           </div>
         ))}
       </div>
@@ -119,14 +206,14 @@ function ImageMosaic({
   // 3 ảnh: 1 lớn trái + 2 dọc phải.
   if (count === 3) {
     return (
-      <div className={cn("grid grid-cols-2 gap-1.5")}>
-        <div className="h-full rounded-lg">
-          <ImageTile item={images[0]} rounded onClick={clickOf(images[0])} />
+      <div className={cn("grid grid-cols-2", gap)}>
+        <div className={cn("h-full", tileRounded && "rounded-lg")}>
+          <ImageTile item={images[0]} rounded={tileRounded} onClick={clickOf(images[0])} />
         </div>
-        <div className="grid grid-rows-2 gap-1.5">
+        <div className={cn("grid grid-rows-2", gap)}>
           {images.slice(1, 3).map((item) => (
-            <div key={item.id} className="h-full rounded-lg">
-              <ImageTile item={item} rounded onClick={clickOf(item)} />
+            <div key={item.id} className={cn("h-full", tileRounded && "rounded-lg")}>
+              <ImageTile item={item} rounded={tileRounded} onClick={clickOf(item)} />
             </div>
           ))}
         </div>
@@ -137,10 +224,13 @@ function ImageMosaic({
   // 4 ảnh: lưới 2x2.
   if (count === 4) {
     return (
-      <div className="grid grid-cols-2 gap-1.5">
+      <div className={cn("grid grid-cols-2", gap)}>
         {images.map((item) => (
-          <div key={item.id} className="aspect-square overflow-hidden rounded-lg">
-            <ImageTile item={item} rounded onClick={clickOf(item)} />
+          <div
+            key={item.id}
+            className={cn("aspect-square overflow-hidden", tileRounded && "rounded-lg")}
+          >
+            <ImageTile item={item} rounded={tileRounded} onClick={clickOf(item)} />
           </div>
         ))}
       </div>
@@ -153,22 +243,28 @@ function ImageMosaic({
   const remaining = count - 5;
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <div className="grid grid-cols-2 gap-1.5">
+    <div className={cn("flex flex-col", gap)}>
+      <div className={cn("grid grid-cols-2", gap)}>
         {top.map((item) => (
-          <div key={item.id} className="aspect-[4/3] overflow-hidden rounded-lg">
-            <ImageTile item={item} rounded onClick={clickOf(item)} />
+          <div
+            key={item.id}
+            className={cn("aspect-[4/3] overflow-hidden", tileRounded && "rounded-lg")}
+          >
+            <ImageTile item={item} rounded={tileRounded} onClick={clickOf(item)} />
           </div>
         ))}
       </div>
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className={cn("grid grid-cols-3", gap)}>
         {bottom.map((item, idx) => {
           const isLast = idx === bottom.length - 1;
           return (
-            <div key={item.id} className="aspect-square overflow-hidden rounded-lg">
+            <div
+              key={item.id}
+              className={cn("aspect-square overflow-hidden", tileRounded && "rounded-lg")}
+            >
               <ImageTile
                 item={item}
-                rounded
+                rounded={tileRounded}
                 onClick={clickOf(item)}
                 overlayCount={isLast && remaining > 0 ? remaining : undefined}
               />
@@ -179,6 +275,7 @@ function ImageMosaic({
     </div>
   );
 }
+
 
 /**
  * Render danh sách media (đã sort theo position) theo từng loại.
@@ -213,32 +310,25 @@ export default function MediaGallery({
       {/* Ảnh — bố cục mosaic kiểu Facebook */}
       {images.length > 0 && <ImageMosaic images={images} isComment={isComment} clickOf={clickOf} />}
 
-      {/* Video */}
-      {videos.map((item) =>
-        onOpenLightbox ? (
-          <div key={item.id} className="relative">
-            <video
-              src={item.url}
-              controls
-              className={cn("w-full rounded-lg bg-black", isComment ? "max-h-72" : "max-h-[500px]")}
-            />
-            {/* Lớp phủ để mở lightbox khi click (không che vùng điều khiển dưới cùng) */}
+      {/* Video — hiển thị toàn bộ + làm mờ hai bên viền (letterbox) */}
+      {videos.map((item) => (
+        <SingleMediaFrame
+          key={item.id}
+          url={item.url}
+          type="VIDEO"
+          heightCap={isComment ? "max-h-72" : "max-h-[500px]"}
+        >
+          {onOpenLightbox && (
             <button
               type="button"
               onClick={() => onOpenLightbox(viewIndexOf(item))}
-              className="absolute inset-x-0 top-0 bottom-12 cursor-pointer"
+              className="absolute inset-x-0 top-0 bottom-12 z-20 cursor-pointer"
               aria-label="Xem video"
             />
-          </div>
-        ) : (
-          <video
-            key={item.id}
-            src={item.url}
-            controls
-            className={cn("w-full rounded-lg bg-black", isComment ? "max-h-72" : "max-h-[500px]")}
-          />
-        ),
-      )}
+          )}
+        </SingleMediaFrame>
+      ))}
+
 
       {/* Audio */}
       {audios.map((item) => (

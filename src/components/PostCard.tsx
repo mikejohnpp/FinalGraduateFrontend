@@ -160,7 +160,7 @@ export default function PostCard({ post }: { post: IPost }) {
           {post.media?.length > 0 && (
             <MediaGallery
               media={post.media}
-              className="mb-3 px-4"
+              className="mb-3"
               onOpenLightbox={(index) => setLightbox({ open: true, index })}
             />
           )}
