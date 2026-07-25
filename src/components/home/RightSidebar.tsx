@@ -1,4 +1,4 @@
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, Contact } from "lucide-react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -47,7 +47,8 @@ export default function RightSidebar() {
 
       <div className="flex flex-col gap-1 px-2">
         <div className="mb-1 flex items-center justify-between">
-          <span className="text-xs font-semibold text-muted-foreground">
+          <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+            <Contact className="size-3.5" />
             Liên hệ
             {onlineFriends.length > 0 && (
               <span className="ml-1 text-emerald-500">({onlineFriends.length} online)</span>

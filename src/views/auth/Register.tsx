@@ -22,9 +22,7 @@ export default function Register() {
         {/* Left column — Brand (hidden on mobile) */}
         <div className="hidden items-center justify-center bg-card/50 lg:flex">
           <div className="flex flex-col items-center gap-6 px-8">
-            <div className="flex size-48 items-center justify-center rounded-full bg-primary">
-              <span className="text-7xl font-bold text-primary-foreground">f</span>
-            </div>
+            <img src="/logo.svg" alt="Misa App" className="size-48" />
             <p className="text-lg text-muted-foreground">Kết nối cộng đồng, chia sẻ khoảnh khắc.</p>
           </div>
         </div>

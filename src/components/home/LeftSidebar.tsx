@@ -1,4 +1,13 @@
-import { Users, UsersRound, Video, Bookmark, Calendar, Clock } from "lucide-react";
+import {
+  Users,
+  UsersRound,
+  Video,
+  Bookmark,
+  Calendar,
+  Clock,
+  LayoutGrid,
+  ShieldCheck,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
@@ -58,7 +67,10 @@ export default function LeftSidebar() {
       <Separator className="my-1" />
 
       <div className="flex flex-col gap-1">
-        <span className="px-3 text-xs font-semibold text-muted-foreground">Lối tắt</span>
+        <span className="flex items-center gap-1.5 px-3 text-xs font-semibold text-muted-foreground">
+          <LayoutGrid className="size-3.5" />
+          Lối tắt
+        </span>
         {shortcuts.map((s) => {
           const Icon = iconMap[s.icon];
           const colorClass = iconColorMap[s.icon] ?? "bg-muted text-muted-foreground";
@@ -84,7 +96,8 @@ export default function LeftSidebar() {
 
           {managedGroups.length > 0 && (
             <div className="flex flex-col gap-1">
-              <span className="px-3 text-xs font-semibold text-muted-foreground">
+              <span className="flex items-center gap-1.5 px-3 text-xs font-semibold text-muted-foreground">
+                <ShieldCheck className="size-3.5" />
                 Nhóm do bạn quản lý
               </span>
               {managedGroups.slice(0, 6).map((group) => (
@@ -115,7 +128,8 @@ export default function LeftSidebar() {
           {otherJoinedGroups.length > 0 && (
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between px-3">
-                <span className="text-xs font-semibold text-muted-foreground">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                  <Users className="size-3.5" />
                   Nhóm bạn đã tham gia
                 </span>
                 <Button

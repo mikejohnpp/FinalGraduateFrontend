@@ -1,6 +1,8 @@
 import Default from "@/views/layouts/Default";
 import MainLayout from "@/views/layouts/MainLayout";
+import RootLayout from "@/views/layouts/RootLayout";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
 import { createBrowserRouter } from "react-router-dom";
 import { friendRoutes, FRIENDS_PATH_CONSTRAINS as FRIENDS_PATH_CONSTRAINT } from "./friendRoutes";
 import { GROUP_PATH_CONSTRAINT, groupsRoutes } from "./groupRoutes";
@@ -24,28 +26,35 @@ export const PATH_CONSTRAINT = {
 
 const router = createBrowserRouter([
   {
-    element: <Default />,
-    errorElement: <div>Đã có lỗi xảy ra</div>,
-    children: [...authRoutes],
-  },
-  {
-    element: <ProtectedRoute />,
-    errorElement: <div>Đã có lỗi xảy ra</div>,
+    // Layout gốc: gắn TitleManager để tự động cập nhật document.title theo route
+    element: <RootLayout />,
     children: [
       {
-        element: <MainLayout />,
+        element: <Default />,
+        errorElement: <div>Đã có lỗi xảy ra</div>,
+        children: [...authRoutes],
+      },
+      {
+        element: <ProtectedRoute />,
+        errorElement: <div>Đã có lỗi xảy ra</div>,
         children: [
-          ...homeRoutes,
-          ...messengerRoutes,
-          ...groupsRoutes,
-          ...profileRoutes,
-          ...friendRoutes,
-          ...reelRoutes,
+          {
+            element: <MainLayout />,
+            children: [
+              ...homeRoutes,
+              ...messengerRoutes,
+              ...groupsRoutes,
+              ...profileRoutes,
+              ...friendRoutes,
+              ...reelRoutes,
+            ],
+          },
         ],
       },
+      ...adminRoutes,
     ],
   },
-  ...adminRoutes,
 ]);
+
 
 export default router;
