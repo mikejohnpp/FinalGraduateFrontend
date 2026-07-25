@@ -168,7 +168,8 @@ function ImageMosaic({
   clickOf: (item: MediaItem) => (() => void) | undefined;
 }) {
   const count = images.length;
-  const heightCap = isComment ? "max-h-72" : "max-h-[500px]";
+  const heightCap = isComment ? "max-h-[400px]" : "max-h-[80vh]";
+
   // Comment: giữ bo góc + khoảng cách rõ. Post: sát nhau, không bo góc.
   const gap = isComment ? "gap-1.5" : "gap-0.5";
   const tileRounded = isComment;
@@ -316,7 +317,8 @@ export default function MediaGallery({
           key={item.id}
           url={item.url}
           type="VIDEO"
-          heightCap={isComment ? "max-h-72" : "max-h-[500px]"}
+          heightCap={isComment ? "max-h-[400px]" : "max-h-[80vh]"}
+
         >
           {onOpenLightbox && (
             <button

@@ -11,9 +11,12 @@ import friendService from "@/services/friendService";
 
 interface ProfileFriendsProps {
   profile: UserProfileDTO;
+  /** Chuyển sang tab "Bạn bè" khi bấm tiêu đề hoặc "Xem tất cả bạn bè". */
+  onViewAll?: () => void;
 }
 
-export default function ProfileFriends({ profile }: ProfileFriendsProps) {
+export default function ProfileFriends({ profile, onViewAll }: ProfileFriendsProps) {
+
   const [friends, setFriends] = useState<IAuthor[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -40,15 +43,25 @@ export default function ProfileFriends({ profile }: ProfileFriendsProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div>
-          <CardTitle className="cursor-pointer text-xl font-bold hover:underline">Bạn bè</CardTitle>
+          <CardTitle
+            className="cursor-pointer text-xl font-bold hover:underline"
+            onClick={onViewAll}
+          >
+            Bạn bè
+          </CardTitle>
           <p className="text-sm text-muted-foreground">{profile.friendCount} người bạn</p>
         </div>
-        {/*
-        <Button variant="link" className="h-auto p-0 font-normal text-primary">
-          Xem tất cả bạn bè
-        </Button>
-        */}
+        {onViewAll && (
+          <Button
+            variant="link"
+            className="h-auto p-0 font-normal text-primary"
+            onClick={onViewAll}
+          >
+            Xem tất cả bạn bè
+          </Button>
+        )}
       </CardHeader>
+
       <CardContent>
         {loading ? (
           <div className="py-4 text-center text-sm text-muted-foreground">Đang tải...</div>

@@ -11,7 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { IPost } from "@/types/interfaces/post/IPost";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import type { RootState } from "@/stores/store";
+
 import { useComments, useCreateComment } from "@/hooks/useComment";
 import { useLikePost } from "@/hooks/usePost";
 import { useMediaUpload } from "@/hooks/useMediaUpload";
@@ -63,7 +65,9 @@ export default function PostCommentPanel({
   highlightCommentId?: number;
 }) {
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
+  const navigate = useNavigate();
   const { comments, loading, hasMore, loadMore } = useComments(post.id);
+
   const { create, loading: sending } = useCreateComment(post.id);
   const { like: likePost, unlike: unlikePost, loadingId: postLoadingId } = useLikePost();
   const { drafts, uploading, addFiles, removeDraft, clear, upload } = useMediaUpload();
@@ -151,6 +155,11 @@ export default function PostCommentPanel({
   const authorAvatar = post.author?.avatar || "";
   const myAvatar = profile?.avatar || "";
 
+  const goToAuthorProfile = () => {
+    if (post.author?.id) navigate(`/profile/${post.author.id}`);
+  };
+
+
   return (
     <>
       {/* ── Scrollable body ── */}
@@ -158,13 +167,19 @@ export default function PostCommentPanel({
         {/* Post preview */}
         <div className="px-4 pt-4">
           <div className="flex items-start gap-3">
-            <Avatar className="size-10 shrink-0">
+            <Avatar className="size-10 shrink-0 cursor-pointer" onClick={goToAuthorProfile}>
               <AvatarImage src={authorAvatar} />
               <AvatarFallback className="text-sm font-bold">{authorName.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[14px] font-semibold text-foreground">{authorName}</span>
+                <span
+                  className="cursor-pointer text-[14px] font-semibold text-foreground hover:underline"
+                  onClick={goToAuthorProfile}
+                >
+                  {authorName}
+                </span>
+
                 {post.authorRole && (
                   <Badge variant="secondary" className="px-1.5 py-0 text-[11px] font-semibold">
                     ⭐ {post.authorRole}
@@ -187,9 +202,11 @@ export default function PostCommentPanel({
           <div className="mt-3 flex items-center justify-between pb-2 text-[13px] text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <div className="flex -space-x-1">
+                {/*
                 <span className="flex size-[18px] items-center justify-center rounded-full border-2 border-card bg-amber-400 text-[9px]">
                   😄
                 </span>
+              */}
                 <span className="flex size-[18px] items-center justify-center rounded-full border-2 border-card bg-primary text-[9px] text-primary-foreground">
                   👍
                 </span>
@@ -215,19 +232,23 @@ export default function PostCommentPanel({
             label="Bình luận"
             onClick={() => setTimeout(() => inputRef.current?.focus(), 100)}
           />
+          {/*
           <ActionButton icon={<Share2 className="size-[18px]" />} label="Chia sẻ" />
+          */}
         </div>
 
         <Separator />
 
         {/* Comments */}
         <div className="flex flex-col gap-2 px-4 py-3">
+          {/*
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-semibold text-foreground">Bình luận nổi bật</span>
             <button className="text-[12px] font-semibold text-primary hover:underline">
               Mới nhất
             </button>
           </div>
+          */}
           {loading && comments.length === 0 ? (
             <div className="flex flex-col gap-3">
               {[1, 2, 3].map((i) => (

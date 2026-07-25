@@ -36,7 +36,11 @@ export default function Profile() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/20 pb-10">
-      <ProfileCover profile={profile} isOwner={isOwner} />
+      <ProfileCover
+        profile={profile}
+        isOwner={isOwner}
+        onViewFriends={() => setActiveTab("friends")}
+      />
       <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="mx-auto mt-4 w-full max-w-5xl px-4 sm:px-8">
@@ -44,8 +48,9 @@ export default function Profile() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-[2fr_3fr]">
             <div className="flex flex-col gap-4">
               <ProfileAbout profile={profile} isOwner={isOwner} />
-              <ProfileFriends profile={profile} />
+              <ProfileFriends profile={profile} onViewAll={() => setActiveTab("friends")} />
             </div>
+
             <div className="flex flex-col">
               {isOwner && (
                 <div className="pt-0 pb-4">

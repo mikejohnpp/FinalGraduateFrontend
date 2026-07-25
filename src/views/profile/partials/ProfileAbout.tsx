@@ -35,7 +35,7 @@ export default function ProfileAbout({ profile, isOwner }: ProfileAboutProps) {
             <div className="flex items-center gap-2 text-sm">
               <GraduationCap className="size-5 text-muted-foreground" />
               <span>
-                Học tại <span className="font-semibold">{profile.education}</span>
+                Học vị <span className="font-semibold">{profile.education}</span>
               </span>
             </div>
           )}

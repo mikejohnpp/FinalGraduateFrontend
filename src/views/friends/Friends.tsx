@@ -1,18 +1,18 @@
 import { Outlet } from "react-router-dom";
 
 import FriendsSidebar from "@/components/friends/FriendsSidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Friends() {
-  const isMobile = useIsMobile();
   return (
-    <div className="flex w-full flex-col px-0 py-0 md:grid md:grid-cols-[320px_1fr] md:overflow-hidden">
-      <aside className="md:block md:h-[calc(100vh-62px)] md:w-80 lg:block">
+
+    <div className="flex w-full flex-col px-0 py-0 md:grid md:h-[calc(100vh-62px)] md:grid-cols-[320px_1fr] md:overflow-hidden">
+      <aside className="md:block md:h-full md:w-80 lg:block">
         <FriendsSidebar />
       </aside>
-      <section>
+      <section className="md:h-full md:overflow-hidden">
         <Outlet />
       </section>
     </div>
+
   );
 }

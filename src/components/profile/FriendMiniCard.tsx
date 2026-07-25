@@ -1,17 +1,23 @@
 import type { IAuthor } from "@/types/interfaces/user/IAuthor";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
+import { useNavigate } from "react-router-dom";
 
 interface FriendMiniCardProps {
   friend: IAuthor;
 }
 
 export default function FriendMiniCard({ friend }: FriendMiniCardProps) {
+  const navigate = useNavigate();
   const avatarSrc =
     resolveUploadUrl(friend.avatar) ??
     `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.name)}`;
 
   return (
-    <div className="flex cursor-pointer flex-col gap-1">
+    <div
+      className="flex cursor-pointer flex-col gap-1"
+      onClick={() => friend.id && navigate(`/profile/${friend.id}`)}
+    >
+
       <div className="aspect-square w-full overflow-hidden rounded-md">
         <img
           src={avatarSrc}

@@ -29,9 +29,12 @@ import {
 interface ProfileCoverProps {
   profile: UserProfileDTO;
   isOwner: boolean;
+  /** Chuyển sang tab "Bạn bè" khi bấm vào số lượng bạn bè. */
+  onViewFriends?: () => void;
 }
 
-export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
+export default function ProfileCover({ profile, isOwner, onViewFriends }: ProfileCoverProps) {
+
   const [editPanelOpen, setEditPanelOpen] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
@@ -231,9 +234,14 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
 
           <div className="mb-4 flex flex-col items-center text-center md:mb-2 md:items-start md:text-left">
             <h1 className="text-3xl font-bold">{profile.userName || profile.nickName}</h1>
-            <p className="cursor-pointer font-medium text-muted-foreground hover:underline">
+            <button
+              type="button"
+              onClick={onViewFriends}
+              className="cursor-pointer text-left font-medium text-muted-foreground hover:underline"
+            >
               {profile.friendCount} người bạn
-            </p>
+            </button>
+
           </div>
         </div>
 

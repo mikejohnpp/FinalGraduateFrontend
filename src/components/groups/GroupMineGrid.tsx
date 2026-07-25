@@ -86,9 +86,11 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
         <>
           <div className="flex items-center justify-between bg-background py-2">
             <h2 className="text-xl font-bold">Nhóm do bạn quản lý ({managedGroups.length})</h2>
+            {/* 
             <Button variant="outline" size="sm" className="bg-secondary/50">
               <ArrowUpDown data-icon="inline-start" /> Sắp xếp
             </Button>
+            */}
           </div>
 
           <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -122,9 +124,11 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
             <h2 className="text-xl font-bold">
               Tất cả các nhóm bạn đã tham gia ({otherJoinedGroups.length})
             </h2>
+            {/*
             <Button variant="outline" size="sm" className="bg-secondary/50">
               <ArrowUpDown data-icon="inline-start" /> Sắp xếp
             </Button>
+            */}
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

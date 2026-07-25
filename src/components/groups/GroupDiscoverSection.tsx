@@ -20,12 +20,14 @@ export default function GroupDiscoverSection() {
           <h3 className="text-lg font-bold text-foreground">Gợi ý cho bạn</h3>
           <p className="text-sm text-muted-foreground">Nhóm bạn có thể quan tâm.</p>
         </div>
+        {/*  
         <Button variant="link" onClick={() => navigate(PATH_CONSTRAINT.GROUPS_DISCOVER)}>
           Xem tất cả
         </Button>
+        */}
       </div>
 
-      <div className="flex w-full min-w-0 touch-pan-x snap-x snap-mandatory flex-nowrap gap-3 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-full min-w-0 touch-pan-x snap-x snap-mandatory flex-nowrap gap-3 overflow-x-auto pb-2">
         {topSuggested.map((group) => (
           <GroupCard
             key={group.id}

@@ -17,8 +17,10 @@ import {
   useEditComment,
 } from "@/hooks/useComment";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import type { RootState } from "@/stores/store";
 import SentimentIndicator from "./SentimentIndicator";
+
 import MediaGallery from "@/components/media/MediaGallery";
 import { countWords, limitWords } from "@/utils/stringHelper";
 
@@ -56,10 +58,15 @@ function ReplyBubble({
   parentId: number;
 }) {
   const { like, unlike } = useLikeComment(postId);
+  const navigate = useNavigate();
+
+  const goToProfile = () => {
+    if (reply.author.id) navigate(`/profile/${reply.author.id}`);
+  };
 
   return (
     <div className="flex gap-2">
-      <Avatar className="size-7 shrink-0">
+      <Avatar className="size-7 shrink-0 cursor-pointer" onClick={goToProfile}>
         <AvatarImage src={reply.author.avatar ?? ""} />
         <AvatarFallback className="text-[10px] font-bold">
           {reply.author.name.charAt(0)}
@@ -67,7 +74,13 @@ function ReplyBubble({
       </Avatar>
       <div className="flex flex-1 flex-col">
         <div className="group relative inline-block max-w-full rounded-2xl bg-muted ring-1 ring-border/40 px-3 py-2">
-          <p className="text-[12px] font-semibold text-foreground">{reply.author.name}</p>
+          <p
+            className="cursor-pointer text-[12px] font-semibold text-foreground hover:underline"
+            onClick={goToProfile}
+          >
+            {reply.author.name}
+          </p>
+
           {reply.content && (
             <p className="text-[13px] leading-snug text-foreground">{reply.content}</p>
           )}
@@ -166,12 +179,18 @@ function ReplyList({ comment, postId }: { comment: IComment; postId: number }) {
 
 export default function CommentItem({ comment, postId, onReply, highlight }: CommentItemProps) {
   const { userId } = useSelector((r: RootState) => r.user);
+  const navigate = useNavigate();
   const { like, unlike } = useLikeComment(postId);
   const { remove } = useDeleteComment(postId);
   const { edit } = useEditComment(postId);
   const [showReplies, setShowReplies] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content);
+
+  const goToProfile = () => {
+    if (comment.author.id) navigate(`/profile/${comment.author.id}`);
+  };
+
 
   useEffect(() => {
     setEditText(comment.content);
@@ -200,7 +219,7 @@ export default function CommentItem({ comment, postId, onReply, highlight }: Com
         highlight && "bg-primary/10 ring-1 ring-primary/30",
       )}
     >
-      <Avatar className="size-9 shrink-0">
+      <Avatar className="size-9 shrink-0 cursor-pointer" onClick={goToProfile}>
         <AvatarImage src={comment.author.avatar ?? ""} />
         <AvatarFallback className="text-xs font-bold">
           {comment.author.name.charAt(0)}
@@ -209,7 +228,13 @@ export default function CommentItem({ comment, postId, onReply, highlight }: Com
 
       <div className="flex flex-1 flex-col">
         <div className="group relative inline-block max-w-full rounded-2xl bg-muted ring-1 ring-border/40 px-3.5 py-2.5">
-          <p className="mb-0.5 text-[13px] font-semibold text-foreground">{comment.author.name}</p>
+          <p
+            className="mb-0.5 cursor-pointer text-[13px] font-semibold text-foreground hover:underline"
+            onClick={goToProfile}
+          >
+            {comment.author.name}
+          </p>
+
 
           {isEditing ? (
             <div className="flex flex-col gap-2">

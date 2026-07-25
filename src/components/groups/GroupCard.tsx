@@ -37,15 +37,19 @@ export default function GroupCard({
   return (
     <Card className={cn("relative flex h-full flex-col overflow-hidden", className)}>
       <div
-        className="relative aspect-video cursor-pointer"
+        className="relative aspect-video cursor-pointer overflow-hidden"
         onClick={goToGroup}
         role="link"
         aria-label={group.name}
       >
         {coverUrl ? (
-          <img src={coverUrl} alt={group.name} className="size-full object-cover" />
+          <img
+            src={coverUrl}
+            alt={group.name}
+            className="absolute inset-0 size-full object-cover"
+          />
         ) : (
-          <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
             <span className="text-5xl font-bold text-primary/70">{initial}</span>
           </div>
         )}
