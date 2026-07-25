@@ -16,7 +16,6 @@ export default function MainLayout() {
           <Outlet />
         </Suspense>
       </div>
-      {/* Trình xem bài viết toàn cục (mở từ thông báo bình luận/trả lời) */}
       <PostViewer />
     </main>
   );

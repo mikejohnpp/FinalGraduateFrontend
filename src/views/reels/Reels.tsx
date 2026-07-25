@@ -70,34 +70,43 @@ export default function Reels() {
       </div>
 
       {activeReel ? (
-        <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-black md:max-h-[90%] md:max-w-[500px] md:rounded-xl md:shadow-2xl">
+        <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-black md:max-h-[90%] md:max-w-125 md:rounded-xl md:shadow-2xl">
           <button
             onClick={() => navigate(-1)}
-            className="absolute top-4 right-4 z-20 flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70 md:hidden"
+            className="absolute top-4 right-4 z-20 flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
           >
             <X className="size-6" />
           </button>
 
-          <button
+          {/* <button
             onClick={() => setIsMuted(!isMuted)}
             className="absolute top-4 left-4 z-20 flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
           >
             {isMuted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
           </button>
+          <button
+            onClick={() => setIsMuted(!isMuted)}
+            className="absolute top-4 right-4 z-20 flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-colors hover:bg-black/70"
+          >
+            {isMuted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
+          </button> */}
 
           <video
             ref={videoRef}
             src={activeReel.urlVideo || ""}
             className="h-full w-full object-contain"
-            loop
-            muted={isMuted}
             autoPlay
             playsInline
+            loop
+            controls
           />
 
-          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
+          <div className="absolute top-0 left-0 w-full bg-linear-to-t from-black/80 via-black/40 to-transparent p-4">
             <div className="flex items-center gap-3">
-              <Avatar className="size-10 border-2 border-primary">
+              <Avatar
+                className="size-10 border-2 border-primary hover:cursor-pointer"
+                onClick={() => navigate(`/profile/${activeReel.user.id}`)}
+              >
                 <AvatarImage src={activeReel.user?.avatarUrl || ""} />
                 <AvatarFallback>
                   {activeReel.user?.username?.charAt(0).toUpperCase() || "U"}
