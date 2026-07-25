@@ -28,7 +28,18 @@ export default function EditableRow({
   onSave,
   onCancel,
 }: EditableRowProps) {
-  const [localValue, setLocalValue] = React.useState(value || "");
+  const [localValue, setLocalValue] = React.useState(value ?? "");
+  const [wasActive, setWasActive] = React.useState(isActive);
+
+  // Reset localValue từ value mỗi khi row chuyển sang chế độ chỉnh sửa.
+  // Đây là pattern "điều chỉnh state khi render" của React, tránh lệch
+  // giá trị do timing/stale state mà không cần useEffect.
+  if (isActive !== wasActive) {
+    setWasActive(isActive);
+    if (isActive) {
+      setLocalValue(value ?? "");
+    }
+  }
 
   const handleSave = () => {
     onSave(field, localValue);

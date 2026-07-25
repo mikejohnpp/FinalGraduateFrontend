@@ -3,6 +3,7 @@ import { SearchIcon, UsersIcon, LayoutIcon, ClockIcon, XIcon, Loader2Icon } from
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSearch } from "@/hooks/useSearch";
+import { getAuthorDisplayName } from "@/utils/displayName";
 
 export default function AutoComplete() {
   const navigate = useNavigate();
@@ -111,12 +112,12 @@ export default function AutoComplete() {
                   <Avatar className="size-9 shrink-0">
                     <AvatarImage src={user.avatar ?? undefined} />
                     <AvatarFallback className="text-xs font-bold">
-                      {(user.nickName || user.name).charAt(0).toUpperCase()}
+                      {getAuthorDisplayName(user).charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 overflow-hidden">
                     <p className="truncate text-sm font-medium text-foreground">
-                      {user.nickName || user.name}
+                      {getAuthorDisplayName(user)}
                     </p>
                     {user.nickName && (
                       <p className="truncate text-xs text-muted-foreground">@{user.name}</p>

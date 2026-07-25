@@ -10,6 +10,7 @@ import type { IFriendship } from "@/types/interfaces/friend/IFriendship";
 
 import ContactItem from "./ContactItem";
 import NotificationsPreview from "./NotificationsPreview";
+import { getAuthorDisplayName } from "@/utils/displayName";
 
 function ContactSkeleton() {
   return (
@@ -27,7 +28,7 @@ export default function RightSidebar() {
 
   const filtered: IFriendship[] = search.trim()
     ? friends.filter((f) => {
-        const name = (f.user.nickName || f.user.name).toLowerCase();
+        const name = getAuthorDisplayName(f.user).toLowerCase();
         return name.includes(search.toLowerCase());
       })
     : friends;

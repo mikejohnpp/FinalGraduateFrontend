@@ -46,7 +46,7 @@ export default function CreatePostCard({ groupId, onPostCreated }: CreatePostCar
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
 
   const userAvatar = profile?.avatar || undefined;
-  const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
+  const displayName = profile?.userName || profile?.nickName || username || "Người dùng";
   const initial = displayName.charAt(0).toUpperCase();
 
   const busy = loading || uploading;

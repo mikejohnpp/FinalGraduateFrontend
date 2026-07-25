@@ -41,7 +41,7 @@ const iconColorMap: Record<string, string> = {
 export default function LeftSidebar() {
   const navigate = useNavigate();
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
-  const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
+  const displayName = profile?.userName || profile?.nickName || username || "Người dùng";
   const avatarSrc = resolveUploadUrl(profile?.avatar) ?? undefined;
 
   const { joinedGroups } = useGroupsData();

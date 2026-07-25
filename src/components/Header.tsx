@@ -59,7 +59,7 @@ export default function Header() {
   const isMobile = useIsMobile();
 
   const userAvatar = profile?.avatar || undefined;
-  const displayName = profile?.nickName || profile?.userName || username || "Người dùng";
+  const displayName = profile?.userName || profile?.nickName || username || "Người dùng";
   const initial = displayName.charAt(0).toUpperCase();
 
   const handleLogout = async () => {

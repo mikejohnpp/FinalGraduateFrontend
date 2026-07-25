@@ -230,7 +230,7 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
           </div>
 
           <div className="mb-4 flex flex-col items-center text-center md:mb-2 md:items-start md:text-left">
-            <h1 className="text-3xl font-bold">{profile.nickName || profile.userName}</h1>
+            <h1 className="text-3xl font-bold">{profile.userName || profile.nickName}</h1>
             <p className="cursor-pointer font-medium text-muted-foreground hover:underline">
               {profile.friendCount} người bạn
             </p>

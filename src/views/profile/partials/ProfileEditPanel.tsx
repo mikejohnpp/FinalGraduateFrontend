@@ -16,7 +16,10 @@ import {
   Globe,
   GraduationCap,
   Briefcase,
+  User,
+  AtSign,
 } from "lucide-react";
+
 import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
 import type { IProfileUpdate } from "@/types/interfaces/user/IProfileUpdate";
 import EditableRow from "@/components/profile/EditableRow";
@@ -31,7 +34,10 @@ export default function ProfileEditPanel({ profile, onClose }: ProfileEditPanelP
   const { update, loading } = useUpdateProfile();
   const [activeField, setActiveField] = useState<string | null>(null);
   const [draft, setDraft] = useState<IProfileUpdate>({
+    userName: profile.userName ?? "",
+    nickName: profile.nickName ?? "",
     bio: profile.bio ?? "",
+
     location: profile.location ?? "",
     education: profile.education ?? "",
     workplace: profile.workplace ?? "",
@@ -72,6 +78,36 @@ export default function ProfileEditPanel({ profile, onClose }: ProfileEditPanelP
       <CardContent className="flex max-h-[70vh] flex-col overflow-y-auto p-0 md:flex-row">
         {/* Cột trái: Giới thiệu */}
         <div className="flex-1 p-4 md:border-r">
+          <h3 className="mb-3 font-semibold">Tên hiển thị</h3>
+          <Separator className="mb-4" />
+
+          <div className="mb-4 flex flex-col gap-1">
+            <EditableRow
+              icon={User}
+              label="Tên hiển thị"
+              value={draft.userName}
+              placeholder="Thêm tên hiển thị"
+              field="userName"
+              isActive={activeField === "userName"}
+              isLocked={activeField !== null && activeField !== "userName"}
+              onEdit={handleEdit}
+              onSave={handleSaveField}
+              onCancel={handleCancel}
+            />
+            <EditableRow
+              icon={AtSign}
+              label="Biệt danh"
+              value={draft.nickName}
+              placeholder="Thêm biệt danh"
+              field="nickName"
+              isActive={activeField === "nickName"}
+              isLocked={activeField !== null && activeField !== "nickName"}
+              onEdit={handleEdit}
+              onSave={handleSaveField}
+              onCancel={handleCancel}
+            />
+          </div>
+
           <h3 className="mb-3 font-semibold">Giới thiệu</h3>
           <Separator className="mb-4" />
 
@@ -79,6 +115,7 @@ export default function ProfileEditPanel({ profile, onClose }: ProfileEditPanelP
             <div className="flex flex-col gap-2 rounded-md border bg-muted/30 p-2">
               <div className="mb-1 flex items-center gap-2 text-sm text-muted-foreground">
                 <Hand className="size-5" />
+
                 <span className="font-medium">Giới thiệu về bạn</span>
               </div>
               <Textarea

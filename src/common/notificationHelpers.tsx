@@ -35,7 +35,7 @@ export const FALLBACK_META = { icon: Bell, badge: "bg-muted-foreground" };
 
 /** Nội dung mặc định nếu backend không gửi message sẵn. */
 export function defaultMessage(n: INotification): string {
-  const actor = n.actor?.nickName || n.actor?.name || "Ai đó";
+  const actor = n.actor?.name || n.actor?.nickName || "Ai đó";
   switch (n.type) {
     case "COMMENT":
       return `${actor} đã bình luận về bài viết của bạn`;

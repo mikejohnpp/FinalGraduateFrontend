@@ -64,7 +64,7 @@ export default function GroupCreate() {
         onPrivacyChange={setPrivacy}
         onSubmit={handleCreate}
         loading={loading || submitting}
-        creatorName={profile?.nickName || profile?.userName || "Bạn"}
+        creatorName={profile?.userName || profile?.nickName || "Bạn"}
         creatorAvatar={profile?.avatar ?? null}
         onAvatarSelect={handleAvatarSelect}
         onCoverSelect={handleCoverSelect}
@@ -76,7 +76,7 @@ export default function GroupCreate() {
         onPreviewModeChange={setPreviewMode}
         avatarPreview={avatarPreview}
         coverPreview={coverPreview}
-        creatorName={profile?.nickName || profile?.userName || "Bạn"}
+        creatorName={profile?.userName || profile?.nickName || "Bạn"}
         creatorAvatar={profile?.avatar ?? null}
       />
     </div>

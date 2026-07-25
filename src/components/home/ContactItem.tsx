@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { getAuthorDisplayName } from "@/utils/displayName";
 import type { IFriendship } from "@/types/interfaces/friend/IFriendship";
 
 interface ContactItemProps {
@@ -10,7 +11,7 @@ interface ContactItemProps {
 
 export default function ContactItem({ friendship, isOnline }: ContactItemProps) {
   const { user } = friendship;
-  const displayName = user.nickName || user.name;
+  const displayName = getAuthorDisplayName(user);
   const initials = displayName.charAt(0).toUpperCase();
   const navigate = useNavigate();
 

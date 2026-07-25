@@ -1,6 +1,9 @@
 /** Request body cho PUT /users/profile?userId={userId} — partial update */
 export interface IProfileUpdate {
+  userName?: string; // max 150 ký tự — tên hiển thị
+  nickName?: string; // max 150 ký tự — biệt danh
   bio?: string; // max 101 ký tự
+
   location?: string; // max 100 ký tự
   education?: string; // max 200 ký tự
   workplace?: string; // max 200 ký tự

@@ -25,7 +25,7 @@ function PreviewRow({
 }) {
   const meta = TYPE_META[notification.type] ?? FALLBACK_META;
   const Icon = meta.icon;
-  const actorName = notification.actor?.nickName || notification.actor?.name || "?";
+  const actorName = notification.actor?.name || notification.actor?.nickName || "?";
   const initial = actorName.charAt(0).toUpperCase();
   const text = notification.message?.trim() || defaultMessage(notification);
 
