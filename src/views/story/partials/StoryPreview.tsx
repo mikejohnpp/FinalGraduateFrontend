@@ -155,11 +155,11 @@ export default function StoryPreview({
           )}
           <MusicTag />
         </div>
-        {!imagePreview && (
+        {/* {!imagePreview && (
           <Button variant="default" onClick={onPickImage} className="rounded-full px-6">
             Chọn ảnh
           </Button>
-        )}
+        )} */}
         <PreviewCaption />
       </div>
     );
