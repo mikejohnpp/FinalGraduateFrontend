@@ -6,10 +6,12 @@ import { PATH_CONSTRAINT } from "@/plugins/routers";
 
 export default function GroupDiscoverSection() {
   const navigate = useNavigate();
-  const { suggestedGroups } = useGroupsData();
+  const { suggestedGroups, loading } = useGroupsData();
   const { joinGroup } = useGroupActions();
 
   const topSuggested = suggestedGroups.slice(0, 6);
+
+  if (loading || topSuggested.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-3">

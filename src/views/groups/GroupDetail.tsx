@@ -13,7 +13,7 @@ import PostCard from "@/components/PostCard";
 import CreatePostCard from "@/components/home/CreatePostCard";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Globe, Lock, Users } from "lucide-react";
+import { Globe, Lock, Users, FileText } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -206,12 +206,26 @@ export default function GroupDetail() {
             )}
 
             {!postsLoading && posts.length === 0 && (
-              <div className="py-8 text-center">
-                <p className="text-muted-foreground">
-                  {group.privacy === "private" && !group.isJoined
-                    ? "Đây là nhóm kín. Bạn cần tham gia để xem bài viết."
-                    : "Chưa có bài viết nào trong nhóm này."}
-                </p>
+              <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-14 text-center">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  {group.privacy === "private" && !group.isJoined ? (
+                    <Lock className="h-8 w-8 text-primary" />
+                  ) : (
+                    <FileText className="h-8 w-8 text-primary" />
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold text-foreground">
+                    {group.privacy === "private" && !group.isJoined
+                      ? "Nhóm kín"
+                      : "Chưa có bài viết nào"}
+                  </h3>
+                  <p className="max-w-xs text-sm text-muted-foreground">
+                    {group.privacy === "private" && !group.isJoined
+                      ? "Đây là nhóm kín. Bạn cần tham gia để xem các bài viết trong nhóm."
+                      : "Hãy là người đầu tiên chia sẻ điều gì đó với nhóm này!"}
+                  </p>
+                </div>
               </div>
             )}
           </div>

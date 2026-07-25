@@ -12,6 +12,7 @@ import type {
 } from "@/types/interfaces/friend/IFriendRequest";
 import type { IFriendSuggestion } from "@/types/interfaces/friend/IFriendSuggestion";
 import type { IFriendship } from "@/types/interfaces/friend/IFriendship";
+import type { FriendStatus } from "@/types/interfaces/friend/IFriendStatus";
 import type { CursorPageResponse } from "@/types/interfaces/post/IPostPage";
 
 // ---------------------------------------------------------------------------
@@ -460,3 +461,113 @@ export function useFriendRequestCount() {
 
   return { count: requestCount };
 }
+
+// ---------------------------------------------------------------------------
+// useProfileFriendStatus — Trạng thái bạn bè trên trang profile người khác
+// Bao gồm: fetch trạng thái, gửi lời mời, hủy lời mời, hủy kết bạn
+// ---------------------------------------------------------------------------
+export function useProfileFriendStatus(targetUserId: number | undefined) {
+  const { userId: currentUserId } = useSelector((s: RootState) => s.user);
+  const [status, setStatus] = useState<FriendStatus | null>(null);
+  const [requestId, setRequestId] = useState<number | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => {
+    if (!currentUserId || !targetUserId || currentUserId === targetUserId) return;
+    let cancelled = false;
+    const fetchStatus = async () => {
+      setLoading(true);
+      try {
+        const res = await friendService.getFriendStatus(currentUserId, targetUserId);
+        if (!cancelled && res) {
+          setStatus(res.status);
+          setRequestId(res.requestId);
+        }
+      } catch {
+        // im lặng
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    fetchStatus();
+    return () => { cancelled = true; };
+  }, [currentUserId, targetUserId]);
+
+  const sendRequest = useCallback(async () => {
+    if (!currentUserId || !targetUserId) return;
+    setActionLoading(true);
+    try {
+      const success = await friendService.sendRequest(currentUserId, targetUserId);
+      if (success) {
+        setStatus("PENDING_SENT");
+        toast.success("Đã gửi lời mời kết bạn!");
+      } else {
+        toast.error("Gửi lời mời thất bại, vui lòng thử lại");
+      }
+    } catch (e: any) {
+      toast.error(e?.response?.data?.message ?? "Có lỗi xảy ra");
+    } finally {
+      setActionLoading(false);
+    }
+  }, [currentUserId, targetUserId]);
+
+  const cancelRequest = useCallback(async () => {
+    if (!currentUserId || !targetUserId) return;
+    setActionLoading(true);
+    try {
+      const success = await friendService.cancelFriendRequest(currentUserId, targetUserId);
+      if (success) {
+        setStatus("NOT_FRIENDS");
+        setRequestId(undefined);
+        toast.success("Đã hủy lời mời kết bạn");
+      } else {
+        toast.error("Hủy lời mời thất bại, vui lòng thử lại");
+      }
+    } catch {
+      toast.error("Có lỗi xảy ra");
+    } finally {
+      setActionLoading(false);
+    }
+  }, [currentUserId, targetUserId]);
+
+  const acceptRequest = useCallback(async () => {
+    if (!requestId) return;
+    setActionLoading(true);
+    try {
+      const success = await friendService.acceptRequest(requestId, currentUserId!);
+      if (success) {
+        setStatus("FRIENDS");
+        setRequestId(undefined);
+        toast.success("Đã chấp nhận lời mời kết bạn!");
+      } else {
+        toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    } catch {
+      toast.error("Có lỗi xảy ra");
+    } finally {
+      setActionLoading(false);
+    }
+  }, [requestId, currentUserId]);
+
+  const unfriend = useCallback(async () => {
+    if (!currentUserId || !targetUserId) return;
+    setActionLoading(true);
+    try {
+      const success = await friendService.unfriend(targetUserId, currentUserId);
+      if (success) {
+        setStatus("NOT_FRIENDS");
+        toast.success("Đã hủy kết bạn");
+      } else {
+        toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      }
+    } catch {
+      toast.error("Có lỗi xảy ra");
+    } finally {
+      setActionLoading(false);
+    }
+  }, [currentUserId, targetUserId]);
+
+  return { status, loading, actionLoading, sendRequest, cancelRequest, acceptRequest, unfriend };
+}
+

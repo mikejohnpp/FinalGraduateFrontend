@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { API } from "@/common/constants";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/stores/store";
@@ -182,12 +182,16 @@ export function useGroupFeed() {
   const { groupFeed } = useSelector((r: RootState) => r.group);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const loadingRef = useRef(false);
+  const hasFetched = useRef(false);
 
   const fetchFeed = useCallback(
     async (isLoadMore = false) => {
       if (!userId) return;
-      if (isLoadMore && (!groupFeed.hasMore || loading)) return;
+      if (loadingRef.current) return;
+      if (isLoadMore && !groupFeed.hasMore) return;
 
+      loadingRef.current = true;
       setLoading(true);
       setError(null);
       try {
@@ -207,21 +211,23 @@ export function useGroupFeed() {
       } catch (e: any) {
         setError(e?.response?.data?.message || "Lỗi tải bảng tin nhóm");
       } finally {
+        loadingRef.current = false;
         setLoading(false);
       }
     },
-    [userId, groupFeed.hasMore, groupFeed.nextCursor, loading, dispatch],
+    [userId, groupFeed.hasMore, groupFeed.nextCursor, dispatch],
   );
 
   useEffect(() => {
-    if (userId && groupFeed.items.length === 0) {
+    if (userId && !hasFetched.current) {
+      hasFetched.current = true;
       fetchFeed();
     }
-  }, [userId, groupFeed.items.length, fetchFeed]);
+  }, [userId, fetchFeed]);
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     fetchFeed(true);
-  };
+  }, [fetchFeed]);
 
   return { feed: groupFeed, loading, error, loadMore, refetch: () => fetchFeed(false) };
 }

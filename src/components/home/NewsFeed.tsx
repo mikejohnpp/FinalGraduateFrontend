@@ -4,7 +4,7 @@ import PostCard from "@/components/PostCard";
 import StoriesBar from "./story/StoriesBar";
 import PostSkeleton from "./PostSkeleton";
 import { useSuggestedFeed } from "@/hooks/usePost";
-import { Loader2 } from "lucide-react";
+import { Loader2, Newspaper, UserPlus } from "lucide-react";
 
 export default function NewsFeed() {
   const { posts, loading, hasMore, loadMore } = useSuggestedFeed();
@@ -53,6 +53,25 @@ export default function NewsFeed() {
             );
           }
         })
+      )}
+
+      {/* Empty State */}
+      {!loading && posts.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-14 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <Newspaper className="h-8 w-8 text-primary" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold text-foreground">Bảng tin của bạn đang trống</h3>
+            <p className="max-w-xs text-sm text-muted-foreground">
+              Hãy kết bạn hoặc theo dõi thêm người dùng để xem các bài viết mới nhất ở đây.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+            <UserPlus className="h-4 w-4" />
+            Tìm bạn bè để kết nối
+          </div>
+        </div>
       )}
 
       {/* Loading More State */}

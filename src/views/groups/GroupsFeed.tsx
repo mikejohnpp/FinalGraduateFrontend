@@ -2,6 +2,7 @@ import { useGroupFeed } from "@/hooks/useGroup";
 import PostCard from "@/components/PostCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
 
 export default function GroupsFeed() {
   const { feed, loading, loadMore } = useGroupFeed();
@@ -32,8 +33,16 @@ export default function GroupsFeed() {
       )}
 
       {!loading && feed.items.length === 0 && (
-        <div className="py-8 text-center">
-          <p className="text-muted-foreground">Chưa có bài viết nào từ các nhóm của bạn.</p>
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-14 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <Users className="h-8 w-8 text-primary" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold text-foreground">Chưa có bài viết nào</h3>
+            <p className="max-w-xs text-sm text-muted-foreground">
+              Hãy tham gia thêm nhóm để xem các bài viết mới nhất từ cộng đồng của bạn ở đây.
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -7,9 +7,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Users, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GroupCard from "./GroupCard";
+import { PATH_CONSTRAINT } from "@/plugins/routers";
 
 interface GroupMineGridProps {
   groups: IGroup[];
@@ -42,6 +43,42 @@ export default function GroupMineGrid({ groups }: GroupMineGridProps) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+
+  if (groups.length === 0) {
+    return (
+      <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-16 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+          <Users className="h-8 w-8 text-primary" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-semibold text-foreground">Bạn chưa tham gia nhóm nào</h3>
+          <p className="max-w-xs text-sm text-muted-foreground">
+            Hãy khám phá và tham gia các nhóm để kết nối với cộng đồng của bạn.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="default"
+            className="gap-2"
+            onClick={() => navigate(PATH_CONSTRAINT.GROUPS_DISCOVER)}
+          >
+            <Users className="h-4 w-4" />
+            Khám phá nhóm
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-2"
+            onClick={() => navigate(PATH_CONSTRAINT.GROUPS_CREATE)}
+          >
+            <Plus className="h-4 w-4" />
+            Tạo nhóm mới
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto flex max-w-[1200px] flex-col gap-4 p-4 md:p-6">

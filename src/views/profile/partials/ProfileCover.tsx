@@ -1,13 +1,30 @@
 import type { UserProfileDTO } from "@/types/interfaces/user/UserProfileDTO";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Camera, Pencil, MessageCircle } from "lucide-react";
+import {
+  Camera,
+  Pencil,
+  MessageCircle,
+  UserPlus,
+  UserCheck,
+  UserX,
+  Clock,
+  ChevronDown,
+  Loader2,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { resolveUploadUrl } from "@/utils/uploadHelper";
 import { IMAGE_ACCEPT } from "@/utils/mediaUpload";
 import { useUploadAvatar, useUploadCover } from "@/hooks/useProfile";
 import ProfileEditPanel from "./ProfileEditPanel";
 import { useNavigate } from "react-router-dom";
+import { useProfileFriendStatus } from "@/hooks/useFriend";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ProfileCoverProps {
   profile: UserProfileDTO;
@@ -21,15 +38,21 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
 
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate(`/messenger?userId=${profile.id}`);
-  };
-
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
 
   const { upload: uploadAvatar, loading: avatarLoading } = useUploadAvatar();
   const { upload: uploadCover, loading: coverLoading } = useUploadCover();
+
+  const {
+    status,
+    loading: statusLoading,
+    actionLoading,
+    sendRequest,
+    cancelRequest,
+    acceptRequest,
+    unfriend,
+  } = useProfileFriendStatus(isOwner ? undefined : profile.id);
 
   const avatarSrc = avatarPreview ?? resolveUploadUrl(profile.avatar) ?? undefined;
   const coverSrc = coverPreview ?? resolveUploadUrl(profile.coverPhoto) ?? undefined;
@@ -54,6 +77,93 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
     const url = await uploadCover(file);
     setCoverPreview(url ?? null);
     if (coverInputRef.current) coverInputRef.current.value = "";
+  };
+
+  const renderFriendButton = () => {
+    if (statusLoading) {
+      return (
+        <Button variant="secondary" disabled>
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </Button>
+      );
+    }
+
+    switch (status) {
+      case "FRIENDS":
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button variant="secondary" disabled={actionLoading}>
+                  {actionLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <UserCheck data-icon="inline-start" />
+                  )}
+                  Bạn bè
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={unfriend}
+              >
+                <UserX className="mr-2 h-4 w-4" />
+                Hủy kết bạn
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+
+      case "PENDING_SENT":
+        return (
+          <Button variant="secondary" disabled={actionLoading} onClick={cancelRequest}>
+            {actionLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Clock data-icon="inline-start" />
+            )}
+            Đã gửi lời mời
+          </Button>
+        );
+
+      case "PENDING_RECEIVED":
+        return (
+          <div className="flex gap-2">
+            <Button variant="default" disabled={actionLoading} onClick={acceptRequest}>
+              {actionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <UserPlus data-icon="inline-start" />
+              )}
+              Xác nhận
+            </Button>
+            <Button variant="secondary" disabled={actionLoading} onClick={cancelRequest}>
+              Xóa
+            </Button>
+          </div>
+        );
+
+      case "NOT_FRIENDS":
+      default:
+        return (
+          <Button
+            variant="default"
+            className="bg-blue-500 text-white hover:bg-blue-600"
+            disabled={actionLoading}
+            onClick={sendRequest}
+          >
+            {actionLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <UserPlus data-icon="inline-start" />
+            )}
+            Thêm bạn bè
+          </Button>
+        );
+    }
   };
 
   return (
@@ -139,15 +249,17 @@ export default function ProfileCover({ profile, isOwner }: ProfileCoverProps) {
               )}
             </div>
           ) : (
-            <div className="relative" onClick={handleClick}>
+            <>
+              {renderFriendButton()}
               <Button
                 variant="secondary"
-                className="bg-blue-300 text-black backdrop-blur-sm hover:cursor-pointer hover:bg-blue-200"
+                className="bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
+                onClick={() => navigate(`/messenger?userId=${profile.id}`)}
               >
                 <MessageCircle data-icon="inline-start" />
                 Nhắn tin
               </Button>
-            </div>
+            </>
           )}
         </div>
       </div>

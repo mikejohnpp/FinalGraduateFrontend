@@ -32,6 +32,8 @@ export const API = {
     REQUESTS: "users/friends/requests",
     REQUESTS_COUNT: "users/friends/requests/count",
     SUGGESTIONS: "users/friends/suggestions",
+    STATUS: "users/friends/status",
+    CANCEL_REQUEST: "users/friends/requests/cancel",
   },
 
   NOTIFICATION: {
