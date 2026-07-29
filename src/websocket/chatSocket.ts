@@ -1,6 +1,6 @@
-import chatSlice from "@/stores/chatSlice";
 import { stompClient } from "./stompClient";
-import { store } from "@/stores/store";
+import type { MessageNotification } from "@/stores/chatSlice";
+
 export const connectSocket = () => {
   if (!stompClient.active) {
     stompClient.activate();
@@ -33,4 +33,17 @@ export const sendTypingIndicator = (payload: { conversationId: number; isTyping:
       body: JSON.stringify(payload),
     });
   }
+};
+
+export const subscribeMessageNotifications = (
+  callback: (notification: MessageNotification) => void,
+) => {
+  if (!stompClient.connected) return null;
+  return stompClient.subscribe("/user/queue/messages", (message) => {
+    try {
+      callback(JSON.parse(message.body) as MessageNotification);
+    } catch (err) {
+      console.error("Failed to parse message notification", err);
+    }
+  });
 };

@@ -8,6 +8,7 @@ import {
   Plus,
   Group,
   Clapperboard,
+  BellRingIcon,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/item";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { cn } from "@/lib/utils";
 import ButtonPopover from "./ButtonPopover";
@@ -31,6 +33,7 @@ import ThemeToggle from "./ThemeToggle";
 import userService from "@/services/userService";
 import { useLogoutUser } from "@/hooks/useUser";
 import { useUnreadCount } from "@/hooks/useNotification";
+import { useNotificationPermission } from "@/hooks/useNotificationPermission";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/stores/store";
 import { useState } from "react";
@@ -57,6 +60,12 @@ export default function Header() {
   const { userId, username, profile } = useSelector((r: RootState) => r.user);
   const { unreadCount, refresh: refreshUnread } = useUnreadCount();
   const isMobile = useIsMobile();
+  const {
+    isSupported: canUseDesktopNotification,
+    isBlocked: desktopNotificationBlocked,
+    isOn: desktopNotificationOn,
+    toggle: toggleDesktopNotification,
+  } = useNotificationPermission();
 
   const userAvatar = profile?.avatar || undefined;
   const displayName = profile?.userName || profile?.nickName || username || "Người dùng";
@@ -213,6 +222,37 @@ export default function Header() {
                     </div>
                   )}
                 </div>
+
+                {/* Bật/tắt thông báo trên máy tính */}
+                {canUseDesktopNotification && (
+                  <Item className="mt-1 rounded-lg border-none px-2 py-2 shadow-none">
+                    <ItemMedia>
+                      <div className="flex size-9 items-center justify-center rounded-full bg-secondary">
+                        <BellRingIcon className="size-5" />
+                      </div>
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle className="text-[15px] font-semibold">
+                        Thông báo trên máy tính
+                      </ItemTitle>
+                      <ItemDescription>
+                        {desktopNotificationBlocked
+                          ? "Đang bị chặn, hãy bật lại trong cài đặt trình duyệt"
+                          : desktopNotificationOn
+                            ? "Đang bật thông báo tin nhắn mới"
+                            : "Đang tắt"}
+                      </ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      <Switch
+                        checked={desktopNotificationOn}
+                        disabled={desktopNotificationBlocked}
+                        onCheckedChange={(checked) => void toggleDesktopNotification(checked)}
+                        aria-label="Bật tắt thông báo trên máy tính"
+                      />
+                    </ItemActions>
+                  </Item>
+                )}
 
                 {/* Nút đăng xuất */}
                 <Item

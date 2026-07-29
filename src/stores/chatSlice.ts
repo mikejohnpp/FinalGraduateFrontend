@@ -36,6 +36,18 @@ export interface Message {
   tempId?: string;
 }
 
+// Thông báo tin nhắn mới nhận qua /user/queue/messages (chat-service fanout).
+export interface MessageNotification {
+  conversationId: number;
+  conversationName: string | null;
+  isGroup: boolean;
+  messageId: number;
+  content: string;
+  messageType?: MessageType;
+  createdAt: string;
+  sender: UserResponse;
+}
+
 export interface MessageSend {
   conversationId?: number;
   content: string;
