@@ -101,7 +101,7 @@ export default function Reels() {
             controls
           />
 
-          <div className="absolute top-0 left-0 w-full bg-linear-to-t from-black/80 via-black/40 to-transparent p-4">
+          <div className="absolute top-0 left-0 w-full bg-linear-to-t p-4">
             <div className="flex items-center gap-3">
               <Avatar
                 className="size-10 border-2 border-primary hover:cursor-pointer"

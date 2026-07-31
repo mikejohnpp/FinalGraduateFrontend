@@ -82,7 +82,7 @@ export function RegisterForm({ models, setModels }: RegisterFormProps) {
           <Input
             id="register-password"
             type="password"
-            placeholder="Ít nhất 6 ký tự"
+            placeholder="Ít nhất 8 ký tự và không có ký tự đặc biệt"
             value={models.password}
             onChange={(e) => setModels({ ...models, password: e.target.value })}
             aria-invalid={getParsedErrorValue(error, "password") ? true : false}
