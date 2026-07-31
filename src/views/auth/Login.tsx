@@ -33,9 +33,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
-      {/* Main content — 2-column layout */}
       <div className="grid flex-1 lg:grid-cols-2">
-        {/* Left column — Brand (hidden on mobile) */}
         <div className="hidden items-center justify-center bg-card/50 lg:flex">
           <div className="flex flex-col items-center gap-6 px-8">
             <img src="/logo.svg" alt="Misa App" className="size-48" />
@@ -43,7 +41,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Right column — Form */}
         <div className="flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-sm">
             <div className="mb-10 flex flex-col gap-2">
