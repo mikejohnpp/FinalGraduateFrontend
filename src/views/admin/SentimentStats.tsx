@@ -153,7 +153,7 @@ function SentimentPieCard({ title, total, slices, onSliceClick, onViewAll }: Pie
         </div>
       ) : (
         <>
-          <div className="h-64">
+          <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -161,8 +161,8 @@ function SentimentPieCard({ title, total, slices, onSliceClick, onViewAll }: Pie
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
-                  cy="50%"
-                  outerRadius={90}
+                  cy="45%"
+                  outerRadius={80}
                   label={(entry) => `${entry.name}: ${entry.value}`}
                   onClick={(_, index) => onSliceClick(slices[index])}
                   className="cursor-pointer"
