@@ -67,8 +67,6 @@ export default function MessengerLayout() {
     open();
   }, [userId]);
 
-  // Đồng bộ hội thoại được chọn từ bên ngoài (vd: click thông báo tin nhắn set
-  // conversationId vào redux) để mở đúng khung chat, không chỉ dừng ở trang messenger.
   useEffect(() => {
     if (conversationId && conversationId !== activeConversationId) {
       setActiveConversationId(conversationId);
