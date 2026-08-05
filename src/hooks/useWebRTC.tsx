@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
 import type { ReactNode } from "react";
 import callService from "@/services/callService";
 import type { CallSignalRequest } from "@/services/callService";
@@ -36,7 +36,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-  // Dùng ref để tránh stale closure trong callbacks của PeerConnection
+
   const remoteUserIdRef = useRef<number | null>(null);
   const conversationIdRef = useRef<number | null>(null);
   const callTypeRef = useRef<"AUDIO" | "VIDEO">("VIDEO");
@@ -48,12 +48,10 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const currentUserId = useSelector((state: RootState) => state.user.userId);
   const isSocketConnected = useSelector((state: RootState) => state.socket.connected);
 
-  // Đồng bộ remoteUserId vào ref
   useEffect(() => {
     remoteUserIdRef.current = remoteUserId;
   }, [remoteUserId]);
 
-  // Initialize Audio Objects
   useEffect(() => {
     ringtoneAudio.current = new Audio("/sounds/ringtone.mp3");
     ringtoneAudio.current.loop = true;
@@ -67,7 +65,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  // Play/Pause Audio based on callState
   useEffect(() => {
     if (callState === "CALLING") {
       callingAudio.current?.play().catch((e) => console.log("Auto-play prevented:", e));
@@ -84,7 +81,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [callState]);
 
-  // Clean up streams and connection
   const cleanup = useCallback(() => {
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -103,7 +99,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     callStartTimeRef.current = null;
   }, []);
 
-  // Timeout 60s nếu không bắt máy
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -127,7 +122,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [callState, cleanup]);
 
-  // Initialize Peer Connection - nhận remoteId trực tiếp để tránh stale closure
   const initPeerConnection = useCallback((remoteId: number) => {
     if (peerConnection.current) {
       peerConnection.current.close();
@@ -135,7 +129,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
     const pc = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 
-    // Handle ICE Candidates - dùng remoteId từ tham số, không từ state
     pc.onicecandidate = (event) => {
       if (event.candidate) {
         callService.sendSignal("ICE", {
@@ -155,7 +148,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     return pc;
   }, []);
 
-  // START a call
   const startCall = async (toUserId: number, conversationId: number, isVideo: boolean = true) => {
     setRemoteUserId(toUserId);
     remoteUserIdRef.current = toUserId;
@@ -189,7 +181,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // ACCEPT an incoming call
   const acceptCall = async () => {
     const currentRemoteId = remoteUserIdRef.current;
     if (!peerConnection.current || !currentRemoteId) return;
@@ -220,7 +211,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // REJECT incoming call
   const rejectCall = () => {
     const currentRemoteId = remoteUserIdRef.current;
     if (currentRemoteId) {
@@ -234,7 +224,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     cleanup();
   };
 
-  // END ongoing call
   const hangup = () => {
     const currentRemoteId = remoteUserIdRef.current;
     if (currentRemoteId) {
@@ -251,7 +240,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     cleanup();
   };
 
-  // Toggle Mute
   const toggleMuteAudio = () => {
     if (localStreamRef.current) {
       const audioTrack = localStreamRef.current.getAudioTracks()[0];
@@ -272,7 +260,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Handle incoming STOMP signals - chỉ subscribe khi socket đã connected
   useEffect(() => {
     if (!isSocketConnected) return;
 
@@ -289,7 +276,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           if (payload.conversationId) conversationIdRef.current = payload.conversationId as number;
           if (payload.callType) callTypeRef.current = payload.callType as "AUDIO" | "VIDEO";
           setCallState("RINGING");
-          // Khởi tạo PeerConnection với id của người gọi
+
           const pc = initPeerConnection(callerId);
           await pc.setRemoteDescription(
             new RTCSessionDescription({ type: "offer", sdp: payload.sdpOffer }),
