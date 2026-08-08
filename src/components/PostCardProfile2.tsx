@@ -17,7 +17,7 @@ import SentimentIndicator from "./home/SentimentIndicator";
 import MediaGallery from "./media/MediaGallery";
 import MediaLightbox from "./media/MediaLightbox";
 
-export default function PostCard({ post }: { post: IPost }) {
+export default function PostCardProfile2({ post }: { post: IPost }) {
   const [liked, setLiked] = useState(post.hasLiked ?? false);
   const [likesCount, setLikesCount] = useState(post.likeCount ?? 0);
 
@@ -82,7 +82,7 @@ export default function PostCard({ post }: { post: IPost }) {
 
   return (
     <>
-      <Card className="mb-4">
+      <Card className="mb-4 max-w-xl">
         <CardHeader className="flex flex-row items-start justify-between px-4 pt-0 pb-2">
           <div className="flex gap-2">
             {post.group ? (

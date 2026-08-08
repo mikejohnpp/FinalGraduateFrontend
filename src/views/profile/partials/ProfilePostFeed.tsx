@@ -1,5 +1,5 @@
 import type { IPost } from "@/types/interfaces/post/IPost";
-import PostCard from "@/components/PostCard";
+import PostCardProfile2 from "@/components/PostCardProfile2";
 
 interface ProfilePostFeedProps {
   posts: IPost[];
@@ -26,7 +26,7 @@ export default function ProfilePostFeed({ posts, loading }: ProfilePostFeedProps
   return (
     <div className="flex flex-col">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCardProfile2 key={post.id} post={post} />
       ))}
     </div>
   );
