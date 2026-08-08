@@ -155,7 +155,9 @@ export default function PostCard({ post }: { post: IPost }) {
         </CardHeader>
 
         <CardContent className="p-0 pb-0">
-          {post.content && <p className="mb-3 px-4 whitespace-pre-wrap">{post.content}</p>}
+          {post.content && (
+            <p className="mb-3 px-4 wrap-break-word whitespace-pre-wrap">{post.content}</p>
+          )}
 
           {post.media?.length > 0 && (
             <MediaGallery
