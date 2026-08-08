@@ -15,7 +15,7 @@ interface ProfileTabsProps {
 
 export default function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
   return (
-    <div className="sticky top-[56px] z-20 w-full bg-background shadow-sm md:top-[60px]">
+    <div className="sticky top-[56px] z-10 w-full bg-background shadow-sm md:top-[60px]">
       <Separator />
       <div className="mx-auto max-w-5xl px-4 sm:px-8">
         <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
