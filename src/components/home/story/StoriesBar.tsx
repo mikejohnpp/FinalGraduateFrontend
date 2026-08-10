@@ -61,7 +61,7 @@ export default function StoriesBar() {
                   className="absolute inset-0 flex h-full w-full items-center justify-center"
                   style={{ background: latestStory.color || "var(--primary)" }}
                 >
-                  <p className="max-w-full px-3 text-center break-all whitespace-pre-wrap">
+                  <p className="max-w-full px-3 text-center break-all whitespace-pre-wrap text-white">
                     {latestStory.content}
                   </p>
                 </div>
