@@ -69,6 +69,9 @@ export function useSentimentItems(
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const refetch = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   const filterKey = JSON.stringify(filter);
 
@@ -94,9 +97,9 @@ export function useSentimentItems(
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterKey, type, page, size]);
+  }, [filterKey, type, page, size, refreshKey]);
 
-  return { items, totalPages, totalElements, loading };
+  return { items, totalPages, totalElements, loading, refetch };
 }
 
 /** Số liệu tổng quan hệ thống cho dashboard báo cáo. */
@@ -198,4 +201,51 @@ export function useGroupOptions() {
   }, []);
 
   return { groups, loading };
+}
+
+/** Hook quản lý khóa/mở khóa nội dung. */
+export function useContentModeration() {
+  const [loading, setLoading] = useState(false);
+
+  const lockItems = useCallback(async (type: SentimentItemType, ids: number[]) => {
+    setLoading(true);
+    try {
+      const res = type === "post"
+        ? await adminService.lockPosts(ids)
+        : await adminService.lockComments(ids);
+      if (res?.success) {
+        toast.success(`Đã khóa ${ids.length} ${type === "post" ? "bài viết" : "bình luận"}`);
+        return true;
+      }
+      toast.error(res?.message || "Khóa nội dung thất bại");
+      return false;
+    } catch (e) {
+      notifyError(e, "Không thể khóa nội dung");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const unlockItems = useCallback(async (type: SentimentItemType, ids: number[]) => {
+    setLoading(true);
+    try {
+      const res = type === "post"
+        ? await adminService.unlockPosts(ids)
+        : await adminService.unlockComments(ids);
+      if (res?.success) {
+        toast.success(`Đã mở khóa ${ids.length} ${type === "post" ? "bài viết" : "bình luận"}`);
+        return true;
+      }
+      toast.error(res?.message || "Mở khóa nội dung thất bại");
+      return false;
+    } catch (e) {
+      notifyError(e, "Không thể mở khóa nội dung");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { lockItems, unlockItems, loading };
 }

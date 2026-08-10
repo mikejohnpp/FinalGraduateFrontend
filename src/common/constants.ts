@@ -58,6 +58,10 @@ export const API = {
     SENTIMENT_ITEMS: "users/admin/sentiment/items",
     REPORT_OVERVIEW: "users/admin/reports/overview",
     REPORT_EXPORT: "users/admin/reports/export",
+    CONTENT_LOCK_POSTS: "users/admin/content/posts/lock",
+    CONTENT_UNLOCK_POSTS: "users/admin/content/posts/unlock",
+    CONTENT_LOCK_COMMENTS: "users/admin/content/comments/lock",
+    CONTENT_UNLOCK_COMMENTS: "users/admin/content/comments/unlock",
   },
 
   GROUP_ADMIN: {
