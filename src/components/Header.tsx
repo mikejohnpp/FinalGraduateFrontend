@@ -82,10 +82,10 @@ export default function Header() {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="flex size-10 cursor-pointer items-center justify-center rounded-full transition-opacity hover:opacity-80"
+            className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground transition-opacity hover:opacity-80"
             aria-label="Về trang chủ"
           >
-            <img src="/logo.svg" alt="Misa App" className="size-10" />
+            f
           </button>
           <div className="hidden w-[260px] sm:block">
             <div className="rounded-full bg-secondary">

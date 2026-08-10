@@ -26,6 +26,7 @@ export interface SentimentItemDTO {
     groupId: number | null;
     groupName: string | null;
     createdAt: string;
+    isActive: boolean;
 }
 
 /** Bộ lọc dùng chung cho overview + items (tất cả optional). */
@@ -37,4 +38,5 @@ export interface SentimentFilter {
     maxConfidence?: number;
     keyword?: string;
     groupId?: number;
+    isActive?: boolean;
 }

@@ -1,7 +1,7 @@
 import BaseService from "@/types/base/BaseService";
 import http from "@/lib/http";
 import { API } from "@/common/constants";
-import type { ApiResultGeneric } from "@/types/interfaces/result/apiResult";
+import type { ApiResultGeneric, ApiResult } from "@/types/interfaces/result/apiResult";
 import type { PageResponse } from "@/types/interfaces/post/IPostPage";
 import type {
   SentimentFilter,
@@ -113,6 +113,23 @@ class AdminService extends BaseService {
   /** Trả về Blob CSV (responseType blob, không parse JSON). */
   async exportReport() {
     return await http.ExportFile<Blob>(API.ADMIN.REPORT_EXPORT);
+  }
+
+  // ===== Content moderation =====
+  async lockPosts(ids: number[]) {
+    return await http.post<ApiResult>(API.ADMIN.CONTENT_LOCK_POSTS, { ids });
+  }
+
+  async unlockPosts(ids: number[]) {
+    return await http.post<ApiResult>(API.ADMIN.CONTENT_UNLOCK_POSTS, { ids });
+  }
+
+  async lockComments(ids: number[]) {
+    return await http.post<ApiResult>(API.ADMIN.CONTENT_LOCK_COMMENTS, { ids });
+  }
+
+  async unlockComments(ids: number[]) {
+    return await http.post<ApiResult>(API.ADMIN.CONTENT_UNLOCK_COMMENTS, { ids });
   }
 }
 

@@ -69,6 +69,22 @@ export default function SentimentFilters({ filter, groups, onApply, onReset }: P
         </div>
 
         <div className="grid gap-1.5">
+          <label className="text-sm font-medium">Trạng thái</label>
+          <select
+            className={selectClass}
+            value={draft.isActive === undefined ? "" : draft.isActive ? "true" : "false"}
+            onChange={(e) => {
+              const val = e.target.value;
+              set({ isActive: val === "" ? undefined : val === "true" });
+            }}
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="true">Đang hoạt động</option>
+            <option value="false">Đã khóa</option>
+          </select>
+        </div>
+
+        <div className="grid gap-1.5">
           <label className="text-sm font-medium">Nhóm</label>
           <select
             className={selectClass}
@@ -132,7 +148,7 @@ export default function SentimentFilters({ filter, groups, onApply, onReset }: P
           />
         </div>
 
-        <div className="grid gap-1.5 md:col-span-2">
+        <div className="grid gap-1.5 md:col-span-1">
           <label className="text-sm font-medium">Từ khóa</label>
           <Input
             type="search"

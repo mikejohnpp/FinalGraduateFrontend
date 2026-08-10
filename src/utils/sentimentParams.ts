@@ -39,6 +39,10 @@ export function parseSentimentFilter(params: URLSearchParams): SentimentFilter {
         filter.groupId = Number(groupId);
     }
 
+    const isActive = params.get("isActive");
+    if (isActive === "true") filter.isActive = true;
+    else if (isActive === "false") filter.isActive = false;
+
     return filter;
 }
 
@@ -52,6 +56,7 @@ export function sentimentFilterToParams(filter: SentimentFilter): Record<string,
     if (filter.maxConfidence !== undefined) params.maxConfidence = String(filter.maxConfidence);
     if (filter.keyword) params.keyword = filter.keyword;
     if (filter.groupId !== undefined) params.groupId = String(filter.groupId);
+    if (filter.isActive !== undefined) params.isActive = String(filter.isActive);
     return params;
 }
 
