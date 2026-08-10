@@ -149,7 +149,9 @@ export default function StoryPreview({
           {overlayText && (
             <div className="absolute right-0 bottom-16 left-0 px-6">
               <div className="rounded-xl bg-black/50 px-4 py-2 text-center backdrop-blur-sm">
-                <p className="text-sm font-medium text-white">{overlayText}</p>
+                <p className="text-sm font-medium break-all whitespace-pre-wrap text-white">
+                  {overlayText}
+                </p>
               </div>
             </div>
           )}
@@ -172,9 +174,10 @@ export default function StoryPreview({
         style={{ background: selectedBg }}
       >
         <UserBadge />
+
         <p
           className={cn(
-            "px-8 text-center font-bold text-white drop-shadow-lg transition-all",
+            "w-full max-w-full min-w-0 px-8 text-center font-bold break-all whitespace-pre-wrap text-white drop-shadow-lg transition-all",
             textContent.length > 100
               ? "text-lg"
               : textContent.length > 50
@@ -183,11 +186,13 @@ export default function StoryPreview({
           )}
         >
           {textContent || (
-            <span className="text-xl font-normal text-white/40">Nội dung sẽ hiện ở đây...</span>
+            <span className="text-xl font-normal text-white/40">Nội dung sẽ hiện ở đây</span>
           )}
         </p>
+
         <MusicTag />
       </div>
+
       <PreviewCaption />
     </div>
   );
