@@ -23,7 +23,8 @@ export default function FriendsHome() {
   const { accept, loadingId: acceptLoadingId } = useAcceptRequest();
   const { decline, loadingId: declineLoadingId } = useDeclineRequest();
   const { send, loadingId: sendLoadingId } = useSendFriendRequest();
-  const { dismiss } = useDismissSuggestion();
+  const { dismiss, loadingId: dismissLoadingId } = useDismissSuggestion();
+  const suggestionLoadingId = sendLoadingId ?? dismissLoadingId;
   const isMobile = useIsMobile();
 
   // Dùng loadingId từ accept hoặc decline (chỉ 1 active tại 1 thời điểm)
@@ -77,7 +78,7 @@ export default function FriendsHome() {
                   suggestion={suggestion}
                   onSend={send}
                   onDismiss={dismiss}
-                  loadingId={sendLoadingId}
+                  loadingId={suggestionLoadingId}
                 />
               ))}
             </div>
