@@ -424,19 +424,61 @@ export function useUnfriend() {
 }
 
 // ---------------------------------------------------------------------------
-// useDismissSuggestion — Bỏ gợi ý (local only, không gọi API)
+// useDismissSuggestion — Gỡ gợi ý bạn bè (gọi API + optimistic + rollback)
 // ---------------------------------------------------------------------------
 export function useDismissSuggestion() {
   const dispatch = useDispatch<AppDispatch>();
+  const { userId } = useSelector((s: RootState) => s.user);
+  const suggestions = useSelector((s: RootState) => s.friend.suggestions);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
 
   const dismiss = useCallback(
-    (targetUserId: number) => {
+    async (targetUserId: number) => {
+      if (!userId) return;
+
+      const snapshot = suggestions.items.find((s) => s.user.id === targetUserId);
+
+      // Optimistic: ẩn ngay khỏi danh sách
       dispatch(friendActions.removeSuggestion(targetUserId));
+      setLoadingId(targetUserId);
+
+      try {
+        const success = await friendService.dismissSuggestion(targetUserId, userId);
+        if (success) {
+          toast.success("Đã gỡ gợi ý bạn bè!");
+        } else {
+          // Rollback
+          if (snapshot) {
+            dispatch(
+              friendActions.setSuggestions({
+                data: [snapshot, ...suggestions.items.filter((s) => s.user.id !== targetUserId)],
+                nextCursor: suggestions.nextCursor,
+                hasMore: suggestions.hasMore,
+              }),
+            );
+          }
+          toast.error("Có lỗi xảy ra, vui lòng thử lại");
+        }
+      } catch {
+        // Rollback on error
+        if (snapshot) {
+          dispatch(
+            friendActions.setSuggestions({
+              data: [snapshot, ...suggestions.items.filter((s) => s.user.id !== targetUserId)],
+              nextCursor: suggestions.nextCursor,
+              hasMore: suggestions.hasMore,
+            }),
+          );
+        }
+        toast.error("Có lỗi xảy ra, vui lòng thử lại");
+      } finally {
+        setLoadingId(null);
+      }
     },
-    [dispatch],
+    [dispatch, userId, suggestions],
   );
 
-  return { dismiss };
+  return { dismiss, loadingId };
 }
 
 // ---------------------------------------------------------------------------

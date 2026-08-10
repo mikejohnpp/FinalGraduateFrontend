@@ -10,7 +10,8 @@ import {
 export default function FriendsSuggest() {
   const { suggestions, hasMore, loadMore, loading } = useFriendSuggestions();
   const { send, loadingId: sendLoadingId } = useSendFriendRequest();
-  const { dismiss } = useDismissSuggestion();
+  const { dismiss, loadingId: dismissLoadingId } = useDismissSuggestion();
+  const suggestionLoadingId = sendLoadingId ?? dismissLoadingId;
 
   return (
     <ScrollArea className="h-full w-full px-8 pt-8 pb-0">
@@ -30,7 +31,7 @@ export default function FriendsSuggest() {
                   suggestion={suggestion}
                   onSend={send}
                   onDismiss={dismiss}
-                  loadingId={sendLoadingId}
+                  loadingId={suggestionLoadingId}
                 />
               ))}
             </div>

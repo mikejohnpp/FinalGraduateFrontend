@@ -1,3 +1,4 @@
+import { API } from "@/common/constants";
 import BaseService from "@/types/base/BaseService";
 import http from "@/lib/http";
 import type { ApiResult, ApiResultGeneric } from "@/types/interfaces/result/apiResult";
@@ -61,6 +62,14 @@ export class FriendService extends BaseService {
   /** DELETE /users/friends/{friendUserId}?userId={userId} */
   async unfriend(friendUserId: number, userId: number): Promise<boolean> {
     const response = await http.delete<ApiResult>(`users/friends/${friendUserId}?userId=${userId}`);
+    return response.success ?? response.code === 200;
+  }
+
+  /** DELETE /users/friends/suggestions/{targetUserId}?userId={userId} */
+  async dismissSuggestion(targetUserId: number, userId: number): Promise<boolean> {
+    const response = await http.delete<ApiResult>(
+      `${API.FRIEND.SUGGESTIONS}/${targetUserId}?userId=${userId}`,
+    );
     return response.success ?? response.code === 200;
   }
 }
