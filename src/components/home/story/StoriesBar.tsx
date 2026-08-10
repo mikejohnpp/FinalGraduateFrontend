@@ -50,7 +50,7 @@ export default function StoriesBar() {
                   className="absolute inset-0 h-full w-full object-cover"
                   alt=""
                 />
-              ) : latestStory.urlVideo ? (
+              ) : latestStory.urlVideo && !latestStory.content ? (
                 <video
                   src={latestStory.urlVideo}
                   className="absolute inset-0 h-full w-full object-cover"
