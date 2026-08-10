@@ -197,7 +197,7 @@ export default function StoryViewer() {
                 style={{ background: activeStory.color }}
               >
                 {activeStory.content && (
-                  <p className="text-2xl font-bold whitespace-pre-wrap text-white">
+                  <p className="text-2xl font-bold break-all whitespace-pre-wrap text-white">
                     {activeStory.content}
                   </p>
                 )}
@@ -232,7 +232,7 @@ export default function StoryViewer() {
               activeStory.urlImage !== "undefined" &&
               activeStory.content && (
                 <div className="absolute inset-0 flex items-center justify-center p-6">
-                  <p className="text-center text-2xl font-bold whitespace-pre-wrap text-white drop-shadow-xl">
+                  <p className="text-center text-2xl font-bold break-all whitespace-pre-wrap text-white drop-shadow-xl">
                     {activeStory.content}
                   </p>
                 </div>

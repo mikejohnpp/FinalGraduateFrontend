@@ -58,9 +58,13 @@ export default function StoriesBar() {
                 />
               ) : (
                 <div
-                  className="absolute inset-0 h-full w-full"
+                  className="absolute inset-0 flex h-full w-full items-center justify-center"
                   style={{ background: latestStory.color || "var(--primary)" }}
-                />
+                >
+                  <p className="max-w-full px-3 text-center break-all whitespace-pre-wrap">
+                    {latestStory.content}
+                  </p>
+                </div>
               )}
 
               <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
