@@ -20,7 +20,6 @@ const CallModal = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
-  // Attach streams to video elements
   useEffect(() => {
     if (localVideoRef.current && localStream) {
       localVideoRef.current.srcObject = localStream;
@@ -38,7 +37,6 @@ const CallModal = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
       <div className="relative flex w-full max-w-4xl flex-col items-center overflow-hidden rounded-2xl bg-gray-900 p-4 shadow-2xl">
-        {/* Call Status Overlay */}
         {callState === "RINGING" && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gray-900/90 text-white">
             <h2 className="mb-2 animate-pulse text-3xl font-semibold">Có cuộc gọi đến...</h2>
@@ -79,24 +77,20 @@ const CallModal = () => {
           </div>
         )}
 
-        {/* Video Streams */}
         <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl bg-black">
-          {/* Remote Video (Big) */}
           <video ref={remoteVideoRef} autoPlay playsInline className="h-full w-full object-cover" />
 
-          {/* Local Video (Small, floating) */}
           <div className="absolute right-4 bottom-4 aspect-video w-48 overflow-hidden rounded-lg border-2 border-gray-600 bg-gray-800 shadow-lg">
             <video
               ref={localVideoRef}
               autoPlay
               playsInline
-              muted // Always mute local video so you don't hear yourself
+              muted
               className="h-full w-full object-cover"
             />
           </div>
         </div>
 
-        {/* Controls */}
         {callState === "IN_CALL" && (
           <div className="mt-6 flex gap-4">
             <Button

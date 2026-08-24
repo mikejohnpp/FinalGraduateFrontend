@@ -164,6 +164,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
       localStreamRef.current = stream;
 
       const pc = initPeerConnection(toUserId);
+      // Khúc này nghĩa là sẽ để cho webRTC biết là lấy stream từ nguồn nào
       stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
       const offer = await pc.createOffer();

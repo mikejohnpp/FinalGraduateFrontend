@@ -72,7 +72,7 @@ export default function ChatHeader({
         </div>
       </div>
       <div className="flex items-center gap-1">
-        {chatInfo.group === false && otherMember && (
+        {chatInfo.group === false && isMobile === false && otherMember && (
           <>
             <Button
               variant="ghost"
