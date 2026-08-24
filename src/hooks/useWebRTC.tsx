@@ -36,6 +36,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  const pendingCandidates = useRef<RTCIceCandidate[]>([]);
 
   const remoteUserIdRef = useRef<number | null>(null);
   const conversationIdRef = useRef<number | null>(null);
@@ -81,6 +82,20 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [callState]);
 
+  const flushCandidates = useCallback(async () => {
+    const pc = peerConnection.current;
+    if (!pc || !pc.remoteDescription) return;
+    const candidates = pendingCandidates.current;
+    pendingCandidates.current = [];
+    for (const candidate of candidates) {
+      try {
+        await pc.addIceCandidate(candidate);
+      } catch (e) {
+        console.warn("Failed to add buffered ICE candidate:", e);
+      }
+    }
+  }, []);
+
   const cleanup = useCallback(() => {
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -97,6 +112,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     peerConnection.current = null;
     conversationIdRef.current = null;
     callStartTimeRef.current = null;
+    pendingCandidates.current = [];
   }, []);
 
   useEffect(() => {
@@ -281,6 +297,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
           await pc.setRemoteDescription(
             new RTCSessionDescription({ type: "offer", sdp: payload.sdpOffer }),
           );
+          await flushCandidates();
           break;
         }
 
@@ -289,22 +306,30 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             await peerConnection.current.setRemoteDescription(
               new RTCSessionDescription({ type: "answer", sdp: payload.sdpAnswer }),
             );
+            await flushCandidates();
             setCallState("IN_CALL");
             callStartTimeRef.current = Date.now();
           }
           break;
 
-        case "ICE":
-          if (peerConnection.current) {
-            await peerConnection.current.addIceCandidate(
-              new RTCIceCandidate({
-                candidate: payload.candidate,
-                sdpMid: payload.sdpMid,
-                sdpMLineIndex: payload.sdpMLineIndex,
-              }),
-            );
+        case "ICE": {
+          const candidate = new RTCIceCandidate({
+            candidate: payload.candidate,
+            sdpMid: payload.sdpMid,
+            sdpMLineIndex: payload.sdpMLineIndex,
+          });
+
+          if (peerConnection.current?.remoteDescription) {
+            try {
+              await peerConnection.current.addIceCandidate(candidate);
+            } catch (e) {
+              console.warn("Failed to add ICE candidate:", e);
+            }
+          } else {
+            pendingCandidates.current.push(candidate);
           }
           break;
+        }
 
         case "REJECT":
         case "HANGUP":
@@ -318,7 +343,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         subscription.unsubscribe();
       }
     };
-  }, [isSocketConnected, cleanup, currentUserId, initPeerConnection]);
+  }, [isSocketConnected, cleanup, currentUserId, initPeerConnection, flushCandidates]);
 
   const contextValue: CallContextType = {
     callState,
